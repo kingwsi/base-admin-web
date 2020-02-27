@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:file:./target/h2db/db/test;DB_CLOSE_DELAY=-1
+    username: test
+    password:
+  jpa:
+    database: H2
+    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+  h2:
+    console:
+      path: /h2-console
+      settings:
+        web-allow-others: true
+      enabled: true
+  liquibase:
+    change-log: classpath:liquibase/master.yml
+    enabled: true
+    drop-first: false
+server:
+  port: 8094

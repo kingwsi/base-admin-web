@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: test
+  - include:
+      file: classpath:liquibase/000000000000-init-schema.yml
