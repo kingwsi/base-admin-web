@@ -21,3 +21,7 @@ spring:
     drop-first: false
 server:
   port: 8094
+#mybatis配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

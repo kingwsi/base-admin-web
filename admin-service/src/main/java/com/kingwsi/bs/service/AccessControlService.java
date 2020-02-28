@@ -1,8 +1,8 @@
 package com.kingwsi.bs.service;
 
-import com.kingwsi.bs.entity.permission.Permission;
+import com.kingwsi.bs.entity.resource.Resource;
 import com.kingwsi.bs.entity.role.Role;
-import com.kingwsi.bs.entity.role.RolesAndPermissionsMapper;
+import com.kingwsi.bs.entity.role.RolesAndResourcesMapper;
 import com.kingwsi.bs.entity.user.UsersAndRolesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class AccessControlService {
 
     @Autowired
-    private RolesAndPermissionsMapper rolesAndPermissionsMapper;
+    private RolesAndResourcesMapper rolesAndResourcesMapper;
 
     @Autowired
     private UsersAndRolesMapper usersAndRolesMapper;
@@ -31,7 +31,7 @@ public class AccessControlService {
         return rolesByUserName.stream().map(Role::getName).collect(Collectors.toList());
     }
 
-    public Role getRequiredRoleByPermission(Permission permission) {
-        return rolesAndPermissionsMapper.selectRolesByPermission(permission);
+    public Role getRequiredRoleByResource(Resource resource) {
+        return rolesAndResourcesMapper.selectRolesByResource(resource);
     }
 }

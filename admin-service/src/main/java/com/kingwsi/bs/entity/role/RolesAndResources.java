@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 /**
  * Description: 角色权限关联实体<br>
- * Comments Name: RolesAndPermissions<br>
+ * Comments Name: RolesAndResources<br>
  * Date: 2019/7/11 16:35<br>
  * Author: wangshu<br>
  */
@@ -21,8 +21,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "roles_and_permissions")
-public class RolesAndPermissions implements Serializable {
+@Table(name = "roles_and_resources")
+public class RolesAndResources implements Serializable {
 
     @Id
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -31,5 +31,5 @@ public class RolesAndPermissions implements Serializable {
 
     private String roleId;
 
-    private String permissionId;
+    private String resourceId;
 }

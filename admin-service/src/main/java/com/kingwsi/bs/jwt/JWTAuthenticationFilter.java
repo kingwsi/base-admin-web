@@ -1,9 +1,8 @@
 package com.kingwsi.bs.jwt;
 
-import com.kingwsi.bs.entity.permission.Permission;
+import com.kingwsi.bs.entity.resource.Resource;
 import com.kingwsi.bs.entity.role.Role;
 import com.kingwsi.bs.service.AccessControlService;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,7 +73,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
                         .getBody())
                 .map(claims -> {
                     List<?> roleByUser = Optional.ofNullable(claims.get("role", List.class)).orElse(Collections.emptyList());
-                    Role requiredRole = accessControlService.getRequiredRoleByPermission(new Permission(request.getMethod(), request.getRequestURI()));
+                    Role requiredRole = accessControlService.getRequiredRoleByResource(new Resource(request.getMethod(), request.getRequestURI()));
                     if (requiredRole == null) {
                         return new UsernamePasswordAuthenticationToken(claims.get("username"), null, Collections.emptyList());
                     } else {

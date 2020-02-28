@@ -1,0 +1,6 @@
+id;uri;method;name;type;parent_id;sort
+1;/api/debug;GET;debug接口;URL;-1;0
+4028c881708a277c01708a2ae9d30000;/permission;;权限管理;ROUTE;-1;1
+4028c881708a277c01708a2b85e80001;/user;null;用户管理;ROUTE;4028c881708a277c01708a2ae9d30000;2
+4028c881708a277c01708a2bbd8b0002;/role;null;角色管理;ROUTE;4028c881708a277c01708a2ae9d30000;3
+4028c881708a277c01708a2be2860003;/route;null;路由管理;ROUTE;4028c881708a277c01708a2ae9d30000;4

@@ -1,6 +1,6 @@
 package com.kingwsi.bs.jwt;
 
-import com.kingwsi.bs.entity.permission.Permission;
+import com.kingwsi.bs.entity.resource.Resource;
 import com.kingwsi.bs.entity.role.Role;
 import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.service.AccessControlService;
@@ -50,7 +50,7 @@ public class Token {
                         .getBody())
                 .map(claims -> {
                     List roleByUser = claims.get("role", List.class);
-                    Role requiredRole = service.getRequiredRoleByPermission(new Permission(request.getMethod(), request.getRequestURI()));
+                    Role requiredRole = service.getRequiredRoleByResource(new Resource(request.getMethod(), request.getRequestURI()));
                     if (roleByUser.contains(requiredRole.getName())) {
                         return new UsernamePasswordAuthenticationToken(claims.get("username"), null, Collections.emptyList());
                     }

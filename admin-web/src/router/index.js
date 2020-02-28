@@ -45,7 +45,7 @@ export const constantRoutes = [
     hidden: true,
     children: [
       {
-        path: '/redirect/:path*',
+        path: '/redirect/:path(.*)',
         component: () => import('@/views/redirect/index')
       }
     ]
@@ -147,6 +147,15 @@ export const asyncRoutes = [
         name: 'PagePermission',
         meta: {
           title: 'Page Permission',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'route',
+        component: () => import('@/views/permission/route'),
+        name: '路由配置',
+        meta: {
+          title: '路由配置',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       },

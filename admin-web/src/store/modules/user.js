@@ -1,4 +1,4 @@
-import { login, getInfo } from '@/api/user'
+import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -34,9 +34,9 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        console.log(response)
-        commit('SET_TOKEN', response)
-        setToken(response)
+        const { data } = response
+        commit('SET_TOKEN', data)
+        setToken(data)
         resolve()
       }).catch(error => {
         reject(error)
@@ -48,11 +48,13 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        if (!response) {
+        const { data } = response
+
+        if (!data) {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, fullName, avatar, introduction } = response
+        const { roles, name, avatar, introduction } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
@@ -60,10 +62,10 @@ const actions = {
         }
 
         commit('SET_ROLES', roles)
-        commit('SET_NAME', fullName)
+        commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
-        resolve(response)
+        resolve(data)
       }).catch(error => {
         reject(error)
       })
@@ -73,16 +75,20 @@ const actions = {
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
-      removeToken()
-      resetRouter()
+      logout(state.token).then(() => {
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        removeToken()
+        resetRouter()
 
-      // reset visited views and cached views
-      // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-      dispatch('tagsView/delAllViews', null, { root: true })
+        // reset visited views and cached views
+        // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+        dispatch('tagsView/delAllViews', null, { root: true })
 
-      resolve()
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 

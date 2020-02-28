@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Description: [创建Token]
+ * Description: [默认授权请求处理，通过校验后保存token到Response Headers]
  * Name: JWTAuthenticationFilter
  * Author: wangshu
  * Date: 2019/6/29 16:56
@@ -36,7 +36,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     public JWTLoginFilter(AuthenticationManager authenticationManager, AccessControlService accessControlService) {
         this.authenticationManager = authenticationManager;
         this.accessControlService = accessControlService;
-        // 默认请求路径
+        // 默认授权请求路径
 //        super.setFilterProcessesUrl("/api/auth");
     }
 

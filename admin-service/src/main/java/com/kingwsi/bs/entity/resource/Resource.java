@@ -1,19 +1,17 @@
-package com.kingwsi.bs.entity.permission;
+package com.kingwsi.bs.entity.resource;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Description: 权限实体<br>
- * Comments Name: Permission<br>
+ * Comments Name: Resource<br>
  * Date: 2019/7/11 15:45<br>
  * Author: wangshu<br>
  */
@@ -21,17 +19,21 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "permissions")
-public class Permission implements Serializable {
+@Table(name = "resources")
+public class Resource implements Serializable {
 
     @Id
     @GenericGenerator(name = "uuid", strategy = "uuid")
     @GeneratedValue(generator = "uuid")
-    String id;
+    private String id;
+    private String name;
+    private ResourceTypeEnum type;
     private String uri;
     private String method;
+    private String parentId;
+    private Integer sort;
 
-    public Permission(String method, String uri) {
+    public Resource(String method, String uri) {
         this.method = method;
         this.uri = uri;
     }

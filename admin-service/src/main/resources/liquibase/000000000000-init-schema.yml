@@ -80,7 +80,7 @@ databaseChangeLog:
                   remarks: 是否删除
         # 权限表
         - createTable:
-            tableName: permissions
+            tableName: resources
             columns:
               - column:
                   name: id
@@ -100,6 +100,30 @@ databaseChangeLog:
                   remarks: 请求方式
                   constraints:
                     nullable: true
+              - column:
+                  name: name
+                  type: varchar(50)
+                  remarks: 权限名称
+                  constraints:
+                    nullable: true
+              - column:
+                  name: type
+                  type: varchar(30)
+                  remarks: 权限类型 ROUTE/URL/BUTTON
+                  constraints:
+                    nullable: true
+              - column:
+                  name: parent_id
+                  type: varchar(32)
+                  remarks: 上级id
+                  constraints:
+                    nullable: true
+              - column:
+                  name: sort
+                  type: varchar(32)
+                  remarks: 上级id
+                  constraints:
+                    nullable: true
         # 角色表
         - createTable:
             tableName: roles
@@ -117,9 +141,9 @@ databaseChangeLog:
                   remarks: 角色名
                   constraints:
                     nullable: false
-        # 权限角色关联表
+        # 角色资源关联表
         - createTable:
-            tableName: roles_and_permissions
+            tableName: roles_and_resources
             columns:
               - column:
                   name: id
@@ -135,12 +159,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: permission_id
+                  name: resource_id
                   type: varchar(40)
                   remarks: 权限id
                   constraints:
                     nullable: false
-        # 权限角色关联表
+        # 角色用户表
         - createTable:
             tableName: user_and_roles
             columns:
@@ -175,13 +199,13 @@ databaseChangeLog:
             separator: ";"
         - loadData:
             encoding: utf-8
-            tableName: permissions
-            file: classpath:liquibase/csv/permissions.csv
+            tableName: resources
+            file: classpath:liquibase/csv/resources.csv
             separator: ";"
         - loadData:
             encoding: utf-8
-            tableName: roles_and_permissions
-            file: classpath:liquibase/csv/roles_and_permissions.csv
+            tableName: roles_and_resources
+            file: classpath:liquibase/csv/roles_and_resources.csv
             separator: ";"
         - loadData:
             encoding: utf-8

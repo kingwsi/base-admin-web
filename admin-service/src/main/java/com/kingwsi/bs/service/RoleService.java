@@ -1,7 +1,7 @@
 package com.kingwsi.bs.service;
 
+import com.kingwsi.bs.entity.role.Role;
 import com.kingwsi.bs.entity.role.RoleRepository;
-import com.kingwsi.bs.entity.role.RolesAndPermissionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +15,10 @@ import org.springframework.stereotype.Service;
 public class RoleService {
 
     @Autowired
-    private RolesAndPermissionsRepository rolesAndPermissionsRepository;
-
-    @Autowired
     private RoleRepository roleRepository;
+
+    public Iterable<Role> listRoles(){
+        return roleRepository.findAll();
+    }
 
 }
