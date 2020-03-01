@@ -3,7 +3,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:h2:file:./target/h2db/db/test;DB_CLOSE_DELAY=-1
     username: test
-    password:
+    password: test
   jpa:
     database: H2
     show-sql: true
@@ -23,5 +23,6 @@ server:
   port: 8094
 #mybatis配置
 mybatis:
+  mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true

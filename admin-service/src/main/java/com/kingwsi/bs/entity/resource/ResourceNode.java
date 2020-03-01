@@ -1,6 +1,5 @@
-package com.kingwsi.bs.entity.route;
+package com.kingwsi.bs.entity.resource;
 
-import com.kingwsi.bs.entity.resource.ResourceTypeEnum;
 import lombok.Data;
 
 import java.util.List;

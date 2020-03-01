@@ -141,6 +141,12 @@ databaseChangeLog:
                   remarks: 角色名
                   constraints:
                     nullable: false
+              - column:
+                  name: description
+                  type: varchar(100)
+                  remarks: 描述
+                  constraints:
+                    nullable: false
         # 角色资源关联表
         - createTable:
             tableName: roles_and_resources

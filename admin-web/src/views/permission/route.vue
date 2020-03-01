@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    <el-row>
+      <el-button @click="openDialog">新增</el-button>
+    </el-row>
     <el-tree :data="treeList" :props="defaultProps" accordion @node-click="handleNodeClick">
       <span slot-scope="{ node, data }" class="custom-tree-node">
         <span>{{ node.label }}</span>
@@ -21,6 +24,36 @@
         </span>
       </span>
     </el-tree>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-form ref="route" :model="route" label-width="80px">
+        <el-form-item label="上级路由">
+          <el-cascader
+            v-model="route.parentId"
+            :props="defaultProps"
+            :options="treeList"
+            @change="handleChange"
+          />
+        </el-form-item>
+        <el-form-item label="路由名称">
+          <el-input v-model="route.name" />
+        </el-form-item>
+        <el-form-item label="路由类型">
+          <el-input v-model="route.type" />
+        </el-form-item>
+        <el-form-item label="URL">
+          <el-input v-model="route.url" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="createRoute">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -29,6 +62,8 @@ export default {
   name: 'Route',
   data() {
     return {
+      dialogVisible: false,
+      route: {},
       treeList: [],
       defaultProps: {
         children: 'children',
@@ -51,9 +86,24 @@ export default {
     append(data) {
       console.log(data)
     },
-
     remove(node, data) {
       console.log(data)
+    },
+    openDialog() {
+      this.dialogVisible = true
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
+    createRoute() {
+      console.log(this.route)
+    },
+    handleChange(value) {
+      console.log(value)
     }
   }
 }

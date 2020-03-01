@@ -31,4 +31,6 @@ public interface UsersAndRolesMapper {
     @Select("SELECT _r.* FROM roles _r LEFT JOIN user_and_roles _u_r ON _r.id = _u_r.role_id LEFT JOIN users _u ON _u_r.user_id = _u.id WHERE _u.username = #{username}")
     HashSet<Role> findRolesByUserName(@Param("username") String username);
 
+    UserVO listUserWithRoles(@Param("userName") String userName);
+
 }

@@ -68,7 +68,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader("Authorization"))
                 .map(token -> Jwts.parser()
-                        .setSigningKey("MyJwtSecret")
+                        .setSigningKey(TokenUtil.KEY)
                         .parseClaimsJws(token)
                         .getBody())
                 .map(claims -> {

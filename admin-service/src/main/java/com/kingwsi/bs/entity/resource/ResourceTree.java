@@ -1,7 +1,5 @@
 package com.kingwsi.bs.entity.resource;
 
-import com.kingwsi.bs.entity.route.ResourceNode;
-
 import java.util.ArrayList;
 import java.util.List;
 

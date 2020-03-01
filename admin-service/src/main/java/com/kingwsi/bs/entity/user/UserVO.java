@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserVO {
+    private String id;
     private String username;
     private String password;
     private Boolean remember;

@@ -1,6 +1,5 @@
 package com.kingwsi.bs.entity.resource;
 
-import com.kingwsi.bs.entity.route.ResourceNode;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -14,4 +13,6 @@ public interface ResourceMapper {
 
     @Select("SELECT * FROM resources WHERE type = #{route}")
     List<ResourceNode> selectAllByType(@Param("route") ResourceTypeEnum route);
+
+    List<ResourceNode> selectByUserId(@Param("userId") String userId);
 }

@@ -1,7 +1,7 @@
 package com.kingwsi.bs.api;
 
 import com.kingwsi.bs.entity.resource.Resource;
-import com.kingwsi.bs.entity.route.ResourceNode;
+import com.kingwsi.bs.entity.resource.ResourceNode;
 import com.kingwsi.bs.service.ResourceService;
 import com.kingwsi.bs.util.bean.ResponseData;
 import io.swagger.annotations.Api;
@@ -23,10 +23,16 @@ public class ResourceController {
         this.resourceService = resourceService;
     }
 
-    @ApiOperation("list")
-    @GetMapping("/route")
-    public ResponseData<List<ResourceNode>> list() {
+    @ApiOperation("获取路由list")
+    @GetMapping("/tree/routes")
+    public ResponseData<List<ResourceNode>> listTreeRoute() {
         return ResponseData.OK(resourceService.listRouteTree());
+    }
+
+    @ApiOperation("获取路由list")
+    @GetMapping("/routes")
+    public ResponseData<List<ResourceNode>> listRoute() {
+        return ResponseData.OK(resourceService.listRoute());
     }
 
     @ApiOperation("create")

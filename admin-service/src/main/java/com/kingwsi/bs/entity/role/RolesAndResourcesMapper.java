@@ -4,6 +4,7 @@ import com.kingwsi.bs.entity.resource.Resource;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Component;
 
 /**
  * Description: <br>
@@ -11,6 +12,7 @@ import org.apache.ibatis.annotations.Select;
  * Date: 2019/7/12 9:54<br>
  * Author: wangshu<br>
  */
+@Component
 @Mapper
 public interface RolesAndResourcesMapper {
 

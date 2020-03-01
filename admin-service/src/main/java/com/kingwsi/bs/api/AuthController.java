@@ -33,6 +33,13 @@ public class AuthController {
         return ResponseData.OK(userApplicationService.createToken(vo));
     }
 
+    @ApiOperation("登出")
+    @PostMapping("/logout")
+    public ResponseData<String> logout()
+    {
+        return ResponseData.OK();
+    }
+
     @ApiOperation("获取当前用户信息")
     @GetMapping("/info")
     public ResponseData<UserVO> getCurrentUser(HttpServletRequest request) {

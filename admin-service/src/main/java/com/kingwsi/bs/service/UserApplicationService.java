@@ -3,6 +3,7 @@ package com.kingwsi.bs.service;
 import com.kingwsi.bs.entity.role.Role;
 import com.kingwsi.bs.entity.user.*;
 import com.kingwsi.bs.exception.CustomException;
+import com.kingwsi.bs.jwt.TokenUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.BeanUtils;
@@ -51,7 +52,7 @@ public class UserApplicationService {
             return Jwts.builder()
                     .setClaims(map)
                     .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
-                    .signWith(SignatureAlgorithm.HS512, "MyJwtSecret")
+                    .signWith(SignatureAlgorithm.HS512, TokenUtil.KEY)
                     .compact();
         }
         throw new CustomException("密码错误或账号不存在！");
@@ -60,7 +61,7 @@ public class UserApplicationService {
     public UserVO getCurrentUser(HttpServletRequest request) {
         User user = Optional.ofNullable(request.getHeader("Authorization"))
                 .map(token -> Jwts.parser()
-                        .setSigningKey("MyJwtSecret")
+                        .setSigningKey(TokenUtil.KEY)
                         .parseClaimsJws(token)
                         .getBody()
                         .get("user").toString())

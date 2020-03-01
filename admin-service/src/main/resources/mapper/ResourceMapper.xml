@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingwsi.bs.entity.resource.ResourceMapper">
+    <select id="selectByUserId" parameterType="string" resultType="com.kingwsi.bs.entity.resource.ResourceNode">
+    SELECT r.*
+    FROM resources r
+             LEFT JOIN roles_and_resources rar ON r.id = rar.resource_id
+             LEFT JOIN user_and_roles uar ON uar.role_id = rar.role_id
+    WHERE uar.user_id = #{userId}
+    </select>
+</mapper>

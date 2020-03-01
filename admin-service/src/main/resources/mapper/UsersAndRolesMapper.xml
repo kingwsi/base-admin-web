@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingwsi.bs.entity.user.UsersAndRolesMapper">
+    <resultMap id="UserWithRoleMap" type="com.kingwsi.bs.entity.user.UserVO">
+        <result column="id" property="id"/>
+        <result property="avatar" column="avatar"/>
+        <result property="username" column="username"/>
+        <result property="fullName" column="fullName"/>
+        <collection property="roles" ofType="com.kingwsi.bs.entity.role.Role">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+    <select id="listUserWithRoles" parameterType="string" resultMap="UserWithRoleMap">
+        SELECT u.*,r.* FROM users u LEFT JOIN user_and_roles uar ON u.id = uar.user_id LEFT JOIN roles r ON uar.role_id = r.id WHERE u.username = #{userName}
+    </select>
+</mapper>

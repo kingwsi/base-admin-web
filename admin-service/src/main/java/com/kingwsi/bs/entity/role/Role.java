@@ -1,6 +1,5 @@
 package com.kingwsi.bs.entity.role;
 
-import com.kingwsi.bs.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +27,6 @@ public class Role implements Serializable {
     @GenericGenerator(name = "uuid", strategy = "uuid")
     @GeneratedValue(generator = "uuid")
     private String id;
-
     private String name;
+    private String description;
 }
