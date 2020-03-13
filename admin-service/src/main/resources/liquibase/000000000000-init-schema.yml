@@ -78,7 +78,7 @@ databaseChangeLog:
                   name: deleted
                   type: boolean
                   remarks: 是否删除
-        # 权限表
+        # 资源
         - createTable:
             tableName: resources
             columns:
@@ -95,6 +95,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: path
+                  type: varchar(100)
+                  remarks: 路由path
+                  constraints:
+                    nullable: true
+              - column:
                   name: method
                   type: varchar(10)
                   remarks: 请求方式
@@ -103,13 +109,13 @@ databaseChangeLog:
               - column:
                   name: name
                   type: varchar(50)
-                  remarks: 权限名称
+                  remarks: 资源名称
                   constraints:
                     nullable: true
               - column:
                   name: type
                   type: varchar(30)
-                  remarks: 权限类型 ROUTE/URL/BUTTON
+                  remarks: 资源名称 ROUTE/URL/BUTTON
                   constraints:
                     nullable: true
               - column:

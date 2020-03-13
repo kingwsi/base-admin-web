@@ -29,6 +29,7 @@ public class Resource implements Serializable {
     private String method;
     private String parentId;
     private Integer sort;
+    private String path;
 
     public Resource(String method, String uri) {
         this.method = method;

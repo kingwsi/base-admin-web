@@ -10,6 +10,7 @@ public class ResourceVO {
     private String id;
     private String name;
     private String description;
+    private String path;
     private List<String> resourceIds;
 
     public RoleVO toRoleVO() {
