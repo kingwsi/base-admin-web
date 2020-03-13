@@ -1,9 +1,9 @@
 package com.kingwsi.bs.service;
 
-import com.kingwsi.bs.entity.role.Role;
-import com.kingwsi.bs.entity.role.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.kingwsi.bs.entity.role.*;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 /**
  * Description: 角色服务<br>
@@ -11,17 +11,13 @@ import org.springframework.stereotype.Service;
  * Date: 2019/7/11 16:52<br>
  * Author: Administrator<br>
  */
-@Service
-public class RoleService {
+public interface RoleService extends IService<Role> {
 
-    private final RoleRepository roleRepository;
+    List<RoleVO> listRoles();
 
-    public RoleService(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
+    void createRoleVO(RoleVO roleVO);
 
-    public Iterable<Role> listRoles(){
-        return roleRepository.findAll();
-    }
+    void deleteById(String id);
 
+    void updateById(RoleVO roleVO);
 }

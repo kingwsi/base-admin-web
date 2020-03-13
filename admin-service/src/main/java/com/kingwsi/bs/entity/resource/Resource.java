@@ -1,16 +1,16 @@
 package com.kingwsi.bs.entity.resource;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * Description: 权限实体<br>
+ * Description: 资源<br>
  * Comments Name: Resource<br>
  * Date: 2019/7/11 15:45<br>
  * Author: wangshu<br>
@@ -18,13 +18,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "resources")
+@TableName("resources")
 public class Resource implements Serializable {
 
-    @Id
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    @GeneratedValue(generator = "uuid")
+    @TableId(value = "id", type = IdType.ASSIGN_UUID)
     private String id;
     private String name;
     private ResourceTypeEnum type;

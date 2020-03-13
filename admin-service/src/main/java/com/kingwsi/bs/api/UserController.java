@@ -50,13 +50,6 @@ public class UserController {
         return ResponseEntity.ok(createdUser);
     }
 
-    @ApiOperation("获取所有用户")
-    @PostMapping("/pages")
-    public ResponseEntity<Object> listUsersPage(UserVO vo, Pageable pageable) {
-        return ResponseEntity.ok(userApplicationService.listUsersPage(vo, pageable));
-    }
-
-
     @Debug
     @GetMapping("/apis")
     public ResponseEntity<List> getAllApi() {

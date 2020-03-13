@@ -24,7 +24,7 @@ public class CustomMyBatisInterceptor implements Interceptor {
     public Object intercept(Invocation invocation) throws Throwable {
         MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
         SqlSource sqlSource = mappedStatement.getSqlSource();
-        log.info("获取的sql命令为：" + sqlSource.getBoundSql("sql").getSql());
+//        log.info("获取的sql命令为：" + sqlSource.getBoundSql("sql").getSql());
 
         //获取参数
         Object parameter = invocation.getArgs()[1];

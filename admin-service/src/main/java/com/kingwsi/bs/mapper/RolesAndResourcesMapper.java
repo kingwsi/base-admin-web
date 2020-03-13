@@ -1,10 +1,15 @@
-package com.kingwsi.bs.entity.role;
+package com.kingwsi.bs.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.kingwsi.bs.entity.resource.Resource;
+import com.kingwsi.bs.entity.role.Role;
+import com.kingwsi.bs.entity.role.RolesAndResources;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Description: <br>
@@ -14,8 +19,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Mapper
-public interface RolesAndResourcesMapper {
+public interface RolesAndResourcesMapper extends BaseMapper<RolesAndResources> {
 
     @Select("SELECT _r.* FROM roles _r LEFT JOIN roles_and_resources _r_p ON _r.id = _r_p.role_id LEFT JOIN resources _p ON _p.id = _r_p.resource_id WHERE _p.uri = #{resource.uri} AND _p.method = #{resource.method}")
     Role selectRolesByResource(@Param("resource") Resource resource);
+
+    void batchInsertRoleResources(@Param("roleId") String roleId, @Param("resourceIds") List<String> resourceIds);
 }

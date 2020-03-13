@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -18,7 +19,9 @@ import java.util.List;
 @NoArgsConstructor
 public class UserVO {
     private String id;
+    @NotBlank(message = "用户名不能为空")
     private String username;
+    @NotBlank(message = "密码不能为空")
     private String password;
     private Boolean remember;
     private String fullName;

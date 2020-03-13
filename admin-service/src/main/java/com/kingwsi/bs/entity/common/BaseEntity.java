@@ -1,5 +1,7 @@
 package com.kingwsi.bs.entity.common;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,9 +31,7 @@ public abstract class BaseEntity implements Serializable {
 
     protected static final long serialVersionUID = 1L;
 
-    @Id
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    @GeneratedValue(generator = "uuid")
+    @TableId(value = "id", type = IdType.ASSIGN_UUID)
     String id;
 
     @CreatedBy

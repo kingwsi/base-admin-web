@@ -1,17 +1,15 @@
 package com.kingwsi.bs.config;
 
 import com.kingwsi.bs.exception.CustomException;
+import com.kingwsi.bs.util.bean.ResponseData;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Description: 全局异常处理
@@ -21,7 +19,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler {
 
 //    @Override
 //    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -38,11 +36,41 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 //    }
 
     @ExceptionHandler(value = CustomException.class)
-    public Map<String, Object> handlerExceptionTest(CustomException ex) {
+    public ResponseData<String> handlerExceptionTest(CustomException ex) {
         log.warn(ex.getMessage());
-        Map<String, Object> map = new HashMap<>();
-        map.put("message", ex.getMessage());
-        map.put("errCode", ex.getStatus().value());
-        return map;
+        return ResponseData.FAIL(ex.getMessage(), ex.getStatus().value());
+    }
+
+    /**
+     * Valid 校验异常
+     *
+     * @return
+     * @throws MethodArgumentNotValidException
+     */
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseData handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        FieldError fieldError = ex.getBindingResult().getFieldError();
+        assert fieldError != null;
+        return ResponseData.FAIL(fieldError.getDefaultMessage());
+    }
+
+    /**
+     * 令牌异常
+     *
+     * @return
+     */
+    @ExceptionHandler(value = ExpiredJwtException.class)
+    public ResponseData<?> handleExpiredJwtException() {
+        return ResponseData.FAIL("令牌已过期");
+    }
+
+    /**
+     * 令牌异常
+     *
+     * @return
+     */
+    @ExceptionHandler(value = SignatureException.class)
+    public ResponseData<?> handleSignatureException() {
+        return ResponseData.FAIL("令牌不合法");
     }
 }

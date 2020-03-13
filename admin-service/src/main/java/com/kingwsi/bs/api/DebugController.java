@@ -10,6 +10,7 @@ import reactor.util.function.Tuples;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.time.Duration;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,6 +34,17 @@ public class DebugController {
     public DebugController(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         this.httpServletRequest = httpServletRequest;
         this.httpServletResponse = httpServletResponse;
+    }
+
+    @GetMapping("/session")
+    public String sessionTest(HttpSession session) {
+        session.setAttribute("name","king");
+        return "SUCCESS";
+    }
+
+    @GetMapping("/get/session")
+    public Object sessionTest2(HttpSession session) {
+        return session.getAttribute("name");
     }
 
     /**

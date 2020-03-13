@@ -28,4 +28,12 @@ public class ResponseData<T> {
     public static <T> ResponseData<T> FAIL() {
         return new ResponseData<>(500, "服务器错误");
     }
+
+    public static ResponseData<String> FAIL(String msg) {
+        return new ResponseData<>(500, msg);
+    }
+
+    public static ResponseData<String> FAIL(String msg, Integer code) {
+        return new ResponseData<>(code, msg);
+    }
 }

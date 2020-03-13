@@ -1,11 +1,12 @@
 package com.kingwsi.bs.entity.user;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.kingwsi.bs.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 /**
  * Description: 用户<br>
@@ -16,11 +17,9 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "users")
+@TableName("users")
 public class User extends BaseEntity {
 
-    @Column(name = "username", unique = true)
     private String username;
 
     private String password;

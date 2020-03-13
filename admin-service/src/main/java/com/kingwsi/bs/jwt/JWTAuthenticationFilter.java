@@ -66,19 +66,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
      * @return
      */
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader("Authorization"))
-                .map(token -> Jwts.parser()
-                        .setSigningKey(TokenUtil.KEY)
-                        .parseClaimsJws(token)
-                        .getBody())
-                .map(claims -> {
-                    List<?> roleByUser = Optional.ofNullable(claims.get("role", List.class)).orElse(Collections.emptyList());
-                    Role requiredRole = accessControlService.getRequiredRoleByResource(new Resource(request.getMethod(), request.getRequestURI()));
-                    if (requiredRole == null) {
-                        return new UsernamePasswordAuthenticationToken(claims.get("username"), null, Collections.emptyList());
-                    } else {
-                        return Optional.of(requiredRole).filter(role -> roleByUser.contains(role.getId())).map(role -> new UsernamePasswordAuthenticationToken(claims.get("username"), null, Collections.emptyList())).orElse(null);
-                    }
-                }).orElse(null);
+        TokenUtil.checkToken(request.getHeader("authorization"));
+        return new UsernamePasswordAuthenticationToken("", null, Collections.emptyList());
     }
 }

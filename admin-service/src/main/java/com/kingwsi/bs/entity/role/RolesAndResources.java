@@ -1,5 +1,8 @@
 package com.kingwsi.bs.entity.role;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,16 +23,18 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "roles_and_resources")
+@TableName("roles_and_resources")
 public class RolesAndResources implements Serializable {
 
-    @Id
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    @GeneratedValue(generator = "uuid")
+    @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
     private String roleId;
 
     private String resourceId;
+
+    public RolesAndResources(String roleId, String resourceId) {
+        this.roleId = roleId;
+        this.resourceId = resourceId;
+    }
 }

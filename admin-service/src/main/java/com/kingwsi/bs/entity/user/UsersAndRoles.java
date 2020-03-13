@@ -1,5 +1,8 @@
 package com.kingwsi.bs.entity.user;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,12 +22,9 @@ import javax.persistence.Table;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "user_and_roles")
+@TableName("user_and_roles")
 public class UsersAndRoles {
-    @Id
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    @GeneratedValue(generator = "uuid")
+    @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
     private String userId;

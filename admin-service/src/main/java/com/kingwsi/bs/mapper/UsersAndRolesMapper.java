@@ -1,6 +1,9 @@
-package com.kingwsi.bs.entity.user;
+package com.kingwsi.bs.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.kingwsi.bs.entity.role.Role;
+import com.kingwsi.bs.entity.user.UserVO;
+import com.kingwsi.bs.entity.user.UsersAndRoles;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -17,20 +20,15 @@ import java.util.List;
  */
 @Component
 @Mapper
-public interface UsersAndRolesMapper {
+public interface UsersAndRolesMapper extends BaseMapper<UsersAndRoles> {
 
     @Select("SELECT _r.* FROM roles _r LEFT JOIN user_and_roles _u_r ON _r.id = _u_r.role_id WHERE _u_r.user_id = #{id}")
     List<Role> findRolesByUserId(@Param("id") String id);
-
-    @Select("SELECT role_id FROM user_and_roles WHERE user_id = #{id}")
-    List<String> findRoleIdsByUserId(@Param("id") String id);
-
-    @Select("SELECT _r.name FROM roles _r LEFT JOIN user_and_roles _u_r ON _r.id = _u_r.role_id WHERE _u_r.user_id = #{id}")
-    List<String> findRoleNamesByUserId(String id);
 
     @Select("SELECT _r.* FROM roles _r LEFT JOIN user_and_roles _u_r ON _r.id = _u_r.role_id LEFT JOIN users _u ON _u_r.user_id = _u.id WHERE _u.username = #{username}")
     HashSet<Role> findRolesByUserName(@Param("username") String username);
 
     UserVO listUserWithRoles(@Param("userName") String userName);
 
+    UserVO listUserWithRolesById(@Param("userId") String userId);
 }
