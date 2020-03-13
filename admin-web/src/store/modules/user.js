@@ -1,13 +1,17 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import { getRoutes } from '@/api/resource'
+/* Layout */
+import Layout from '@/layout'
 
 const state = {
   token: getToken(),
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  routes: []
 }
 
 const mutations = {
@@ -24,6 +28,9 @@ const mutations = {
     state.avatar = avatar
   },
   SET_ROLES: (state, roles) => {
+    state.roles = roles
+  },
+  SET_ROUTE: (state, roles) => {
     state.roles = roles
   }
 }
@@ -47,19 +54,16 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(response => {
         const { data } = response
-
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-
         const { roles, name, avatar, introduction } = data
-
         // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
+        // if (!roles || roles.length <= 0) {
+        //   reject('getInfo: roles must be a non-null array!')
+        // }
 
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
@@ -68,6 +72,17 @@ const actions = {
         resolve(data)
       }).catch(error => {
         reject(error)
+      })
+    })
+  },
+
+  getRoutes({ commit }) {
+    return new Promise((resolve, reject) => {
+      getRoutes().then(response => {
+        const accessedRoutes = genTreeRoutes(response.data, '-1')
+        console.log(accessedRoutes)
+        commit('SET_ROUTES', accessedRoutes)
+        resolve(accessedRoutes)
       })
     })
   },
@@ -126,6 +141,40 @@ const actions = {
       resolve()
     })
   }
+}
+
+// // list转tree
+// // genTreeRoutes(list, "-1")
+export function genTreeRoutes(list, parentId) {
+  const children = []
+  list.forEach(item => {
+    if (item.type === 'ROUTE') {
+      const currentParentId = item.parentId
+      const currentId = item.id
+      // 转换成路由
+      item = this.resourceToRouter(item)
+      // 获取子类
+      if (currentParentId === parentId) {
+        // 设置该元素的子元素
+        item.children = genTreeRoutes(list, currentId)
+        // 将当前元素放入数组
+        children.push(item)
+      }
+    }
+  })
+  return children
+}
+
+export function resourceToRouter(resource) {
+  const router = {
+    path: resource.uri,
+    component: resource.parentId === '-1' ? Layout : () => import('@/views/' + resource.uri),
+    redirect: resource.parentId === '-1' ? '/permission/page' : null,
+    name: resource.name,
+    meta: { title: resource.name, icon: 'icon', noCache: true },
+    children: []
+  }
+  return router
 }
 
 export default {

@@ -5,7 +5,7 @@
     <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
       <el-table-column align="center" label="Role Key" width="220">
         <template slot-scope="scope">
-          {{ scope.row.key }}
+          {{ scope.row.id }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="Role Name" width="220">
@@ -42,12 +42,11 @@
         <el-form-item label="Menus">
           <el-tree
             ref="tree"
-            :check-strictly="checkStrictly"
             :data="routesData"
-            :props="defaultProps"
             show-checkbox
-            node-key="path"
-            class="permission-tree"
+            node-key="id"
+            :default-checked-keys="[5]"
+            :props="defaultProps"
           />
         </el-form-item>
       </el-form>
@@ -62,10 +61,11 @@
 <script>
 import path from 'path'
 import { deepClone } from '@/utils'
+import Layout from '@/layout'
 import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 
 const defaultRole = {
-  key: '',
+  id: '',
   name: '',
   description: '',
   routes: []
@@ -82,7 +82,7 @@ export default {
       checkStrictly: false,
       defaultProps: {
         children: 'children',
-        label: 'title'
+        label: 'name'
       }
     }
   },
@@ -99,42 +99,60 @@ export default {
   methods: {
     async getRoutes() {
       const res = await getRoutes()
-      this.serviceRoutes = res.data
-      this.routes = this.generateRoutes(res.data)
+      this.routes = this.listToTree(res.data)
+      console.log(this.routes)
+      this.serviceRoutes = []
+      // this.routes = this.generateRoutes(tree)
     },
     async getRoles() {
       const res = await getRoles()
       this.rolesList = res.data
     },
-
-    // Reshape the routes structure so that it looks the same as the sidebar
-    generateRoutes(routes, basePath = '/') {
-      const res = []
-
-      for (let route of routes) {
-        // skip some route
-        if (route.hidden) { continue }
-
-        const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
-
-        if (route.children && onlyOneShowingChild && !route.alwaysShow) {
-          route = onlyOneShowingChild
+    listToTree(oldArr) {
+      let res = []
+      oldArr.forEach(element => {
+        const parentId = element.parentId
+        const route = {
+          id: element.id,
+          path: element.uri,
+          component: Layout,
+          parentId: parentId,
+          name: element.name,
+          redirect: element.uri,
+          meta: {
+            title: element.name,
+            icon: 'lock',
+            roles: ['admin'] // or you can only set roles in sub nav
+          },
+          children: []
         }
-
-        const data = {
-          path: path.resolve(basePath, route.path),
-          title: route.meta && route.meta.title
-
+        if (parentId === '-1') { // 顶层
+          oldArr.forEach(old => {
+            if (old.parentId === element.id) { // parendId为当前element的id，push到children
+              const child = {
+                id: old.id,
+                path: old.uri,
+                component: Layout,
+                parentId: old.parentId,
+                name: old.name,
+                redirect: old.uri,
+                meta: {
+                  title: old.name,
+                  icon: 'lock',
+                  roles: ['admin'] // or you can only set roles in sub nav
+                },
+                children: []
+              }
+              route.children.push(child)
+            }
+          })
         }
-
-        // recursive child routes
-        if (route.children) {
-          data.children = this.generateRoutes(route.children, data.path)
-        }
-        res.push(data)
-      }
+        res.push(route)
+      })
+      res = res.filter(ele => ele.parentId === '-1') // 这一步是过滤，按树展开，将多余的数组剔除；
       return res
     },
+
     generateArr(routes) {
       let data = []
       routes.forEach(route => {
@@ -162,8 +180,7 @@ export default {
       this.checkStrictly = true
       this.role = deepClone(scope.row)
       this.$nextTick(() => {
-        const routes = this.generateRoutes(this.role.routes)
-        this.$refs.tree.setCheckedNodes(this.generateArr(routes))
+        this.$refs.tree.setCheckedNodes(this.generateArr(this.routes))
         // set checked state of a node not affects its father and child nodes
         this.checkStrictly = false
       })
@@ -175,7 +192,7 @@ export default {
         type: 'warning'
       })
         .then(async() => {
-          await deleteRole(row.key)
+          await deleteRole(row.id)
           this.rolesList.splice($index, 1)
           this.$message({
             type: 'success',
@@ -207,10 +224,16 @@ export default {
       const checkedKeys = this.$refs.tree.getCheckedKeys()
       this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
 
+      const res = this.$refs.tree.getCheckedNodes()
+      this.role.resourceIds = []
+      res.forEach((item) => {
+        this.role.resourceIds.push(item.id)
+      })
+
       if (isEdit) {
-        await updateRole(this.role.key, this.role)
+        await updateRole(this.role.id, this.role)
         for (let index = 0; index < this.rolesList.length; index++) {
-          if (this.rolesList[index].key === this.role.key) {
+          if (this.rolesList[index].id === this.role.id) {
             this.rolesList.splice(index, 1, Object.assign({}, this.role))
             break
           }
@@ -221,13 +244,13 @@ export default {
         this.rolesList.push(this.role)
       }
 
-      const { description, key, name } = this.role
+      const { description, id, name } = this.role
       this.dialogVisible = false
       this.$notify({
         title: 'Success',
         dangerouslyUseHTMLString: true,
         message: `
-            <div>Role Key: ${key}</div>
+            <div>Role Key: ${id}</div>
             <div>Role Name: ${name}</div>
             <div>Description: ${description}</div>
           `,

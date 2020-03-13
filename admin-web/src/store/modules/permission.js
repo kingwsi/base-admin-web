@@ -1,39 +1,41 @@
-import { asyncRoutes, constantRoutes } from '@/router'
 import { getRoutes } from '@/api/resource'
+import { constantRoutes } from '@/router/index'
 
-/**
- * Use meta.role to determine if the current user has permission
- * @param roles
- * @param route
- */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
-    return true
-  }
-}
+/* Layout */
+import Layout from '@/layout'
+// /**
+//  * Use meta.role to determine if the current user has permission
+//  * @param roles
+//  * @param route
+//  */
+// function hasPermission(roles, route) {
+//   if (route.meta && route.meta.roles) {
+//     return roles.some(role => route.meta.roles.includes(role))
+//   } else {
+//     return true
+//   }
+// }
 
 /**
  * Filter asynchronous routing tables by recursion
  * @param routes asyncRoutes
  * @param roles
  */
-export function filterAsyncRoutes(routes, roles) {
-  const res = []
+// export function filterAsyncRoutes(routes, roles) {
+//   const res = []
 
-  routes.forEach(route => {
-    const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
-      }
-      res.push(tmp)
-    }
-  })
+//   routes.forEach(route => {
+//     const tmp = { ...route }
+//     if (hasPermission(roles, tmp)) {
+//       if (tmp.children) {
+//         tmp.children = filterAsyncRoutes(tmp.children, roles)
+//       }
+//       res.push(tmp)
+//     }
+//   })
 
-  return res
-}
+//   return res
+// }
 
 const state = {
   routes: [],
@@ -48,43 +50,59 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, roles) {
+  generateRoutes({ commit }) {
     return new Promise(resolve => {
       getRoutes().then(response => {
-        console.log('tree test')
-        console.log(listToTree(response.data))
+        const accessedRoutes = genTreeRoutes(toRouterList(response.data), '-1')
+        commit('SET_ROUTES', accessedRoutes)
+        resolve(accessedRoutes)
       })
-      let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
-      } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      }
-      commit('SET_ROUTES', accessedRoutes)
-      console.log(accessedRoutes)
-      resolve(accessedRoutes)
     })
   }
 }
 
-export function listToTree(oldArr) {
-  oldArr.forEach(element => {
-    const parentId = element.parentId
-    if (parentId !== '-1') {
-      oldArr.forEach(ele => {
-        ele.meta = '888'
-        if (ele.id === parentId) { // 当内层循环的ID== 外层循环的parendId时，（说明有children），需要往该内层id里建个children并push对应的数组；
-          if (!ele.children) {
-            ele.children = []
-          }
-          element.meta = '777'
-          ele.children.push(element)
-        }
-      })
+// list转tree
+// genTreeRoutes(list, "-1")
+export function genTreeRoutes(list, parentId) {
+  const children = []
+  list.forEach(item => {
+    if (item.type === 'ROUTE') {
+      // 获取子类
+      if (item.parentId === parentId) {
+        // 设置该元素的子元素
+        item.children = genTreeRoutes(list, item.id)
+        // 将当前元素放入数组
+        children.push(item)
+      }
     }
   })
-  oldArr = oldArr.filter(ele => ele.parentId === '-1') // 这一步是过滤，按树展开，将多余的数组剔除；
-  return oldArr
+  return children
+}
+
+/**
+ * list转成路由格式的list
+ * @param {*} data
+ */
+export function toRouterList(data) {
+  const res = []
+  data.forEach(item => {
+    const route = {}
+    route.id = item.id
+    route.parentId = item.parentId
+    route.path = item.path
+    route.redirect = null
+    route.name = item.name
+    route.type = item.type
+    route.meta = { title: item.name, icon: item.icon, noCache: true }
+    route.children = []
+    if (item.parentId === '-1') {
+      route.component = () => Layout
+    } else {
+      route.component = () => import('@/views/' + item.uri.replace(/^\/*/g, ''))
+    }
+    res.push(route)
+  })
+  return res
 }
 
 export default {
