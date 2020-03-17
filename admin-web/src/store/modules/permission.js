@@ -1,41 +1,5 @@
 import { getRoutes } from '@/api/resource'
-import { constantRoutes } from '@/router/index'
-
-/* Layout */
-import Layout from '@/layout'
-// /**
-//  * Use meta.role to determine if the current user has permission
-//  * @param roles
-//  * @param route
-//  */
-// function hasPermission(roles, route) {
-//   if (route.meta && route.meta.roles) {
-//     return roles.some(role => route.meta.roles.includes(role))
-//   } else {
-//     return true
-//   }
-// }
-
-/**
- * Filter asynchronous routing tables by recursion
- * @param routes asyncRoutes
- * @param roles
- */
-// export function filterAsyncRoutes(routes, roles) {
-//   const res = []
-
-//   routes.forEach(route => {
-//     const tmp = { ...route }
-//     if (hasPermission(roles, tmp)) {
-//       if (tmp.children) {
-//         tmp.children = filterAsyncRoutes(tmp.children, roles)
-//       }
-//       res.push(tmp)
-//     }
-//   })
-
-//   return res
-// }
+import { constantRoutes, componentsMap } from '@/router/index'
 
 const state = {
   routes: [],
@@ -53,7 +17,7 @@ const actions = {
   generateRoutes({ commit }) {
     return new Promise(resolve => {
       getRoutes().then(response => {
-        const accessedRoutes = genTreeRoutes(toRouterList(response.data), '-1')
+        const accessedRoutes = genTreeRoutes(response.data, '-1')
         commit('SET_ROUTES', accessedRoutes)
         resolve(accessedRoutes)
       })
@@ -66,14 +30,14 @@ const actions = {
 export function genTreeRoutes(list, parentId) {
   const children = []
   list.forEach(item => {
-    if (item.type === 'ROUTE') {
-      // 获取子类
-      if (item.parentId === parentId) {
-        // 设置该元素的子元素
-        item.children = genTreeRoutes(list, item.id)
-        // 将当前元素放入数组
-        children.push(item)
-      }
+    const res = resToRoute(item)
+    console.log(res)
+    // 获取子类
+    if (item.parentId === parentId) {
+      // 设置该元素的子元素
+      res.children = genTreeRoutes(list, item.id)
+      // 将当前元素放入数组
+      children.push(res)
     }
   })
   return children
@@ -86,23 +50,36 @@ export function genTreeRoutes(list, parentId) {
 export function toRouterList(data) {
   const res = []
   data.forEach(item => {
-    const route = {}
-    route.id = item.id
-    route.parentId = item.parentId
-    route.path = item.path
-    route.redirect = null
-    route.name = item.name
-    route.type = item.type
-    route.meta = { title: item.name, icon: item.icon, noCache: true }
-    route.children = []
-    if (item.parentId === '-1') {
-      route.component = () => Layout
-    } else {
-      route.component = () => import('@/views/' + item.uri.replace(/^\/*/g, ''))
+    if (item.type === 'ROUTE') {
+      const route = {
+        id: item.id,
+        parentId: item.parentId,
+        path: item.path,
+        name: item.name,
+        component: item.parentId === '-1' ? componentsMap['layout'] : componentsMap[item.uri],
+        meta: {
+          title: item.name,
+          icon: 'icon'
+        },
+        children: []
+      }
+      res.push(route)
     }
-    res.push(route)
   })
   return res
+}
+
+export function resToRoute(data) {
+  return {
+    path: data.uri,
+    name: data.name,
+    component: data.parentId === '-1' ? componentsMap['layout'] : componentsMap[data.uri],
+    meta: {
+      title: data.name,
+      icon: 'icon'
+    },
+    children: []
+  }
 }
 
 export default {
