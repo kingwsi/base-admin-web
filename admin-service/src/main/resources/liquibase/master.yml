@@ -1,7 +1,7 @@
 databaseChangeLog:
   - preConditions:
       - runningAs:
-          username: root
-          password: root
+          username: test
+          password:
   - include:
-      file: classpath:liquibase/000000000000-init-schema.yml
+      file: classpath:liquibase/init-schema.xml

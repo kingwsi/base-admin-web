@@ -1,12 +1,10 @@
-package com.kingwsi.bs.entity.role;
+package com.kingwsi.bs.entity.organization;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.kingwsi.bs.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.io.Serializable;
 
 /**
  * Description: 角色<br>
@@ -17,10 +15,10 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("sys_roles")
-public class Role implements Serializable {
-    @TableId(value = "id", type = IdType.ASSIGN_UUID)
-    private String id;
+@TableName("sys_organizations")
+public class Organization extends BaseEntity {
     private String name;
     private String description;
+    private String parentId;
+    private String remark;
 }

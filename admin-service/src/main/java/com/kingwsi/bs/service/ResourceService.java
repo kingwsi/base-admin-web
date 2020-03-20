@@ -14,7 +14,5 @@ public interface ResourceService extends IService<Resource> {
 
     List<ResourceNode> listRouteTree();
 
-    List<ResourceNode> listRouteTreeByRole();
-
-    List<ResourceNode> listRoute();
+    List<Resource> listRoute();
 }

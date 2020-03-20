@@ -2,6 +2,7 @@ package com.kingwsi.bs.jwt;
 
 import com.kingwsi.bs.entity.resource.Resource;
 import com.kingwsi.bs.entity.role.Role;
+import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.service.AccessControlService;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -66,7 +67,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
      * @return
      */
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        TokenUtil.checkToken(request.getHeader("authorization"));
-        return new UsernamePasswordAuthenticationToken("", null, Collections.emptyList());
+        UserVO userVO = TokenUtil.checkToken(request.getHeader("authorization"));
+        return new UsernamePasswordAuthenticationToken(userVO.getUsername(), null, Collections.emptyList());
     }
 }

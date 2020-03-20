@@ -8,13 +8,6 @@ export function fetchList(query) {
   })
 }
 
-export function getRouteTree() {
-  return request({
-    url: '/api/resources/tree/routes',
-    method: 'get'
-  })
-}
-
 export function getRoutes() {
   return request({
     url: '/api/resources/routes',

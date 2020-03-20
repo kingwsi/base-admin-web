@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("users")
+@TableName("sys_users")
 public class User extends BaseEntity {
 
     private String username;

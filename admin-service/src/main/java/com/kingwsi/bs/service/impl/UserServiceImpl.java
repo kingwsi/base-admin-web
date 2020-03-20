@@ -25,7 +25,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", userVO.getUsername());
         User user = userMapper.selectOne(queryWrapper);
-        if (bCryptPasswordEncoder.matches(userVO.getPassword(), user.getPassword())) {
+        if (user != null && bCryptPasswordEncoder.matches(userVO.getPassword(), user.getPassword())) {
             return user;
         }
         return null;

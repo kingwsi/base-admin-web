@@ -3,6 +3,7 @@ package com.kingwsi.bs.entity.resource;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.kingwsi.bs.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,18 +19,18 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("resources")
-public class Resource implements Serializable {
+@TableName("sys_resources")
+public class Resource extends BaseEntity {
 
-    @TableId(value = "id", type = IdType.ASSIGN_UUID)
-    private String id;
     private String name;
-    private ResourceTypeEnum type;
     private String uri;
     private String method;
+    private String description;
     private String parentId;
-    private Integer sort;
-    private String path;
+    private String sort;
+    private String component;
+    private String icon;
+    private ResourceTypeEnum type;
 
     public Resource(String method, String uri) {
         this.method = method;

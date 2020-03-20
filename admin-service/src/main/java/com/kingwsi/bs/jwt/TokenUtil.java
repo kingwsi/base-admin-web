@@ -40,7 +40,7 @@ public class TokenUtil {
     }
 
     /**
-     * 解析TOKEN信息
+     * 解析TOKEN信息并获取当前用户完整信息（查询数据库）
      *
      * @return
      */
@@ -51,7 +51,7 @@ public class TokenUtil {
     }
 
     /**
-     * 解析TOKEN信息并获取当前用户信息
+     * 解析TOKEN信息并获取当前用户完整信息（查询数据库）
      *
      * @return
      */
@@ -67,6 +67,7 @@ public class TokenUtil {
         if (user != null) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("user", user.getId());
+            map.put("username", user.getUsername());
             map.put("roles", service.getRolesByUserId(user.getId()));
             return Jwts.builder()
                     .setClaims(map)
@@ -77,7 +78,22 @@ public class TokenUtil {
         throw new CustomException("密码错误或账号不存在！");
     }
 
-    public static void checkToken(String tokenString) {
-        Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(tokenString).getBody();
+    public static UserVO checkToken(String tokenString) {
+        Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(tokenString).getBody();
+        UserVO userVO = new UserVO();
+        userVO.setId(claims.get("user").toString());
+        userVO.setUsername(claims.get("username").toString());
+        return userVO;
+    }
+
+    public static UserVO checkToken() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        assert servletRequestAttributes != null;
+        String authorization = servletRequestAttributes.getRequest().getHeader("Authorization");
+        Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(authorization).getBody();
+        UserVO userVO = new UserVO();
+        userVO.setId(claims.get("userId").toString());
+        userVO.setUsername(claims.get("userName").toString());
+        return userVO;
     }
 }

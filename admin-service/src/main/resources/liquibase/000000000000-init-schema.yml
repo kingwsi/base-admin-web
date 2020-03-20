@@ -158,13 +158,6 @@ databaseChangeLog:
             tableName: roles_and_resources
             columns:
               - column:
-                  name: id
-                  type: varchar(32)
-                  remarks: id
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
                   name: role_id
                   type: varchar(32)
                   remarks: 角色id
@@ -222,5 +215,5 @@ databaseChangeLog:
         - loadData:
             encoding: utf-8
             tableName: user_and_roles
-            file: classpath:liquibase/csv/user_and_roles.csv
+            file: classpath:liquibase/csv/users_and_roles.csv
             separator: ";"

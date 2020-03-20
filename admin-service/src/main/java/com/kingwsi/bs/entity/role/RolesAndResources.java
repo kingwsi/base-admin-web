@@ -23,18 +23,10 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("roles_and_resources")
+@TableName("sys_roles_and_resources")
 public class RolesAndResources implements Serializable {
-
-    @TableId(type = IdType.ASSIGN_UUID)
-    private String id;
 
     private String roleId;
 
     private String resourceId;
-
-    public RolesAndResources(String roleId, String resourceId) {
-        this.roleId = roleId;
-        this.resourceId = resourceId;
-    }
 }

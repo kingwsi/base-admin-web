@@ -9,8 +9,14 @@ import java.util.List;
 public class ResourceVO {
     private String id;
     private String name;
+    private ResourceTypeEnum type;
     private String description;
-    private String path;
+    private String uri;
+    private String method;
+    private String parentId;
+    private String sort;
+    private String component;
+    private String icon;
     private List<String> resourceIds;
 
     public RoleVO toRoleVO() {

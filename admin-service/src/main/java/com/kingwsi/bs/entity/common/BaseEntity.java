@@ -35,16 +35,16 @@ public abstract class BaseEntity implements Serializable {
     String id;
 
     @CreatedBy
-    Instant createdDate;
+    String creator;
 
     @CreatedDate
-    String createdBy;
+    Instant createdDate;
 
     @LastModifiedBy
-    String lastModifiedBy;
+    String lastUpdater;
 
     @LastModifiedDate
-    Instant LastModifiedDate;
+    Instant lastUpdateDate;
 
     Boolean deleted;
 }

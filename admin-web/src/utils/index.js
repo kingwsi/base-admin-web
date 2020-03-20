@@ -345,3 +345,17 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+
+export function buildTree(list, parentId) {
+  const children = []
+  list.forEach(item => {
+    // 获取子类
+    if (item.parentId === parentId) {
+      // 设置该元素的子元素
+      item.children = buildTree(list, item.id)
+      // 将当前元素放入数组
+      children.push(item)
+    }
+  })
+  return children
+}

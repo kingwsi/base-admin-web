@@ -31,7 +31,7 @@ public class ResourceController {
 
     @ApiOperation("获取路由list")
     @GetMapping("/routes")
-    public ResponseData<List<ResourceNode>> listRoute() {
+    public ResponseData<List<Resource>> listRoute() {
         return ResponseData.OK(resourceService.listRoute());
     }
 

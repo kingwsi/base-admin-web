@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("user_and_roles")
+@TableName("sys_users_and_roles")
 public class UsersAndRoles {
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;

@@ -84,7 +84,7 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/guide',
+    path: 'guide',
     component: Layout,
     name: 'guide',
     meta: {
@@ -93,7 +93,7 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: 'rwr',
+        path: 'guide',
         component: () => import('@/views/guide/index'),
         name: 'Guide',
         meta: { title: 'Guide', icon: 'guide', noCache: true }
@@ -126,8 +126,12 @@ export const constantRoutes = [
  */
 export const componentsMap = {
   layout: Layout,
+  // 路由配置
   route: () => import('@/views/permission/route'),
-  role: () => import('@/views/permission/role')
+  // 角色管理
+  role: () => import('@/views/permission/role'),
+  // 用户
+  user: () => import('@/views/permission/user')
 }
 /**
  * asyncRoutes

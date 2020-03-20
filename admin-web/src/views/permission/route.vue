@@ -3,27 +3,31 @@
     <el-row>
       <el-button @click="openDialog">新增</el-button>
     </el-row>
-    <el-tree :data="treeList" :props="defaultProps" accordion @node-click="handleNodeClick">
-      <span slot-scope="{ node, data }" class="custom-tree-node">
-        <span>{{ node.label }}</span>
-        <span>
-          <el-button
-            type="text"
-            size="mini"
-            @click="() => append(data)"
-          >
-            Append
-          </el-button>
-          <el-button
-            type="text"
-            size="mini"
-            @click="() => remove(node, data)"
-          >
-            Delete
-          </el-button>
-        </span>
-      </span>
-    </el-tree>
+    <el-row>
+      <el-col :span="12">
+        <el-tree :data="treeList" :props="defaultProps" accordion @node-click="handleNodeClick">
+          <span slot-scope="{ node, data }" class="custom-tree-node">
+            <span>{{ node.label }}</span>
+            <span>
+              <el-button
+                type="text"
+                size="mini"
+                @click="() => append(data)"
+              >
+                Append
+              </el-button>
+              <el-button
+                type="text"
+                size="mini"
+                @click="() => remove(node, data)"
+              >
+                Delete
+              </el-button>
+            </span>
+          </span>
+        </el-tree>
+      </el-col>
+    </el-row>
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
@@ -57,7 +61,8 @@
   </div>
 </template>
 <script>
-import { getRouteTree } from '@/api/resource'
+import { getRoutes } from '@/api/resource'
+import { buildTree } from '@/utils'
 export default {
   name: 'Route',
   data() {
@@ -76,8 +81,10 @@ export default {
   },
   methods: {
     getList() {
-      getRouteTree().then((response) => {
-        this.treeList = response.data
+      getRoutes().then((response) => {
+        const tree = buildTree(response.data, '-1')
+        console.log(tree)
+        this.treeList = tree
       })
     },
     handleNodeClick(data) {

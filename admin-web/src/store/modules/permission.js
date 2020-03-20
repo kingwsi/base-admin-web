@@ -25,13 +25,15 @@ const actions = {
   }
 }
 
-// list转tree
-// genTreeRoutes(list, "-1")
+/**
+ * list转tree
+ * @param {*} list
+ * @param {*} parentId
+ */
 export function genTreeRoutes(list, parentId) {
   const children = []
   list.forEach(item => {
     const res = resToRoute(item)
-    console.log(res)
     // 获取子类
     if (item.parentId === parentId) {
       // 设置该元素的子元素
@@ -44,31 +46,9 @@ export function genTreeRoutes(list, parentId) {
 }
 
 /**
- * list转成路由格式的list
- * @param {*} data
+ * 转换数据结构为路由格式
+ * @param {} data
  */
-export function toRouterList(data) {
-  const res = []
-  data.forEach(item => {
-    if (item.type === 'ROUTE') {
-      const route = {
-        id: item.id,
-        parentId: item.parentId,
-        path: item.path,
-        name: item.name,
-        component: item.parentId === '-1' ? componentsMap['layout'] : componentsMap[item.uri],
-        meta: {
-          title: item.name,
-          icon: 'icon'
-        },
-        children: []
-      }
-      res.push(route)
-    }
-  })
-  return res
-}
-
 export function resToRoute(data) {
   return {
     path: data.uri,
@@ -76,7 +56,7 @@ export function resToRoute(data) {
     component: data.parentId === '-1' ? componentsMap['layout'] : componentsMap[data.uri],
     meta: {
       title: data.name,
-      icon: 'icon'
+      icon: data.icon ? data.icon : 'icon'
     },
     children: []
   }

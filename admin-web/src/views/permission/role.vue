@@ -3,7 +3,7 @@
     <el-button type="primary" @click="handleAddRole">New Role</el-button>
 
     <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column align="center" label="Role Key" width="220">
+      <el-table-column v-show="false" align="center" label="Role Key" width="220">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>

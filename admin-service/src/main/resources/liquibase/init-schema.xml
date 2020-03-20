@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="001" author="ws">
+        <createTable tableName="sys_users" remarks="用户">
+            <column name="id" type="varchar(32)" remarks="primary key">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(100)" remarks="用户名"/>
+            <column name="password" type="varchar(255)" remarks="密码"/>
+            <column name="full_name" type="varchar(50)" remarks="全名"/>
+            <column name="avatar" type="varchar(255)" remarks="头像"/>
+            <column name="introduction" type="varchar(255)" remarks="介绍"/>
+            <column name="creator" type="varchar(100)" remarks="创建者"/>
+            <column name="created_date" type="timestamp" remarks="创建日期"/>
+            <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
+            <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
+            <column name="deleted" type="int(1)" remarks="删除标记"/>
+        </createTable>
+
+        <createTable tableName="sys_roles" remarks="角色">
+            <column name="id" type="varchar(32)" remarks="primary key">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)" remarks="角色名"/>
+            <column name="description" type="varchar(32)" remarks="描述"/>
+        </createTable>
+
+        <createTable tableName="sys_users_and_roles" remarks="用户角色关联">
+            <column name="user_id" type="varchar(32)" remarks="用户id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="varchar(32)" remarks="角色id">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="sys_resources" remarks="资源">
+            <column name="id" type="varchar(32)" remarks="primary key">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)" remarks="资源名称"/>
+            <column name="uri" type="varchar(32)" remarks="资源地址"/>
+            <column name="method" type="varchar(255)" remarks="请求方式"/>
+            <column name="description" type="varchar(255)" remarks="描述"/>
+            <column name="sort" type="varchar(100)" remarks="排序"/>
+            <column name="icon" type="varchar(100)" remarks="图标"/>
+            <column name="type" type="varchar(20)" remarks="资源类型"/>
+            <column name="remark" type="varchar(100)" remarks="备注"/>
+            <column name="parent_id" type="varchar(100)" remarks="上级id"/>
+            <column name="creator" type="varchar(100)" remarks="创建者"/>
+            <column name="created_date" type="timestamp" remarks="创建日期"/>
+            <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
+            <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
+            <column name="deleted" type="int(1)" remarks="删除标记"/>
+        </createTable>
+
+        <createTable tableName="sys_roles_and_resources" remarks="角色资源关联">
+            <column name="role_id" type="varchar(32)" remarks="角色id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_id" type="varchar(32)" remarks="资源id">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="sys_organizations" remarks="组织">
+            <column name="id" type="varchar(32)" remarks="primary key">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)" remarks="组织名称"/>
+            <column name="description" type="varchar(255)" remarks="描述"/>
+            <column name="parentId" type="varchar(100)" remarks="上级id"/>
+            <column name="remark" type="varchar(100)" remarks="备注"/>
+            <column name="creator" type="varchar(100)" remarks="创建者"/>
+            <column name="created_date" type="timestamp" remarks="创建日期"/>
+            <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
+            <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
+            <column name="deleted" type="int(1)" remarks="删除标记"/>
+        </createTable>
+
+        <createTable tableName="sys_users_and_organizations" remarks="用户组织关联">
+            <column name="user_id" type="varchar(32)" remarks="用户id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organization_id" type="varchar(32)" remarks="组织id">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <loadData tableName="sys_users_and_roles" file="classpath:liquibase/csv/users_and_roles.csv" separator=","/>
+        <loadData tableName="sys_roles_and_resources" file="classpath:liquibase/csv/roles_and_resources.csv" separator=","/>
+        <loadData tableName="sys_roles" file="classpath:liquibase/csv/roles.csv" separator=","/>
+        <loadData tableName="sys_users" file="classpath:liquibase/csv/users.csv" separator=","/>
+        <loadData tableName="sys_resources" file="classpath:liquibase/csv/resources.csv" separator=","/>
+    </changeSet>
+</databaseChangeLog>

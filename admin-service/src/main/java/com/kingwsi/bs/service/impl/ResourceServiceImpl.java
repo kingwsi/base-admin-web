@@ -28,15 +28,13 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
         return resourceTree.buildTree();
     }
 
-    public List<ResourceNode> listRouteTreeByRole() {
+    public List<Resource> listRoute() {
         UserVO currentUser = TokenUtil.getCurrentUser();
-        List<ResourceNode> resourceNodes = resourceMapper.selectByUserId(currentUser.getId());
-        ResourceTree resourceTree = new ResourceTree(resourceNodes);
-        return resourceTree.buildTree();
+        return resourceMapper.selectRouteByUserId(currentUser.getId());
     }
 
-    public List<ResourceNode> listRoute() {
+    private List<Resource> listResources() {
         UserVO currentUser = TokenUtil.getCurrentUser();
-        return resourceMapper.selectByUserId(currentUser.getId());
+        return resourceMapper.selectRouteByUserId(currentUser.getId());
     }
 }
