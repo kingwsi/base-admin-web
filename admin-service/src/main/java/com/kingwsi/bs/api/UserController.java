@@ -1,15 +1,14 @@
 package com.kingwsi.bs.api;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserVO;
-import com.kingwsi.bs.exception.CustomException;
-import com.kingwsi.bs.service.UserApplicationService;
+import com.kingwsi.bs.service.UserService;
 import com.kingwsi.bs.util.annotations.Debug;
+import com.kingwsi.bs.util.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.HandlerMethod;
@@ -34,20 +33,33 @@ import java.util.Map;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserApplicationService userApplicationService;
+    private final UserService userService;
 
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
-    public UserController(UserApplicationService userApplicationService, RequestMappingHandlerMapping requestMappingHandlerMapping) {
-        this.userApplicationService = userApplicationService;
+    public UserController(UserService userService, RequestMappingHandlerMapping requestMappingHandlerMapping) {
+        this.userService = userService;
         this.requestMappingHandlerMapping = requestMappingHandlerMapping;
     }
 
     @ApiOperation("创建用户")
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User createdUser = userApplicationService.createUser(user);
-        return ResponseEntity.ok(createdUser);
+    public ResponseData<String> createUser(@RequestBody UserVO user) {
+        userService.createUser(user);
+        return ResponseData.OK();
+    }
+
+    @ApiOperation("更新用户")
+    @PutMapping
+    public ResponseData update(@RequestBody UserVO userVO) {
+        userService.updateUser(userVO);
+        return ResponseData.OK();
+    }
+
+    @ApiOperation("获取用户分页")
+    @GetMapping("/page")
+    public ResponseData<IPage<UserVO>> page(Page<User> page) {
+        return ResponseData.OK(userService.listUsersOfPage(page));
     }
 
     @Debug

@@ -1,7 +1,6 @@
 package com.kingwsi.bs.config;
 
 import com.kingwsi.bs.jwt.JWTAuthenticationFilter;
-import com.kingwsi.bs.jwt.JWTLoginFilter;
 import com.kingwsi.bs.service.AccessControlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,13 +25,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Order(SecurityProperties.BASIC_AUTH_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    @Qualifier("userDetailsServiceImpl")
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private AccessControlService accessControlService;
-
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
@@ -50,12 +42,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable().and()
-                .addFilter(new JWTLoginFilter(authenticationManager(),accessControlService))
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(), accessControlService));
-    }
-
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+                .addFilter(new JWTAuthenticationFilter(authenticationManager()));
     }
 }

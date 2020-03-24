@@ -60,7 +60,8 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = ExpiredJwtException.class)
-    public ResponseData<?> handleExpiredJwtException() {
+    public ResponseData<?> handleExpiredJwtException(ExpiredJwtException e) {
+        log.error(e.getMessage());
         return ResponseData.FAIL("令牌已过期");
     }
 

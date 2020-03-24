@@ -1,13 +1,11 @@
 package com.kingwsi.bs.jwt;
 
 import com.kingwsi.bs.entity.user.User;
-import com.kingwsi.bs.entity.user.UserService;
+import com.kingwsi.bs.service.UserService;
 import com.kingwsi.bs.entity.user.UserVO;
-import com.kingwsi.bs.entity.user.UsersAndRoles;
 import com.kingwsi.bs.exception.CustomException;
 import com.kingwsi.bs.service.AccessControlService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
@@ -17,8 +15,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Description: jwt工具封装<br>

@@ -1,12 +1,10 @@
 package com.kingwsi.bs.jwt;
 
-import com.kingwsi.bs.entity.resource.Resource;
-import com.kingwsi.bs.entity.role.Role;
 import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.service.AccessControlService;
-import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -16,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Description: token的校验
@@ -30,11 +26,8 @@ import java.util.Optional;
  */
 public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
-    private final AccessControlService accessControlService;
-
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, AccessControlService accessControlService) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.accessControlService = accessControlService;
     }
 
     /**
@@ -49,25 +42,13 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader("Authorization");
-
         if (header == null) {
             chain.doFilter(request, response);
             return;
         }
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
+        UserVO userVO = TokenUtil.checkToken(request.getHeader("authorization"));
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userVO.getUsername(), null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
-
-    }
-
-    /**
-     * 拦截请求，获取请求头并校验
-     *
-     * @param request
-     * @return
-     */
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        UserVO userVO = TokenUtil.checkToken(request.getHeader("authorization"));
-        return new UsernamePasswordAuthenticationToken(userVO.getUsername(), null, Collections.emptyList());
     }
 }
