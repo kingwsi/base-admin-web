@@ -3,7 +3,6 @@ package com.kingwsi.bs.config;
 import com.kingwsi.bs.exception.CustomException;
 import com.kingwsi.bs.util.bean.ResponseData;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.FieldError;
@@ -36,7 +35,7 @@ public class GlobalExceptionHandler {
 //    }
 
     @ExceptionHandler(value = CustomException.class)
-    public ResponseData<String> handlerExceptionTest(CustomException ex) {
+    public ResponseData handlerExceptionTest(CustomException ex) {
         log.warn(ex.getMessage());
         return ResponseData.FAIL(ex.getMessage(), ex.getStatus().value());
     }
@@ -60,7 +59,7 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = ExpiredJwtException.class)
-    public ResponseData<?> handleExpiredJwtException(ExpiredJwtException e) {
+    public ResponseData handleExpiredJwtException(ExpiredJwtException e) {
         log.error(e.getMessage());
         return ResponseData.FAIL("令牌已过期");
     }
@@ -71,7 +70,7 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = SignatureException.class)
-    public ResponseData<?> handleSignatureException() {
+    public ResponseData handleSignatureException() {
         return ResponseData.FAIL("令牌不合法");
     }
 }

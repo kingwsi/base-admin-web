@@ -5,8 +5,6 @@ import com.kingwsi.bs.service.RoleService;
 import com.kingwsi.bs.util.bean.ResponseData;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/roles")
@@ -18,24 +16,24 @@ public class RoleController {
     }
 
     @GetMapping()
-    public ResponseData<List<RoleVO>> listRoles() {
+    public ResponseData listRoles() {
         return ResponseData.OK(roleService.listRoles());
     }
 
     @PostMapping
-    public ResponseData<String> create(@RequestBody RoleVO roleVO) {
+    public ResponseData create(@RequestBody RoleVO roleVO) {
         roleService.createRoleVO(roleVO);
         return ResponseData.OK();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseData<String> delete(@PathVariable("id") String id) {
+    public ResponseData delete(@PathVariable("id") String id) {
         roleService.deleteById(id);
         return ResponseData.OK();
     }
 
     @PutMapping("/{id}")
-    public ResponseData<String> update(@PathVariable("id") String id,@RequestBody RoleVO roleVO) {
+    public ResponseData update(@PathVariable("id") String id, @RequestBody RoleVO roleVO) {
         roleVO.setId(id);
         roleService.updateById(roleVO);
         return ResponseData.OK();

@@ -21,3 +21,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function getPageInfo(page) {
+  return request({
+    url: '/api/users/page',
+    method: 'get',
+    params: page
+  })
+}

@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseData<T> {
+public class ResponseData implements Serializable {
     private Integer code;
     private String message;
     private Object data;
@@ -17,23 +19,23 @@ public class ResponseData<T> {
         this.message = message;
     }
 
-    public static <T> ResponseData<T> OK() {
-        return new ResponseData<>(200, "OK");
+    public static ResponseData OK() {
+        return new ResponseData(200, "OK");
     }
 
-    public static <T> ResponseData<T> OK(T data) {
-        return new ResponseData<>(200, "OK", data);
+    public static <T> ResponseData OK(T data) {
+        return new ResponseData(200, "OK", data);
     }
 
-    public static <T> ResponseData<T> FAIL() {
-        return new ResponseData<>(500, "服务器错误");
+    public static ResponseData FAIL() {
+        return new ResponseData(500, "服务器错误");
     }
 
-    public static ResponseData<String> FAIL(String msg) {
-        return new ResponseData<>(500, msg);
+    public static ResponseData FAIL(String msg) {
+        return new ResponseData(500, msg);
     }
 
-    public static ResponseData<String> FAIL(String msg, Integer code) {
-        return new ResponseData<>(code, msg);
+    public static ResponseData FAIL(String msg, Integer code) {
+        return new ResponseData(code, msg);
     }
 }

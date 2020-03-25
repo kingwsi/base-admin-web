@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public interface ResourceService extends IService<Resource> {
 
-    void create(Resource resource);
+    void create(RouteVO vo);
 
     List<ResourceNode> listRouteTree();
 

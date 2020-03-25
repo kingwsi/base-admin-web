@@ -17,6 +17,7 @@ const actions = {
   generateRoutes({ commit }) {
     return new Promise(resolve => {
       getRoutes().then(response => {
+        // 组装生成路由
         const accessedRoutes = genTreeRoutes(response.data, '-1')
         commit('SET_ROUTES', accessedRoutes)
         resolve(accessedRoutes)

@@ -2,11 +2,9 @@ package com.kingwsi.bs.api;
 
 import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.jwt.TokenUtil;
-import com.kingwsi.bs.service.UserApplicationService;
 import com.kingwsi.bs.util.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,19 +22,19 @@ public class AuthController {
 
     @ApiOperation("创建令牌")
     @PostMapping
-    public ResponseData<String> auth(@RequestBody @Valid UserVO vo) {
+    public ResponseData auth(@RequestBody @Valid UserVO vo) {
         return ResponseData.OK(TokenUtil.createToken(vo));
     }
 
     @ApiOperation("登出")
     @PostMapping("/logout")
-    public ResponseData<String> logout() {
+    public ResponseData logout() {
         return ResponseData.OK();
     }
 
     @ApiOperation("获取当前用户信息")
     @GetMapping("/info")
-    public ResponseData<UserVO> getCurrentUser() {
+    public ResponseData getCurrentUser() {
         return ResponseData.OK(TokenUtil.getCurrentUser());
     }
 }

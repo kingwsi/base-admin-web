@@ -1,14 +1,11 @@
 package com.kingwsi.bs.api;
 
-import com.kingwsi.bs.entity.resource.Resource;
-import com.kingwsi.bs.entity.resource.ResourceNode;
+import com.kingwsi.bs.entity.resource.RouteVO;
 import com.kingwsi.bs.service.ResourceService;
 import com.kingwsi.bs.util.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 路由
@@ -25,20 +22,20 @@ public class ResourceController {
 
     @ApiOperation("获取路由list")
     @GetMapping("/tree/routes")
-    public ResponseData<List<ResourceNode>> listTreeRoute() {
+    public ResponseData listTreeRoute() {
         return ResponseData.OK(resourceService.listRouteTree());
     }
 
     @ApiOperation("获取路由list")
     @GetMapping("/routes")
-    public ResponseData<List<Resource>> listRoute() {
+    public ResponseData listRoute() {
         return ResponseData.OK(resourceService.listRoute());
     }
 
     @ApiOperation("create")
     @PostMapping
-    public ResponseData create(@RequestBody Resource resource) {
-        resourceService.create(resource);
+    public ResponseData create(@RequestBody RouteVO routeVO) {
+        resourceService.create(routeVO);
         return ResponseData.OK();
     }
 }

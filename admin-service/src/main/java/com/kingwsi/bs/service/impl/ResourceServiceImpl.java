@@ -14,11 +14,15 @@ import java.util.List;
 public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> implements ResourceService {
     private final ResourceMapper resourceMapper;
 
-    public ResourceServiceImpl(ResourceMapper resourceMapper) {
+    private final ResourceConvertMapper resourceConvertMapper;
+
+    public ResourceServiceImpl(ResourceMapper resourceMapper, ResourceConvertMapper resourceConvertMapper) {
         this.resourceMapper = resourceMapper;
+        this.resourceConvertMapper = resourceConvertMapper;
     }
 
-    public void create(Resource resource) {
+    public void create(RouteVO vo) {
+        Resource resource = resourceConvertMapper.routeToResource(vo);
         this.resourceMapper.insert(resource);
     }
 
@@ -29,11 +33,6 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     }
 
     public List<Resource> listRoute() {
-        UserVO currentUser = TokenUtil.getCurrentUser();
-        return resourceMapper.selectRouteByUserId(currentUser.getId());
-    }
-
-    private List<Resource> listResources() {
         UserVO currentUser = TokenUtil.getCurrentUser();
         return resourceMapper.selectRouteByUserId(currentUser.getId());
     }

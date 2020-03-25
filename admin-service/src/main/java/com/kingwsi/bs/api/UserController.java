@@ -1,6 +1,5 @@
 package com.kingwsi.bs.api;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserVO;
@@ -44,7 +43,7 @@ public class UserController {
 
     @ApiOperation("创建用户")
     @PostMapping
-    public ResponseData<String> createUser(@RequestBody UserVO user) {
+    public ResponseData createUser(@RequestBody UserVO user) {
         userService.createUser(user);
         return ResponseData.OK();
     }
@@ -58,7 +57,7 @@ public class UserController {
 
     @ApiOperation("获取用户分页")
     @GetMapping("/page")
-    public ResponseData<IPage<UserVO>> page(Page<User> page) {
+    public ResponseData page(Page<User> page) {
         return ResponseData.OK(userService.listUsersOfPage(page));
     }
 
