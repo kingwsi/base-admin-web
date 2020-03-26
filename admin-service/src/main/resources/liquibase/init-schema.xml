@@ -18,7 +18,7 @@
             <column name="created_date" type="timestamp" remarks="创建日期"/>
             <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
             <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
-            <column name="deleted" type="int(1)" remarks="删除标记"/>
+            <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         </createTable>
 
         <createTable tableName="sys_roles" remarks="角色">
@@ -55,7 +55,7 @@
             <column name="created_date" type="timestamp" remarks="创建日期"/>
             <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
             <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
-            <column name="deleted" type="int(1)" remarks="删除标记"/>
+            <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         </createTable>
 
         <createTable tableName="sys_roles_and_resources" remarks="角色资源关联">
@@ -79,7 +79,7 @@
             <column name="created_date" type="timestamp" remarks="创建日期"/>
             <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
             <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
-            <column name="deleted" type="int(1)" remarks="删除标记"/>
+            <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         </createTable>
 
         <createTable tableName="sys_users_and_organizations" remarks="用户组织关联">

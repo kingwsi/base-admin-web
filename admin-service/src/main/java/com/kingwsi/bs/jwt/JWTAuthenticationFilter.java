@@ -1,10 +1,8 @@
 package com.kingwsi.bs.jwt;
 
 import com.kingwsi.bs.entity.user.UserVO;
-import com.kingwsi.bs.service.AccessControlService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -41,14 +39,12 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader("Authorization");
-        if (header == null) {
-            chain.doFilter(request, response);
-            return;
+        String token = request.getHeader("Authorization");
+        if (token != null) {
+            UserVO userVO = TokenUtil.checkToken(token);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userVO.getUsername(), null, Collections.emptyList());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        UserVO userVO = TokenUtil.checkToken(request.getHeader("authorization"));
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userVO.getUsername(), null, Collections.emptyList());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
     }
 }

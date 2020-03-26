@@ -15,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Description: jwt工具封装<br>
@@ -74,11 +75,13 @@ public class TokenUtil {
         throw new CustomException("密码错误或账号不存在！");
     }
 
+    @SuppressWarnings("unchecked")
     public static UserVO checkToken(String tokenString) {
         Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(tokenString).getBody();
         UserVO userVO = new UserVO();
         userVO.setId(claims.get("user").toString());
         userVO.setUsername(claims.get("username").toString());
+        userVO.setRoles((List<String>) claims.get("roles"));
         return userVO;
     }
 
@@ -86,10 +89,6 @@ public class TokenUtil {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert servletRequestAttributes != null;
         String authorization = servletRequestAttributes.getRequest().getHeader("Authorization");
-        Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(authorization).getBody();
-        UserVO userVO = new UserVO();
-        userVO.setId(claims.get("userId").toString());
-        userVO.setUsername(claims.get("userName").toString());
-        return userVO;
+        return checkToken(authorization);
     }
 }
