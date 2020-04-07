@@ -7,8 +7,6 @@ import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserVO;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * Description: []
  * Name: UserRepository
@@ -23,5 +21,5 @@ public interface UserService extends IService<User> {
 
     void createUser(UserVO vo);
 
-    IPage<UserVO> listUsersOfPage(Page<User> page);
+    IPage<UserVO> listUsersOfPage(Page<User> page, UserVO userVO);
 }

@@ -1,5 +1,7 @@
 package com.kingwsi.bs.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kingwsi.bs.entity.role.*;
 import org.springframework.stereotype.Service;
@@ -20,4 +22,6 @@ public interface RoleService extends IService<Role> {
     void deleteById(String id);
 
     void updateById(RoleVO roleVO);
+
+    IPage<Role> listOfPages(Page<Role> page, RoleVO roleVO) ;
 }

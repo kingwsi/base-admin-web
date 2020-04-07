@@ -2,7 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kingwsi.bs.mapper.UserMapper">
 
-    <select id="listUsersOfPage" resultType="com.kingwsi.bs.entity.user.UserVO">
-        SELECT * FROM sys_users
+    <resultMap id="UserWithRolesMap" type="com.kingwsi.bs.entity.user.UserVO">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="avatar" property="avatar"/>
+        <result column="introduction" property="introduction"/>
+        <collection property="roles" ofType="string">
+            <result column="role_id"/>
+        </collection>
+    </resultMap>
+    <select id="listUsersOfPage" resultMap="UserWithRolesMap">
+        SELECT u.*, uar.role_id FROM sys_users u LEFT JOIN sys_users_and_roles uar ON u.id = uar.user_id
     </select>
 </mapper>

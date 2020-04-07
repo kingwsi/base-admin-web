@@ -5,9 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 @Component
 public interface UserMapper extends BaseMapper<User> {
-    IPage<UserVO> listUsersOfPage(Page<User> page);
+    IPage<UserVO> listUsersOfPage(Page<User> page, @Param("user") UserVO userVO);
 }

@@ -9,6 +9,7 @@ import com.kingwsi.bs.util.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
@@ -43,7 +44,7 @@ public class UserController {
 
     @ApiOperation("创建用户")
     @PostMapping
-    public ResponseData createUser(@RequestBody UserVO user) {
+    public ResponseData createUser(@Validated @RequestBody UserVO user) {
         userService.createUser(user);
         return ResponseData.OK();
     }
@@ -57,14 +58,13 @@ public class UserController {
 
     @ApiOperation("获取用户分页")
     @GetMapping("/page")
-    public ResponseData page(Page<User> page) {
-        return ResponseData.OK(userService.listUsersOfPage(page));
+    public ResponseData page(Page<User> page, UserVO userVO) {
+        return ResponseData.OK(userService.listUsersOfPage(page, userVO));
     }
 
     @Debug
     @GetMapping("/apis")
     public ResponseEntity<List> getAllApi() {
-        Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
         List<HashMap<String, String>> urlList = new ArrayList<>();
 
         Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
@@ -77,7 +77,7 @@ public class UserController {
                 hashMap.put("url", url);
             }
             hashMap.put("className", method.getMethod().getDeclaringClass().getName()); // 类名
-            hashMap.put("", method.getMethod().getName()); // 方法名
+            hashMap.put("methodName", method.getMethod().getName()); // 方法名
             RequestMethodsRequestCondition methodsCondition = info.getMethodsCondition();
             String type = methodsCondition.toString();
             if (type.startsWith("[") && type.endsWith("]")) {

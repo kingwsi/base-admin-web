@@ -54,9 +54,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public IPage<UserVO> listUsersOfPage(Page<User> page) {
+    public IPage<UserVO> listUsersOfPage(Page<User> page, UserVO userVO) {
         page.setSearchCount(true);
-        return userMapper.listUsersOfPage(page);
+        return userMapper.listUsersOfPage(page, userVO);
     }
 
     @Override
