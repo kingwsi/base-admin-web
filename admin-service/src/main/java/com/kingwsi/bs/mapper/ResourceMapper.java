@@ -20,4 +20,6 @@ public interface ResourceMapper extends BaseMapper<Resource> {
     List<Resource> selectRouteByUserId(@Param("userId") String userId);
 
     List<ResourceVO> selectWithResource();
+
+    List<Resource> selectByUserId(@Param("userId") String userId);
 }

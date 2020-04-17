@@ -1,18 +1,13 @@
-package com.kingwsi.bs.config;
+package com.kingwsi.bs.common.config;
 
 import com.kingwsi.bs.jwt.JWTAuthenticationFilter;
-import com.kingwsi.bs.service.AccessControlService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -37,6 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/debug/**").permitAll()
                 .antMatchers("/webjars/**","/swagger**/**","/v2/api-docs**","/h2-console/**").permitAll()
                 .antMatchers("/**/*.gif", "/**/*.png", "/**/*.jpg", "/**/*.html", "/**/*.js", "/**/*.css", "/**/*.ico").permitAll()
+                // 自定义资源过滤表达式
+                .antMatchers("/**").access("@customResourceFilterHandler.hasPermission(request ,authentication)")
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable().and()

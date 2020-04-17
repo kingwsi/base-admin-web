@@ -1,5 +1,6 @@
 package com.kingwsi.bs.api;
 
+import com.kingwsi.bs.entity.login.AuthenticationVO;
 import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.jwt.TokenUtil;
 import com.kingwsi.bs.util.bean.ResponseData;
@@ -22,7 +23,7 @@ public class AuthController {
 
     @ApiOperation("创建令牌")
     @PostMapping
-    public ResponseData auth(@RequestBody @Valid UserVO vo) {
+    public ResponseData auth(@RequestBody @Valid AuthenticationVO vo) {
         return ResponseData.OK(TokenUtil.createToken(vo));
     }
 

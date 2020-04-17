@@ -17,9 +17,17 @@
     WHERE uar.user_id = #{userId}
     AND r.type = 'ROUTE'
     </select>
-    <select id="selectWithResource" resultType="com.kingwsi.bs.entity.resource.ResourceVO" resultMap="RoleWithResourceIdsMap">
+    <select id="selectWithResource" resultType="com.kingwsi.bs.entity.resource.ResourceVO"
+            resultMap="RoleWithResourceIdsMap">
     SELECT r.id, r.name, r.description, rar.resource_id
     FROM sys_roles r
              LEFT JOIN sys_roles_and_resources rar ON r.id = rar.role_id
+    </select>
+    <select id="selectByUserId" resultType="com.kingwsi.bs.entity.resource.Resource">
+        SELECT r.*
+        FROM sys_resources r
+                 LEFT JOIN sys_roles_and_resources rar ON r.id = rar.resource_id
+                 LEFT JOIN sys_users_and_roles uar ON uar.role_id = rar.role_id
+        WHERE uar.user_id = #{userId}
     </select>
 </mapper>

@@ -1,6 +1,5 @@
-package com.kingwsi.bs.config;
+package com.kingwsi.bs.common.config;
 
-import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.jwt.TokenUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;

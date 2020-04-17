@@ -1,4 +1,4 @@
-package com.kingwsi.bs.config;
+package com.kingwsi.bs.common.config;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

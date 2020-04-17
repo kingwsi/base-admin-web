@@ -1,5 +1,6 @@
 package com.kingwsi.bs.jwt;
 
+import com.kingwsi.bs.entity.login.AuthenticationVO;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.service.UserService;
 import com.kingwsi.bs.entity.user.UserVO;
@@ -61,7 +62,7 @@ public class TokenUtil {
         return service.getUserWithRoleById(userId);
     }
 
-    public static String createToken(UserVO vo) {
+    public static String createToken(AuthenticationVO vo) {
         User user = userService.getEffectiveUser(vo);
         if (user != null) {
             HashMap<String, Object> map = new HashMap<>();
@@ -87,6 +88,10 @@ public class TokenUtil {
         return userVO;
     }
 
+    /**
+     * 检查token并解析数据
+     * @return
+     */
     public static UserVO checkToken() {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert servletRequestAttributes != null;

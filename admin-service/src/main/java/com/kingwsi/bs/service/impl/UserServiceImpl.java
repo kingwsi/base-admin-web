@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kingwsi.bs.entity.login.AuthenticationVO;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserConvertMapper;
 import com.kingwsi.bs.exception.CustomException;
@@ -32,11 +33,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User getEffectiveUser(UserVO userVO) {
+    public User getEffectiveUser(AuthenticationVO authenticationVO) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", userVO.getUsername());
+        queryWrapper.eq("username", authenticationVO.getUsername());
         User user = userMapper.selectOne(queryWrapper);
-        if (user != null && bCryptPasswordEncoder.matches(userVO.getPassword(), user.getPassword())) {
+        if (user != null && bCryptPasswordEncoder.matches(authenticationVO.getPassword(), user.getPassword())) {
             return user;
         }
         return null;

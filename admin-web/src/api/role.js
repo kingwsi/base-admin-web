@@ -14,6 +14,13 @@ export function getRoles() {
   })
 }
 
+export function getRolesPage() {
+  return request({
+    url: '/api/roles/page',
+    method: 'get'
+  })
+}
+
 export function addRole(data) {
   return request({
     url: '/api/roles',

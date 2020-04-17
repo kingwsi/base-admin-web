@@ -7,6 +7,7 @@ import com.kingwsi.bs.jwt.TokenUtil;
 import com.kingwsi.bs.mapper.ResourceMapper;
 import com.kingwsi.bs.service.ResourceService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     private final ResourceMapper resourceMapper;
 
     private final ResourceConvertMapper resourceConvertMapper;
+
+    private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     public ResourceServiceImpl(ResourceMapper resourceMapper, ResourceConvertMapper resourceConvertMapper) {
         this.resourceMapper = resourceMapper;
@@ -35,5 +38,10 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     public List<Resource> listRoute() {
         UserVO currentUser = TokenUtil.getCurrentUser();
         return resourceMapper.selectRouteByUserId(currentUser.getId());
+    }
+
+    @Override
+    public List<Resource> listByUserId(String userId) {
+        return resourceMapper.selectByUserId(userId);
     }
 }

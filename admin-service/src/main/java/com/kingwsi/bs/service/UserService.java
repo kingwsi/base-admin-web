@@ -3,6 +3,7 @@ package com.kingwsi.bs.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kingwsi.bs.entity.login.AuthenticationVO;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserVO;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface UserService extends IService<User> {
-    User getEffectiveUser(UserVO userVO);
+    User getEffectiveUser(AuthenticationVO authenticationVO);
 
     void updateUser(UserVO userVO);
 
