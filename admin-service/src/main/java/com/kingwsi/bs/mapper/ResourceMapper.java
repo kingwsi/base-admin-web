@@ -22,4 +22,6 @@ public interface ResourceMapper extends BaseMapper<Resource> {
     List<ResourceVO> selectWithResource();
 
     List<Resource> selectByUserId(@Param("userId") String userId);
+
+    List<Resource> selectByMethodAndUserId(@Param("method") String method, @Param("userId") String userId);
 }

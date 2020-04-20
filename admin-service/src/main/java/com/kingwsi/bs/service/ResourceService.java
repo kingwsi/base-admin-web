@@ -17,4 +17,6 @@ public interface ResourceService extends IService<Resource> {
     List<Resource> listRoute();
 
     List<Resource> listByUserId(String id);
+
+    List<Resource> listByMethodAndUserId(String resourceTypeEnum, String userId);
 }

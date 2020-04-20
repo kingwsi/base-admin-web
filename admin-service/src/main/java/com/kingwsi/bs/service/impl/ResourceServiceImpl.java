@@ -44,4 +44,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     public List<Resource> listByUserId(String userId) {
         return resourceMapper.selectByUserId(userId);
     }
+
+    @Override
+    public List<Resource> listByMethodAndUserId(String method, String userId) {
+        return resourceMapper.selectByMethodAndUserId(method, userId);
+    }
 }

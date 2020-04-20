@@ -4,8 +4,6 @@ import com.kingwsi.bs.entity.resource.Resource;
 import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.service.ResourceService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
@@ -32,7 +30,7 @@ public class CustomResourceFilterHandler {
         boolean hasPermission = false;
         Object principal = authentication.getPrincipal();
         if (principal instanceof UserVO) {
-            List<Resource> resources = resourceService.listByUserId(((UserVO) principal).getId());
+            List<Resource> resources = resourceService.listByMethodAndUserId(request.getMethod(), ((UserVO) principal).getId());
             for(Resource resource : resources){
                 if (antPathMatcher.match(resource.getUri(), request.getRequestURI())) {
                     hasPermission = true;
