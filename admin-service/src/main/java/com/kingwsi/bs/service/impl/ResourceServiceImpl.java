@@ -7,7 +7,6 @@ import com.kingwsi.bs.jwt.TokenUtil;
 import com.kingwsi.bs.mapper.ResourceMapper;
 import com.kingwsi.bs.service.ResourceService;
 import org.springframework.stereotype.Service;
-import org.springframework.util.AntPathMatcher;
 
 import java.util.List;
 
@@ -17,8 +16,6 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
 
     private final ResourceConvertMapper resourceConvertMapper;
 
-    private AntPathMatcher antPathMatcher = new AntPathMatcher();
-
     public ResourceServiceImpl(ResourceMapper resourceMapper, ResourceConvertMapper resourceConvertMapper) {
         this.resourceMapper = resourceMapper;
         this.resourceConvertMapper = resourceConvertMapper;
@@ -27,12 +24,6 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     public void create(RouteVO vo) {
         Resource resource = resourceConvertMapper.routeToResource(vo);
         this.resourceMapper.insert(resource);
-    }
-
-    public List<ResourceNode> listRouteTree() {
-        List<ResourceNode> resources = this.resourceMapper.selectAllByType(ResourceTypeEnum.ROUTE);
-        ResourceTree resourceTree = new ResourceTree(resources);
-        return resourceTree.buildTree();
     }
 
     public List<Resource> listRoute() {
@@ -48,5 +39,10 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     @Override
     public List<Resource> listByMethodAndUserId(String method, String userId) {
         return resourceMapper.selectByMethodAndUserId(method, userId);
+    }
+
+    @Override
+    public List<ResourceVO> listByType(ResourceTypeEnum route) {
+        return resourceMapper.selectAllByType(route);
     }
 }

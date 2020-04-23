@@ -12,11 +12,11 @@ public interface ResourceService extends IService<Resource> {
 
     void create(RouteVO vo);
 
-    List<ResourceNode> listRouteTree();
-
     List<Resource> listRoute();
 
     List<Resource> listByUserId(String id);
 
     List<Resource> listByMethodAndUserId(String resourceTypeEnum, String userId);
+
+    List<ResourceVO> listByType(ResourceTypeEnum route);
 }

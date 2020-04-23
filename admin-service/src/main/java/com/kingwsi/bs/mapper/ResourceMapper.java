@@ -15,7 +15,7 @@ import java.util.List;
 public interface ResourceMapper extends BaseMapper<Resource> {
 
     @Select("SELECT * FROM sys_resources WHERE type = #{route}")
-    List<ResourceNode> selectAllByType(@Param("route") ResourceTypeEnum route);
+    List<ResourceVO> selectAllByType(@Param("route") ResourceTypeEnum route);
 
     List<Resource> selectRouteByUserId(@Param("userId") String userId);
 
