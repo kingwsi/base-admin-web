@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.service.UserService;
-import com.kingwsi.bs.util.annotations.Debug;
 import com.kingwsi.bs.util.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -62,7 +61,6 @@ public class UserController {
         return ResponseData.OK(userService.listUsersOfPage(page, userVO));
     }
 
-    @Debug
     @GetMapping("/apis")
     public ResponseEntity<List> getAllApi() {
         List<HashMap<String, String>> urlList = new ArrayList<>();

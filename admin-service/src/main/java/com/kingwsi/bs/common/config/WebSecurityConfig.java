@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/webjars/**","/swagger**/**","/v2/api-docs**","/h2-console/**").permitAll()
                 .antMatchers("/**/*.gif", "/**/*.png", "/**/*.jpg", "/**/*.html", "/**/*.js", "/**/*.css", "/**/*.ico").permitAll()
                 // 自定义资源过滤表达式
-                .antMatchers("/**").access("@customResourceFilterHandler.hasPermission(request ,authentication)")
+//                .antMatchers("/**").access("@customResourceFilterHandler.hasPermission(request ,authentication)")
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable().and()

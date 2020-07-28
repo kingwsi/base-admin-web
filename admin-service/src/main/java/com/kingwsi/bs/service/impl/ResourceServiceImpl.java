@@ -1,6 +1,7 @@
 package com.kingwsi.bs.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.resource.*;
 import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.jwt.TokenUtil;
@@ -37,8 +38,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     }
 
     @Override
-    public List<Resource> listByMethodAndUserId(String method, String userId) {
-        return resourceMapper.selectByMethodAndUserId(method, userId);
+    public List<Resource> listByMethodAndUserId(String method, String userId, String uri) {
+        return resourceMapper.selectByMethodAndUserIdAndUri(method, userId, uri);
     }
 
     @Override

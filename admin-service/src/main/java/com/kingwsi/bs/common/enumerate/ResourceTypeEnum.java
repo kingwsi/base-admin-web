@@ -1,4 +1,4 @@
-package com.kingwsi.bs.entity.resource;
+package com.kingwsi.bs.common.enumerate;
 
 public enum ResourceTypeEnum {
     ROUTE("路由"),

@@ -1,19 +1,17 @@
 package com.kingwsi.bs.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.kingwsi.bs.common.enumerate.RedisKeyEnum;
+import com.kingwsi.bs.entity.authority.Principal;
 import com.kingwsi.bs.entity.resource.Resource;
 import com.kingwsi.bs.entity.role.Role;
-import com.kingwsi.bs.entity.role.RolesAndResources;
-import com.kingwsi.bs.entity.user.UsersAndRoles;
-import com.kingwsi.bs.mapper.RolesAndResourcesMapper;
+import com.kingwsi.bs.mapper.*;
 import com.kingwsi.bs.entity.user.UserVO;
-import com.kingwsi.bs.mapper.UsersAndRolesMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -25,38 +23,87 @@ import java.util.stream.Collectors;
 @Service
 public class AccessControlService {
 
-    @Autowired
-    private RolesAndResourcesMapper rolesAndResourcesMapper;
+    private final UsersAndRolesMapper usersAndRolesMapper;
 
-    @Autowired
-    private UsersAndRolesMapper usersAndRolesMapper;
+    private final RoleMapper roleMapper;
 
-    public List<String> listRoleByUserName(String username) {
-        HashSet<Role> rolesByUserName = usersAndRolesMapper.findRolesByUserName(username);
-        return rolesByUserName.stream().map(Role::getName).collect(Collectors.toList());
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    private final UserMapper userMapper;
+
+    private final ResourceService resourceService;
+
+    private final ResourceMapper resourceMapper;
+
+    public AccessControlService(UsersAndRolesMapper usersAndRolesMapper, RoleMapper roleMapper, RedisTemplate<String, Object> redisTemplate, UserMapper userMapper, ResourceService resourceService, ResourceMapper resourceMapper) {
+        this.resourceMapper = resourceMapper;
+        this.usersAndRolesMapper = usersAndRolesMapper;
+        this.roleMapper = roleMapper;
+        this.redisTemplate = redisTemplate;
+        this.userMapper = userMapper;
+        this.resourceService = resourceService;
     }
 
-    public List<String> listRoleByUser(String userId) {
-        List<Role> rolesByUserName = usersAndRolesMapper.findRolesByUserId(userId);
-        return rolesByUserName.stream().map(Role::getName).collect(Collectors.toList());
-    }
-
-    public Role getRequiredRoleByResource(Resource resource) {
-        return rolesAndResourcesMapper.selectRolesByResource(resource);
-    }
-
-    public UserVO getUserWithRoleByName(String username) {
-        return usersAndRolesMapper.listUserWithRoles(username);
-    }
-
+    /**
+     * 获取完整用户信息
+     *
+     * @param userId
+     * @return
+     */
     public UserVO getUserWithRoleById(String userId) {
-        return usersAndRolesMapper.listUserWithRolesById(userId);
+        Object object = redisTemplate.opsForValue().get(RedisKeyEnum.USER_AUTH_INFO + userId);
+        if (object instanceof UserVO) {
+            return (UserVO) object;
+        } else {
+            UserVO userVO = usersAndRolesMapper.listUserWithRolesById(userId);
+            redisTemplate.opsForValue().set(RedisKeyEnum.USER_AUTH_INFO + userId, userVO, RedisKeyEnum.USER_AUTH_INFO.getExpire(), TimeUnit.MINUTES);
+            return userVO;
+        }
     }
 
-    public List<String> getRolesByUserId(String userId) {
-        QueryWrapper<UsersAndRoles> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId).select("role_id");
-        List<UsersAndRoles> usersAndRoles = usersAndRolesMapper.selectList(queryWrapper);
-        return usersAndRoles.stream().map(UsersAndRoles::getRoleId).collect(Collectors.toList());
+    /**
+     * 查询用户拥有的角色列表
+     *
+     * @param userId
+     * @return
+     */
+    public List<Role> getRolesByUserId(String userId) {
+        return roleMapper.selectByUserId(userId);
+    }
+
+    public List<String> getRoleIdsByUserId(String userId) {
+        List<Role> roles = getRolesByUserId(userId);
+        return roles.stream().map(Role::getId).collect(Collectors.toList());
+    }
+
+    public Principal getPrincipal(String userId) {
+        Principal principal = new Principal();
+        principal.setRoles(this.getRolesByUserId(userId));
+        principal.setUser(userMapper.selectById(userId));
+        return principal;
+    }
+
+    public Resource getResourceByUriAndMethod(String requestURI, String method) {
+        QueryWrapper<Resource> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("uri", requestURI).like("method", method);
+        return resourceService.getOne(queryWrapper);
+    }
+
+    public List<String> getUriByUser(String userId) {
+        return resourceMapper.selectUriByUser(userId);
+    }
+
+    public List<Resource> listByUser(String userId){
+        return resourceMapper.selectByUser(userId);
+    }
+
+    /**
+     * 查询用户所拥有的url类型资源，并按请求方式过滤
+     * @param userId
+     * @param method
+     * @return
+     */
+    public List<Resource> listByUserAndMethod(String userId, String method) {
+        return resourceMapper.selectByUserAndMethod(userId, method);
     }
 }

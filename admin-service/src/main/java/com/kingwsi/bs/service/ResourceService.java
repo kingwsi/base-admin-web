@@ -1,8 +1,8 @@
 package com.kingwsi.bs.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.resource.*;
-import com.kingwsi.bs.entity.resource.ResourceNode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public interface ResourceService extends IService<Resource> {
 
     List<Resource> listByUserId(String id);
 
-    List<Resource> listByMethodAndUserId(String resourceTypeEnum, String userId);
+    List<Resource> listByMethodAndUserId(String resourceTypeEnum, String userId, String uri);
 
     List<ResourceVO> listByType(ResourceTypeEnum route);
 }

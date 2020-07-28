@@ -1,6 +1,6 @@
 package com.kingwsi.bs.api;
 
-import com.kingwsi.bs.entity.resource.ResourceTypeEnum;
+import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.resource.RouteVO;
 import com.kingwsi.bs.service.ResourceService;
 import com.kingwsi.bs.util.bean.ResponseData;

@@ -12,6 +12,26 @@
     </resultMap>
 
     <select id="selectWithResourcesPage" resultMap="RoleWithResourceMap">
-        SELECT r.*, rar.resource_id FROM sys_roles r LEFT JOIN sys_roles_and_resources rar ON r.id = rar.role_id
+        SELECT r.*, rar.resource_id
+        FROM sys_roles r
+        LEFT JOIN sys_roles_and_resources rar ON r.id = rar.role_id
+        <where>
+            <if test="roleVO.name != null">
+            r.name = #{roleVO.name}
+            </if>
+            <if test="roleVO.id != null">
+                AND r.id = #{roleVO.id}
+            </if>
+            <if test="roleVO.description != null">
+                AND r.description = #{roleVO.description}
+            </if>
+        </where>
+    </select>
+    <select id="selectByUserId" resultType="com.kingwsi.bs.entity.role.Role">
+        SELECT
+            r.*
+        FROM sys_roles r
+        LEFT JOIN sys_users_and_roles uar ON r.id = uar.role_id
+        WHERE uar.user_id = #{userId}
     </select>
 </mapper>

@@ -1,14 +1,13 @@
 package com.kingwsi.bs.common.handler;
 
+import com.kingwsi.bs.entity.authority.Principal;
 import com.kingwsi.bs.entity.resource.Resource;
-import com.kingwsi.bs.entity.user.UserVO;
-import com.kingwsi.bs.service.ResourceService;
+import com.kingwsi.bs.service.AccessControlService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * Description: 自定义资源过滤
@@ -20,24 +19,16 @@ import java.util.List;
 public class CustomResourceFilterHandler {
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-    private final ResourceService resourceService;
+    private final AccessControlService accessControlService;
 
-    public CustomResourceFilterHandler(ResourceService resourceService) {
-        this.resourceService = resourceService;
+    public CustomResourceFilterHandler(AccessControlService accessControlService) {
+        this.accessControlService = accessControlService;
     }
 
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
-        boolean hasPermission = false;
         Object principal = authentication.getPrincipal();
-        if (principal instanceof UserVO) {
-            List<Resource> resources = resourceService.listByMethodAndUserId(request.getMethod(), ((UserVO) principal).getId());
-            for(Resource resource : resources){
-                if (antPathMatcher.match(resource.getUri(), request.getRequestURI())) {
-                    hasPermission = true;
-                    break;
-                }
-            }
+        if (principal instanceof Principal) {
         }
-        return hasPermission;
+        return false;
     }
 }

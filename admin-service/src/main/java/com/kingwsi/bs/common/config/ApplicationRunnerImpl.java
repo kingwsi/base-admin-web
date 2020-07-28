@@ -1,5 +1,6 @@
 package com.kingwsi.bs.common.config;
 
+import com.kingwsi.bs.common.helper.tableInfo.TablePermissionHelper;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.Environment;
@@ -15,6 +16,7 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        TablePermissionHelper.initTablePermissionInfo();
         System.out.println("\t--------");
         System.out.println("\t启动成功\n\t文档：http://localhost:" + environment.getProperty("local.server.port") + "/swagger-ui.html");
         System.out.println("\t配置："+environment.getProperty("spring.profiles.active"));

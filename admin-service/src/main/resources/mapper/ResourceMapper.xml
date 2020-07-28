@@ -30,13 +30,38 @@
                  LEFT JOIN sys_users_and_roles uar ON uar.role_id = rar.role_id
         WHERE uar.user_id = #{userId}
     </select>
-    <select id="selectByMethodAndUserId" resultType="com.kingwsi.bs.entity.resource.Resource">
+    <select id="selectByMethodAndUserIdAndUri" resultType="com.kingwsi.bs.entity.resource.Resource">
         SELECT r.*
         FROM sys_resources r
                  LEFT JOIN sys_roles_and_resources rar ON r.id = rar.resource_id
                  LEFT JOIN sys_users_and_roles uar ON uar.role_id = rar.role_id
         WHERE uar.user_id = #{userId}
         AND r.type = 'URL'
-        AND r.method = #{method}
+        AND r.uri = #{uri}
+        AND r.method LIKE CONCAT('%', #{method}, '%');
+    </select>
+    <select id="selectUriByUser" resultType="java.lang.String">
+        SELECT sr.uri
+        FROM sys_resources sr
+         LEFT JOIN sys_roles_and_resources srar ON sr.id = srar.resource_id
+         LEFT JOIN sys_users_and_roles suar on srar.role_id = suar.role_id
+        WHERE suar.user_id = #{userId} AND sr.type = 'URL'
+    </select>
+    <select id="selectByUser" resultType="com.kingwsi.bs.entity.resource.Resource">
+        SELECT sr.*
+        FROM sys_resources sr
+         LEFT JOIN sys_roles_and_resources srar ON sr.id = srar.resource_id
+         LEFT JOIN sys_users_and_roles suar on srar.role_id = suar.role_id
+        WHERE suar.user_id = #{userId} AND sr.type = 'URL'
+    </select>
+    <select id="selectByUserAndMethod" resultType="com.kingwsi.bs.entity.resource.Resource">
+        SELECT sr.*
+        FROM sys_resources sr
+         LEFT JOIN sys_roles_and_resources srar ON sr.id = srar.resource_id
+         LEFT JOIN sys_users_and_roles suar on srar.role_id = suar.role_id
+        WHERE
+            suar.user_id = #{userId}
+        AND sr.type = 'URL'
+        AND sr.method = #{method}
     </select>
 </mapper>

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
  * Author: wangshu
  * Date: 2019/6/29 15:52
  */
-@Service
 public interface UserService extends IService<User> {
     User getEffectiveUser(AuthenticationVO authenticationVO);
 

@@ -1,11 +1,13 @@
 package com.kingwsi.bs.entity.user;
 
+import com.kingwsi.bs.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -31,6 +33,12 @@ public class UserVO {
     private String fullName;
     private String avatar;
     private String introduction;
-    private String createdDate;
     private List<String> roles;
+    private String creator;
+    private Instant createdDate;
+    private String lastUpdater;
+    private Instant lastUpdateDate;
+    private String organizationId;
+    private String roleIds;
+
 }
