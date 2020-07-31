@@ -3,3 +3,7 @@ spring:
     name: admin-service
   profiles:
     active: dev
+  security:
+    user:
+      password: 123
+      name: user
