@@ -1,6 +1,7 @@
 package com.kingwsi.bs.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.resource.*;
 import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.jwt.TokenUtil;
@@ -26,14 +27,23 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
         this.resourceMapper.insert(resource);
     }
 
-    public List<ResourceNode> listRouteTree() {
-        List<ResourceNode> resources = this.resourceMapper.selectAllByType(ResourceTypeEnum.ROUTE);
-        ResourceTree resourceTree = new ResourceTree(resources);
-        return resourceTree.buildTree();
-    }
-
     public List<Resource> listRoute() {
         UserVO currentUser = TokenUtil.getCurrentUser();
         return resourceMapper.selectRouteByUserId(currentUser.getId());
+    }
+
+    @Override
+    public List<Resource> listByUserId(String userId) {
+        return resourceMapper.selectByUserId(userId);
+    }
+
+    @Override
+    public List<Resource> listByMethodAndUserId(String method, String userId, String uri) {
+        return resourceMapper.selectByMethodAndUserIdAndUri(method, userId, uri);
+    }
+
+    @Override
+    public List<ResourceVO> listByType(ResourceTypeEnum route) {
+        return resourceMapper.selectAllByType(route);
     }
 }

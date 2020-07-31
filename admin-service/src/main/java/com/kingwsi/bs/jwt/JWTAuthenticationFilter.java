@@ -1,12 +1,14 @@
 package com.kingwsi.bs.jwt;
 
-import com.kingwsi.bs.entity.user.UserVO;
-import com.kingwsi.bs.service.AccessControlService;
+import com.alibaba.fastjson.JSON;
+import com.kingwsi.bs.entity.authority.Principal;
+import com.kingwsi.bs.util.bean.ResponseData;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,6 +26,7 @@ import java.util.Collections;
  * Author: wangshu
  * Date: 2019/6/29 23:26
  */
+@Slf4j
 public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -41,14 +44,21 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader("Authorization");
-        if (header == null) {
-            chain.doFilter(request, response);
-            return;
+        SecurityContextHolder.clearContext();
+        if (!StringUtils.isEmpty(request.getHeader("Authorization"))) {
+            // 在此处将用户信息存入上下文
+            Principal principal = TokenUtil.getPrincipal(request);
+            if (principal == null) {
+                response.setCharacterEncoding("utf-8");
+                response.setContentType("application/json; charset=utf-8");
+                response.setStatus(403);
+                response.getWriter().write(JSON.toJSONString(ResponseData.FAIL("无权限",403)));
+                log.info("无权限");
+                return;
+            }
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, null, Collections.emptyList());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        UserVO userVO = TokenUtil.checkToken(request.getHeader("authorization"));
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userVO.getUsername(), null, Collections.emptyList());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
     }
 }

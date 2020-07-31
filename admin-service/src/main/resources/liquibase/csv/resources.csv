@@ -1,6 +1,6 @@
-id,uri,name,description,method,type,parent_id,sort
-1,/api/debug,debug接口,debug接口 免token验证,GET,URL,-1,0
-2,/permission,权限管理,,,ROUTE,-1,1
-3,user,用户管理,,,ROUTE,2,2
-4,role,角色管理,,,ROUTE,2,3
-5,route,路由管理,,,ROUTE,2,4
+id,uri,name,description,method,type,parent_id,sort,filter_rule
+1,/**,debug接口,debug接口,GET;POST;PUT;DELETE;OPTIONS,URL,-1,0,CREATOR
+3,/permission,权限管理,,,ROUTE,-1,1,
+4,user,用户管理,,,ROUTE,3,2,
+5,role,角色管理,,,ROUTE,3,3,
+6,route,路由管理,,,ROUTE,3,4,

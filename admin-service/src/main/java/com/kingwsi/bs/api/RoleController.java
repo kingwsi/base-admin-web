@@ -1,11 +1,15 @@
 package com.kingwsi.bs.api;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kingwsi.bs.entity.role.Role;
 import com.kingwsi.bs.entity.role.RoleVO;
 import com.kingwsi.bs.service.RoleService;
 import com.kingwsi.bs.util.bean.ResponseData;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
-
+@Api(value = "角色")
 @RestController
 @RequestMapping("/api/roles")
 public class RoleController {
@@ -15,7 +19,8 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    @GetMapping()
+    @ApiOperation(value = "获取角色列表")
+    @GetMapping
     public ResponseData listRoles() {
         return ResponseData.OK(roleService.listRoles());
     }
@@ -37,5 +42,10 @@ public class RoleController {
         roleVO.setId(id);
         roleService.updateById(roleVO);
         return ResponseData.OK();
+    }
+
+    @GetMapping("/page")
+    public ResponseData page(Page<Role> page, RoleVO vo) {
+        return ResponseData.OK(roleService.listOfPages(page, vo));
     }
 }

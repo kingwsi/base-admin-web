@@ -1,4 +1,4 @@
-package com.kingwsi.bs.config;
+package com.kingwsi.bs.common.handler;
 
 import com.kingwsi.bs.exception.CustomException;
 import com.kingwsi.bs.util.bean.ResponseData;

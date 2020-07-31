@@ -1,5 +1,6 @@
 package com.kingwsi.bs.entity.resource;
 
+import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.role.RoleVO;
 import lombok.Data;
 

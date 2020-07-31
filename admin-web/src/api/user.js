@@ -29,3 +29,19 @@ export function getPageInfo(page) {
     params: page
   })
 }
+
+export function update(data) {
+  return request({
+    url: '/api/users',
+    method: 'put',
+    data
+  })
+}
+
+export function create(data) {
+  return request({
+    url: '/api/users',
+    method: 'post',
+    data
+  })
+}

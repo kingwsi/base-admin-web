@@ -2,22 +2,17 @@
   <div class="app-container">
     <el-button type="primary" @click="handleAddRole">New Role</el-button>
 
-    <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column v-show="false" align="center" label="Role Key" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.id }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="Role Name" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-      <el-table-column align="header-center" label="Description">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
+    <el-table :data="pageInfo.records" style="width: 100%;margin-top:30px;" border>
+      <el-table-column
+        fixed
+        prop="name"
+        label="角色名"
+      />
+      <el-table-column
+        fixed
+        prop="description"
+        label="描述"
+      />
       <el-table-column align="center" label="Operations">
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="handleEdit(scope)">Edit</el-button>
@@ -26,7 +21,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
+    <el-dialog :visible.sync="dialogVisible" :title="operate==='edit'?'编辑':'新增'">
       <el-form :model="role" label-width="80px" label-position="left">
         <el-form-item label="Name">
           <el-input v-model="role.name" placeholder="Role Name" />
@@ -39,13 +34,13 @@
             placeholder="Role Description"
           />
         </el-form-item>
-        <el-form-item label="Menus">
+        <el-form-item label="菜单">
           <el-tree
             ref="tree"
-            :data="routesData"
+            :data="routesTree"
             show-checkbox
+            :default-expand-all="true"
             node-key="id"
-            :default-checked-keys="[5]"
             :props="defaultProps"
           />
         </el-form-item>
@@ -60,9 +55,8 @@
 
 <script>
 import path from 'path'
-import { deepClone } from '@/utils'
-import Layout from '@/layout'
-import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
+import { deepClone, buildTree } from '@/utils'
+import { getRoutes, addRole, deleteRole, getRolesPage, updateRole } from '@/api/role'
 
 const defaultRole = {
   id: '',
@@ -76,9 +70,10 @@ export default {
     return {
       role: Object.assign({}, defaultRole),
       routes: [],
-      rolesList: [],
+      routesTree: [],
+      pageInfo: {},
       dialogVisible: false,
-      dialogType: 'new',
+      operate: 'create',
       checkStrictly: false,
       defaultProps: {
         children: 'children',
@@ -86,103 +81,33 @@ export default {
       }
     }
   },
-  computed: {
-    routesData() {
-      return this.routes
-    }
-  },
   created() {
-    // Mock: get all routes and roles list from server
     this.getRoutes()
-    this.getRoles()
+    this.page()
   },
   methods: {
     async getRoutes() {
       const res = await getRoutes()
-      this.routes = this.listToTree(res.data)
-      console.log(this.routes)
-      this.serviceRoutes = []
-      // this.routes = this.generateRoutes(tree)
+      this.routesTree = buildTree(res.data, '-1')
     },
-    async getRoles() {
-      const res = await getRoles()
-      this.rolesList = res.data
-    },
-    listToTree(oldArr) {
-      let res = []
-      oldArr.forEach(element => {
-        const parentId = element.parentId
-        const route = {
-          id: element.id,
-          path: element.uri,
-          component: Layout,
-          parentId: parentId,
-          name: element.name,
-          redirect: element.uri,
-          meta: {
-            title: element.name,
-            icon: 'lock',
-            roles: ['admin'] // or you can only set roles in sub nav
-          },
-          children: []
-        }
-        if (parentId === '-1') { // 顶层
-          oldArr.forEach(old => {
-            if (old.parentId === element.id) { // parendId为当前element的id，push到children
-              const child = {
-                id: old.id,
-                path: old.uri,
-                component: Layout,
-                parentId: old.parentId,
-                name: old.name,
-                redirect: old.uri,
-                meta: {
-                  title: old.name,
-                  icon: 'lock',
-                  roles: ['admin'] // or you can only set roles in sub nav
-                },
-                children: []
-              }
-              route.children.push(child)
-            }
-          })
-        }
-        res.push(route)
-      })
-      res = res.filter(ele => ele.parentId === '-1') // 这一步是过滤，按树展开，将多余的数组剔除；
-      return res
-    },
-
-    generateArr(routes) {
-      let data = []
-      routes.forEach(route => {
-        data.push(route)
-        if (route.children) {
-          const temp = this.generateArr(route.children)
-          if (temp.length > 0) {
-            data = [...data, ...temp]
-          }
-        }
-      })
-      return data
+    async page() {
+      const res = await getRolesPage()
+      this.pageInfo = res.data
     },
     handleAddRole() {
       this.role = Object.assign({}, defaultRole)
       if (this.$refs.tree) {
         this.$refs.tree.setCheckedNodes([])
       }
-      this.dialogType = 'new'
+      this.operate = 'create'
       this.dialogVisible = true
     },
     handleEdit(scope) {
-      this.dialogType = 'edit'
+      this.operate = 'update'
       this.dialogVisible = true
-      this.checkStrictly = true
       this.role = deepClone(scope.row)
       this.$nextTick(() => {
-        this.$refs.tree.setCheckedNodes(this.generateArr(this.routes))
-        // set checked state of a node not affects its father and child nodes
-        this.checkStrictly = false
+        this.$refs.tree.setCheckedKeys(this.role.resourceIds)
       })
     },
     handleDelete({ $index, row }) {
@@ -201,49 +126,15 @@ export default {
         })
         .catch(err => { console.error(err) })
     },
-    generateTree(routes, basePath = '/', checkedKeys) {
-      const res = []
-
-      for (const route of routes) {
-        const routePath = path.resolve(basePath, route.path)
-
-        // recursive child routes
-        if (route.children) {
-          route.children = this.generateTree(route.children, routePath, checkedKeys)
-        }
-
-        if (checkedKeys.includes(routePath) || (route.children && route.children.length >= 1)) {
-          res.push(route)
-        }
-      }
-      return res
-    },
     async confirmRole() {
-      const isEdit = this.dialogType === 'edit'
-
-      const checkedKeys = this.$refs.tree.getCheckedKeys()
-      this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
-
-      const res = this.$refs.tree.getCheckedNodes()
-      this.role.resourceIds = []
-      res.forEach((item) => {
-        this.role.resourceIds.push(item.id)
-      })
-
+      const isEdit = this.operate === 'update'
+      this.role.resourceIds = this.$refs.tree.getCheckedKeys()
       if (isEdit) {
         await updateRole(this.role.id, this.role)
-        for (let index = 0; index < this.rolesList.length; index++) {
-          if (this.rolesList[index].id === this.role.id) {
-            this.rolesList.splice(index, 1, Object.assign({}, this.role))
-            break
-          }
-        }
       } else {
-        const { data } = await addRole(this.role)
-        this.role.key = data.key
-        this.rolesList.push(this.role)
+        await addRole(this.role)
       }
-
+      await this.page()
       const { description, id, name } = this.role
       this.dialogVisible = false
       this.$notify({

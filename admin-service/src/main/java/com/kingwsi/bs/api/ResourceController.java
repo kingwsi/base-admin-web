@@ -1,5 +1,6 @@
 package com.kingwsi.bs.api;
 
+import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.resource.RouteVO;
 import com.kingwsi.bs.service.ResourceService;
 import com.kingwsi.bs.util.bean.ResponseData;
@@ -21,18 +22,18 @@ public class ResourceController {
     }
 
     @ApiOperation("获取路由list")
-    @GetMapping("/tree/routes")
-    public ResponseData listTreeRoute() {
-        return ResponseData.OK(resourceService.listRouteTree());
-    }
-
-    @ApiOperation("获取路由list")
     @GetMapping("/routes")
     public ResponseData listRoute() {
         return ResponseData.OK(resourceService.listRoute());
     }
 
-    @ApiOperation("create")
+    @ApiOperation("获取路由list")
+    @GetMapping("/apis")
+    public ResponseData listApis() {
+        return ResponseData.OK(resourceService.listByType(ResourceTypeEnum.ROUTE));
+    }
+
+    @ApiOperation("创建资源")
     @PostMapping
     public ResponseData create(@RequestBody RouteVO routeVO) {
         resourceService.create(routeVO);

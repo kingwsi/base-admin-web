@@ -1,14 +1,12 @@
 package com.kingwsi.bs.entity.resource;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.kingwsi.bs.common.enumerate.FilterRule;
+import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * Description: 资源<br>
@@ -22,18 +20,33 @@ import java.io.Serializable;
 @TableName("sys_resources")
 public class Resource extends BaseEntity {
 
+    // 名称
     private String name;
-    private String uri;
-    private String method;
-    private String description;
-    private String parentId;
-    private String sort;
-    private String component;
-    private String icon;
-    private ResourceTypeEnum type;
 
-    public Resource(String method, String uri) {
-        this.method = method;
-        this.uri = uri;
-    }
+    // 地址
+    private String uri;
+
+    // 请求方式 GET;POST;OPTIONS;DELETE;PUT
+    private String method;
+
+    // 描述
+    private String description;
+
+    // 上级id 若资源是菜单则需要
+    private String parentId;
+
+    // 排序
+    private String sort;
+
+    // 组件 菜单需要
+    private String component;
+
+    // 图标
+    private String icon;
+
+    // 数据过滤 ORG;CREATOR;ROLE
+    private FilterRule filterRule;
+
+    // 类型
+    private ResourceTypeEnum type;
 }

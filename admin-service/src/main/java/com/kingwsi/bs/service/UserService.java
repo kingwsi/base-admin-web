@@ -3,11 +3,10 @@ package com.kingwsi.bs.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kingwsi.bs.entity.login.AuthenticationVO;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserVO;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Description: []
@@ -15,13 +14,12 @@ import java.util.List;
  * Author: wangshu
  * Date: 2019/6/29 15:52
  */
-@Service
 public interface UserService extends IService<User> {
-    User getEffectiveUser(UserVO userVO);
+    User getEffectiveUser(AuthenticationVO authenticationVO);
 
     void updateUser(UserVO userVO);
 
     void createUser(UserVO vo);
 
-    IPage<UserVO> listUsersOfPage(Page<User> page);
+    IPage<UserVO> listUsersOfPage(Page<User> page, UserVO userVO);
 }

@@ -1,4 +1,4 @@
-package com.kingwsi.bs.util.annotations;
+package com.kingwsi.bs.common.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

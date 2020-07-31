@@ -1,20 +1,19 @@
 package com.kingwsi.bs.api;
 
+import com.kingwsi.bs.common.helper.tableInfo.TablePermissionHelper;
+import com.kingwsi.bs.common.helper.tableInfo.TablePermissionInfo;
+import com.kingwsi.bs.service.RoleService;
 import io.swagger.annotations.Api;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.util.function.Tuples;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.time.Duration;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.IntStream;
 
 /**
  * Description: <br>
@@ -27,24 +26,17 @@ import java.util.stream.IntStream;
 @RequestMapping("/debug")
 public class DebugController {
 
-    private final HttpServletRequest httpServletRequest;
+    private final RoleService roleService;
 
-    private final HttpServletResponse httpServletResponse;
-
-    public DebugController(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        this.httpServletRequest = httpServletRequest;
-        this.httpServletResponse = httpServletResponse;
+    public DebugController(RoleService roleService) {
+        this.roleService = roleService;
     }
 
-    @GetMapping("/session")
-    public String sessionTest(HttpSession session) {
-        session.setAttribute("name","king");
+    @GetMapping("/org-tree/{id}")
+    public String sessionTest(@PathVariable String id) {
+//        roleService.listRoles();
+        TablePermissionInfo sys_users = TablePermissionHelper.getTablePermissionInfo("sys_users");
         return "SUCCESS";
-    }
-
-    @GetMapping("/get/session")
-    public Object sessionTest2(HttpSession session) {
-        return session.getAttribute("name");
     }
 
     /**
@@ -65,14 +57,5 @@ public class DebugController {
                         .id(Long.toString(data.getT1()))
                         .data(data.getT2())
                         .build());
-    }
-
-    @GetMapping("/req-test")
-    public String test() {
-        String rid = httpServletRequest.getHeader("rid");
-        if (rid == null) {
-            httpServletResponse.setHeader("rid", String.valueOf(System.nanoTime()));
-        }
-        return "success";
     }
 }
