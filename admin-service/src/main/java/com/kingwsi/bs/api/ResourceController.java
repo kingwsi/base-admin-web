@@ -1,6 +1,9 @@
 package com.kingwsi.bs.api;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
+import com.kingwsi.bs.entity.resource.ResourceQuery;
+import com.kingwsi.bs.entity.resource.ResourceVO;
 import com.kingwsi.bs.entity.resource.RouteVO;
 import com.kingwsi.bs.service.ResourceService;
 import com.kingwsi.bs.util.bean.ResponseData;
@@ -38,5 +41,11 @@ public class ResourceController {
     public ResponseData create(@RequestBody RouteVO routeVO) {
         resourceService.create(routeVO);
         return ResponseData.OK();
+    }
+
+    @ApiOperation("获取资源分页")
+    @GetMapping("/page")
+    public ResponseData page(Page page, ResourceQuery resourceVO) {
+        return ResponseData.OK(resourceService.listOfPage(page, resourceVO));
     }
 }

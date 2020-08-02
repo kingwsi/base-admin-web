@@ -58,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/api/auth").permitAll()
-                .antMatchers("/debug/**").hasRole("admin")
+                .antMatchers("/debug/**").permitAll()
                 .antMatchers("/webjars/**","/swagger**/**","/v2/api-docs**","/h2-console/**").permitAll()
                 .antMatchers("/**/*.gif", "/**/*.png", "/**/*.jpg", "/**/*.html", "/**/*.js", "/**/*.css", "/**/*.ico").permitAll()
 //                .antMatchers("/**").access("@customResourceFilterHandler.hasPermission(request ,authentication)")

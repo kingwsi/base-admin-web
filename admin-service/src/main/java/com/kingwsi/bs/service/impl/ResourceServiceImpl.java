@@ -1,5 +1,7 @@
 package com.kingwsi.bs.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.resource.*;
@@ -45,5 +47,10 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     @Override
     public List<ResourceVO> listByType(ResourceTypeEnum route) {
         return resourceMapper.selectAllByType(route);
+    }
+
+    @Override
+    public IPage<ResourceVO> listOfPage(Page page, ResourceQuery resourceVO) {
+        return resourceMapper.selectOfPage(page, resourceVO);
     }
 }

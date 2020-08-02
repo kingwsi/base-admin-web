@@ -64,4 +64,7 @@
         AND sr.type = 'URL'
         AND sr.method = #{method}
     </select>
+    <select id="selectOfPage" resultType="com.kingwsi.bs.entity.resource.ResourceVO">
+        SELECT * FROM sys_resources
+    </select>
 </mapper>

@@ -30,7 +30,7 @@ public interface UsersAndRolesMapper extends BaseMapper<UsersAndRoles> {
 
     UserVO listUserWithRoles(@Param("userName") String userName);
 
-    UserVO listUserWithRolesById(@Param("userId") String userId);
+    UserVO listUserWithRolesByUsername(@Param("username") String username);
 
     Integer batchInsert(@Param("userId") String userId, @Param("roleIds") List<String> roleIds);
 

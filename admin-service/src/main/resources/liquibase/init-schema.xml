@@ -62,8 +62,8 @@
             <column name="sort" type="varchar(100)" remarks="排序"/>
             <column name="icon" type="varchar(100)" remarks="图标"/>
             <column name="type" type="varchar(20)" remarks="资源类型"/>
-            <column name="component" type="varchar(20)" remarks="资源类型"/>
-            <column name="filter_rule" type="varchar(100)" remarks="过滤规则"/>
+            <column name="component" type="varchar(20)" remarks=""/>
+<!--            <column name="filter_rule" type="varchar(100)" remarks="过滤规则"/>-->
             <column name="remark" type="varchar(100)" remarks="备注"/>
             <column name="parent_id" type="varchar(100)" remarks="上级id"/>
             <column name="creator" type="varchar(100)" remarks="创建者"/>

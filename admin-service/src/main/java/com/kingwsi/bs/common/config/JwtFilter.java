@@ -8,16 +8,11 @@ package com.kingwsi.bs.common.config;
  */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.jwt.TokenUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -26,8 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -38,10 +33,8 @@ public class JwtFilter extends GenericFilterBean {
         String jwtToken = req.getHeader("authorization");
         if (!StringUtils.isEmpty(jwtToken)) {
             try {
-                Claims claims = Jwts.parser().setSigningKey("BASE_SERVICE").parseClaimsJws(jwtToken.replace("Bearer", "")).getBody();
-                String username = claims.getSubject();
-                List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_admin");
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                UserVO userVO = TokenUtil.parseToken(jwtToken.replace("Bearer", ""));
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userVO, null, Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(token);
             } catch (Exception e) {
                 HttpServletResponse response = (HttpServletResponse) servletResponse;

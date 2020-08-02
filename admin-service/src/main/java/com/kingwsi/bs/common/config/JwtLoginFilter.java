@@ -3,6 +3,7 @@ package com.kingwsi.bs.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kingwsi.bs.entity.user.User;
+import com.kingwsi.bs.jwt.TokenUtil;
 import com.kingwsi.bs.util.bean.ResponseData;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,8 +11,6 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -59,14 +58,10 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
         for (GrantedAuthority authority : authorities) {
             sb.append(authority.getAuthority()).append(",");
         }
-        String token = Jwts.builder()
-                .setSubject(authResult.getName())
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
-                .signWith(SignatureAlgorithm.HS512, "BASE_SERVICE")
-                .compact();
-        Map<String, String> map = new HashMap<>();
+        String token = TokenUtil.createToken(authResult.getName());
+        Map<String, Object> map = new HashMap<>();
         map.put("data", token);
-        map.put("code", "200");
+        map.put("code", 200);
         resp.setContentType("application/json;charset=utf-8");
         PrintWriter out = resp.getWriter();
         out.write(new ObjectMapper().writeValueAsString(map));
