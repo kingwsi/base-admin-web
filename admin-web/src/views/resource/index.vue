@@ -4,16 +4,15 @@
       <a-form layout="inline">
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
-            <a-form-item label="规则编号">
-              <a-input v-model="queryParam.id" placeholder=""/>
+            <a-form-item label="资源名称">
+              <a-input v-model="queryParam.name" placeholder="资源名称"/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
-            <a-form-item label="使用状态">
-              <a-select v-model="queryParam.status" placeholder="请选择" default-value="0">
-                <a-select-option value="0">全部</a-select-option>
-                <a-select-option value="1">关闭</a-select-option>
-                <a-select-option value="2">运行中</a-select-option>
+            <a-form-item label="类型">
+              <a-select v-model="queryParam.type" placeholder="请选择" default-value="ROUTE">
+                <a-select-option value="ROUTE">菜单</a-select-option>
+                <a-select-option value="API">接口</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -62,7 +61,7 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="handleEdit()">新建</a-button>
+      <a-button type="primary" icon="plus" @click="handleAdd()">新建</a-button>
     </div>
 
     <s-table
@@ -79,7 +78,15 @@
         </template>
       </span>
     </s-table>
-
+    <create-form
+      ref="createModal"
+      :visible="visible"
+      :loading="confirmLoading"
+      :model="mdl"
+      @cancel="handleCancel"
+      @ok="handleOk"
+    />
+    <step-by-step-modal ref="modal" @ok="handleOk"/>
   </div>
 </template>
 
@@ -88,14 +95,22 @@ import moment from 'moment'
 import { STable } from '@/components'
 import { page } from '@/api/resource/index'
 
+import StepByStepModal from './modules/StepByStepModal'
+import CreateForm from './modules/CreateForm'
+
 export default {
   name: 'UserInfo',
   components: {
-    STable
+    STable,
+    CreateForm,
+    StepByStepModal
   },
   data () {
     return {
-      mdl: {},
+      // create model
+      visible: false,
+      confirmLoading: false,
+      mdl: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
@@ -140,15 +155,67 @@ export default {
     this.loadData({ t: new Date() })
   },
   methods: {
+    handleAdd () {
+      this.mdl = null
+      this.visible = true
+    },
     handleEdit (record) {
       console.log(record)
-      this.$emit('onEdit', record)
+      this.visible = true
+      this.mdl = { ...record }
     },
     handleOk () {
+      const form = this.$refs.createModal.form
+      this.confirmLoading = true
+      form.validateFields((errors, values) => {
+        if (!errors) {
+          console.log('values', values)
+          if (values.id > 0) {
+            // 修改 e.g.
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve()
+              }, 1000)
+            }).then(res => {
+              this.visible = false
+              this.confirmLoading = false
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
 
+              this.$message.info('修改成功')
+            })
+          } else {
+            // 新增
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve()
+              }, 1000)
+            }).then(res => {
+              this.visible = false
+              this.confirmLoading = false
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+
+              this.$message.info('新增成功')
+            })
+          }
+        } else {
+          this.confirmLoading = false
+        }
+      })
     },
     toggleAdvanced () {
       this.advanced = !this.advanced
+    },
+    handleCancel () {
+      this.visible = false
+
+      const form = this.$refs.createModal.form
+      form.resetFields() // 清理表单数据（可不做）
     },
 
     resetSearchForm () {

@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="新建规则"
+    title="新增资源"
     :width="640"
     :visible="visible"
     :confirmLoading="loading"
@@ -13,8 +13,27 @@
         <a-form-item v-show="model && model.id > 0" label="主键ID">
           <a-input v-decorator="['id', { initialValue: 0 }]" disabled />
         </a-form-item>
-        <a-form-item label="描述">
-          <a-input v-decorator="['description', {rules: [{required: true, min: 5, message: '请输入至少五个字符的规则描述！'}]}]" />
+        <a-form-item label="资源类型">
+          <a-select v-decorator="['type',{rules: [{required: true, message: '请输入至少2个字符的名称！'}]}]">
+            <a-select-option value="ROUTE">
+              菜单
+            </a-select-option>
+            <a-select-option value="API">
+              API
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="父级id">
+          <a-select :options="options" v-decorator="['parentId',{rules: [{required: true}]}]"/>
+        </a-form-item>
+        <a-form-item label="资源名称">
+          <a-input v-decorator="['name', {rules: [{required: true, min: 2, message: '请输入至少2个字符的名称！'}]}]" />
+        </a-form-item>
+        <a-form-item label="地址">
+          <a-input v-decorator="['uri', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
+        </a-form-item>
+        <a-form-item label="组件">
+          <a-input v-decorator="['component', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -25,7 +44,7 @@
 import pick from 'lodash.pick'
 
 // 表单字段
-const fields = ['description', 'id']
+const fields = ['id', 'uri', 'type', 'name', 'component', 'parentId']
 
 export default {
   props: {
@@ -54,7 +73,17 @@ export default {
       }
     }
     return {
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      options: [
+        {
+          value: 'zhejiang',
+          label: 'Zhejiang'
+        },
+        {
+          value: 'jiangsu',
+          label: 'Jiangsu'
+        }
+      ]
     }
   },
   created () {

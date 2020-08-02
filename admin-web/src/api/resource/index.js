@@ -17,6 +17,6 @@ export function page (parameter) {
   return request({
     url: resourceApi.PageInfo,
     method: 'get',
-    data: parameter
+    params: parameter
   })
 }
