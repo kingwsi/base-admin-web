@@ -17,7 +17,7 @@ const constantRouterComponents = {
   // 你需要动态引入的页面组件
   'Workplace': () => import('@/views/dashboard/Workplace'),
   'Analysis': () => import('@/views/dashboard/Analysis'),
-  'UserInfo': () => import('@/views/user/info'),
+  'UserInfo': () => import('@/views/user/UserInfo'),
 
   // form
   'BasicForm': () => import('@/views/form/basicForm'),
@@ -67,7 +67,7 @@ const rootRouter = {
   name: 'index',
   path: '',
   component: 'BasicLayout',
-  redirect: '/dashboard/user',
+  redirect: '/system/user',
   uri: '',
   meta: {
     title: '首页'

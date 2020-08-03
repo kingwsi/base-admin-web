@@ -70,8 +70,8 @@
             <if test="query.name != null and query.name != ''">
                 AND name LIKE CONCAT('%',#{query.name},'%')
             </if>
-            <if test="query.type != null and query.type != ''">
-                AND type LIKE = #{query.type.name}
+            <if test="query.type != null">
+                AND type = #{query.type}
             </if>
         </where>
     </select>

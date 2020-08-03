@@ -13,8 +13,7 @@ export const constantRouterComponents = {
   layout: BasicLayout,
   // 路由配置
   route: () => import('@/views/dashboard/Analysis'),
-  role: () => import('@/views/other/RoleList'),
-  user: () => import('@/views/user/info')
+  role: () => import('@/views/other/RoleList')
 }
 
 export const asyncRouterMap = [
