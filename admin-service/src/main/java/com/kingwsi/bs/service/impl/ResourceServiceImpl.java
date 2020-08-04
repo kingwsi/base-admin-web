@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.resource.*;
 import com.kingwsi.bs.entity.user.UserVO;
+import com.kingwsi.bs.exception.CustomException;
 import com.kingwsi.bs.jwt.TokenUtil;
 import com.kingwsi.bs.mapper.ResourceMapper;
 import com.kingwsi.bs.service.ResourceService;
@@ -24,9 +25,20 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
         this.resourceConvertMapper = resourceConvertMapper;
     }
 
-    public void create(RouteVO vo) {
-        Resource resource = resourceConvertMapper.routeToResource(vo);
+    public void create(ResourceVO vo) {
+        if (checkRepeat(vo)) {
+            throw new CustomException("资源重复");
+        }
+        Resource resource = resourceConvertMapper.resourceVOToResource(vo);
         this.resourceMapper.insert(resource);
+    }
+
+    public int updateById(ResourceVO vo) {
+        if (checkRepeat(vo)) {
+            throw new CustomException("资源重复");
+        }
+        Resource resource = resourceConvertMapper.resourceVOToResource(vo);
+        return this.resourceMapper.updateById(resource);
     }
 
     public List<Resource> listRoute() {
@@ -52,5 +64,17 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     @Override
     public IPage<ResourceVO> listOfPage(Page page, ResourceQuery resourceVO) {
         return resourceMapper.selectOfPage(page, resourceVO);
+    }
+
+    /**
+     * 检查是否重复
+     * 规则：uri唯一，MENU类型名称唯一
+     *
+     * @param resourceVO
+     * @return true 重复 false 不重复
+     */
+    private boolean checkRepeat(ResourceVO resourceVO) {
+        int repeatCount = resourceMapper.countRepeat(resourceVO);
+        return repeatCount > 0;
     }
 }

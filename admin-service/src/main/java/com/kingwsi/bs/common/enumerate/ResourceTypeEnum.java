@@ -1,7 +1,7 @@
 package com.kingwsi.bs.common.enumerate;
 
 public enum ResourceTypeEnum {
-    ROUTE("路由"),
+    MENU("路由"),
     BUTTON("按钮"),
     API("请求地址");
 

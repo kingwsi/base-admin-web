@@ -12,7 +12,9 @@ import java.util.List;
 @Service
 public interface ResourceService extends IService<Resource> {
 
-    void create(RouteVO vo);
+    void create(ResourceVO vo);
+
+    int updateById(ResourceVO vo);
 
     List<Resource> listRoute();
 

@@ -86,24 +86,21 @@
       @cancel="handleCancel"
       @ok="handleOk"
     />
-    <step-by-step-modal ref="modal" @ok="handleOk"/>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import { page } from '@/api/resource/index'
+import { page, updateById, create } from '@/api/resource/index'
 
-import StepByStepModal from './modules/StepByStepModal'
 import CreateForm from './modules/CreateForm'
 
 export default {
   name: 'UserInfo',
   components: {
     STable,
-    CreateForm,
-    StepByStepModal
+    CreateForm
   },
   data () {
     return {
@@ -172,11 +169,7 @@ export default {
           console.log('values', values)
           if (values.id > 0) {
             // 修改 e.g.
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve()
-              }, 1000)
-            }).then(res => {
+            updateById(values).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
@@ -185,14 +178,13 @@ export default {
               this.$refs.table.refresh()
 
               this.$message.info('修改成功')
+            }).catch((err) => {
+              console.log(`form update error:->${err}`)
+              this.confirmLoading = false
             })
           } else {
             // 新增
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve()
-              }, 1000)
-            }).then(res => {
+            create(values).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
@@ -201,6 +193,9 @@ export default {
               this.$refs.table.refresh()
 
               this.$message.info('新增成功')
+            }).catch((err) => {
+              console.log(`form update error:->${err}`)
+              this.confirmLoading = false
             })
           }
         } else {

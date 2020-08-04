@@ -34,4 +34,6 @@ public interface ResourceMapper extends BaseMapper<Resource> {
     List<Resource> selectByUserAndMethod(@Param("userId") String userId, @Param("method") String method);
 
     IPage<ResourceVO> selectOfPage(Page page, @Param("query") ResourceQuery query);
+
+    int countRepeat(ResourceVO resourceVO);
 }

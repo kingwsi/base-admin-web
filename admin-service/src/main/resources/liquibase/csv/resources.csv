@@ -1,6 +1,6 @@
 id,uri,name,description,method,type,parent_id,sort,component
 1,/**,debug接口,debug接口,GET;POST;PUT;DELETE;OPTIONS,API,-1,0,
-3,/system,权限管理,,,ROUTE,-1,1,RouteView
-4,user,用户管理,,,ROUTE,3,2,user/UserInfo
-5,role,角色管理,,,ROUTE,3,3,role/RoleList
-6,resource/index,资源管理,,,ROUTE,3,4,resource/index
+3,/system,权限管理,,,MENU,-1,1,RouteView
+4,user,用户管理,,,MENU,3,2,user/UserInfo
+5,role,角色管理,,,MENU,3,3,role/RoleList
+6,resource/index,资源管理,,,MENU,3,4,resource/index

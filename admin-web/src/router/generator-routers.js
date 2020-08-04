@@ -17,7 +17,6 @@ const constantRouterComponents = {
   // 你需要动态引入的页面组件
   'Workplace': () => import('@/views/dashboard/Workplace'),
   'Analysis': () => import('@/views/dashboard/Analysis'),
-  'UserInfo': () => import('@/views/user/UserInfo'),
 
   // form
   'BasicForm': () => import('@/views/form/basicForm'),
@@ -117,7 +116,7 @@ export const generator = (routerMap, parent) => {
       // path: item.uri,
       path: item.path || `${parent && parent.path || ''}/${item.uri}`,
       // 路由名称，建议唯一
-      name: item.name || item.key || '',
+      name: item.name || '',
       // 该路由对应页面的 组件 :方案1
       // component: constantRouterComponents[item.component || item.key],
       // 该路由对应页面的 组件 :方案2 (动态加载)

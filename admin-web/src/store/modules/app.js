@@ -24,7 +24,7 @@ const app = {
     layout: '',
     contentWidth: '',
     fixedHeader: false,
-    fixedSidebar: false,
+    fixedSidebar: true,
     autoHideHeader: false,
     color: '',
     weak: false,

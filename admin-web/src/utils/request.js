@@ -16,6 +16,12 @@ const request = axios.create({
 const errorHandler = (error) => {
   if (error.response) {
     const data = error.response.data
+    if (error.response.status === 500) {
+      notification.error({
+        message: '服务器错误',
+        description: data.message
+      })
+    }
     // 从 localstorage 获取 token
     const token = storage.get(ACCESS_TOKEN)
     if (error.response.status === 403) {
