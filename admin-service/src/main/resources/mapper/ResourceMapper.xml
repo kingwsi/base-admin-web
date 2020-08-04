@@ -64,4 +64,38 @@
         AND sr.type = 'URL'
         AND sr.method = #{method}
     </select>
+    <select id="selectOfPage" resultType="com.kingwsi.bs.entity.resource.ResourceVO">
+        SELECT * FROM sys_resources
+        <where>
+            <if test="query.name != null and query.name != ''">
+                AND name LIKE CONCAT('%',#{query.name},'%')
+            </if>
+            <if test="query.type != null">
+                AND type = #{query.type}
+            </if>
+        </where>
+    </select>
+    <!--
+    查找是否重复 规则：
+    BUTTON - 同一parentId 与 name 唯一
+    API    - uri 和 name 唯一
+    MENU   - uri 和 name 唯一
+    -->
+    <select id="countRepeat" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM sys_resources
+        <where>
+            <if test="type.name=='MENU'">
+                (name = #{name} OR uri = #{uri})
+            </if>
+            <if test="type.name=='API'">
+                (name = #{name} OR uri = #{uri})
+            </if>
+            <if test="type.name=='BUTTON'">
+                parent_id = #{parentId} AND name = #{name}
+            </if>
+            <if test="id != null and id != ''">
+                AND id != #{id}
+            </if>
+        </where>
+    </select>
 </mapper>

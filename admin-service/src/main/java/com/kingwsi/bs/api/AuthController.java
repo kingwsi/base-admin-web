@@ -21,11 +21,11 @@ import javax.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @ApiOperation("创建令牌")
-    @PostMapping
-    public ResponseData auth(@RequestBody @Valid AuthenticationVO vo) {
-        return ResponseData.OK(TokenUtil.createToken(vo));
-    }
+//    @ApiOperation("创建令牌")
+//    @PostMapping
+//    public ResponseData auth(@RequestBody @Valid AuthenticationVO vo) {
+//        return ResponseData.OK(TokenUtil.createToken(vo));
+//    }
 
     @ApiOperation("登出")
     @PostMapping("/logout")

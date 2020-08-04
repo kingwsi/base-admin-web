@@ -5,4 +5,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ResourceConvertMapper {
     Resource routeToResource(RouteVO vo);
+
+    Resource resourceVOToResource(ResourceVO vo);
 }

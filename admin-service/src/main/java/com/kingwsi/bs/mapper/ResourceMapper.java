@@ -1,8 +1,11 @@
 package com.kingwsi.bs.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.entity.resource.Resource;
 import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
+import com.kingwsi.bs.entity.resource.ResourceQuery;
 import com.kingwsi.bs.entity.resource.ResourceVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -29,4 +32,8 @@ public interface ResourceMapper extends BaseMapper<Resource> {
     List<Resource> selectByUser(@Param("userId") String userId);
 
     List<Resource> selectByUserAndMethod(@Param("userId") String userId, @Param("method") String method);
+
+    IPage<ResourceVO> selectOfPage(Page page, @Param("query") ResourceQuery query);
+
+    int countRepeat(ResourceVO resourceVO);
 }

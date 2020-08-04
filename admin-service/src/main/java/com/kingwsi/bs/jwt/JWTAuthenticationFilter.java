@@ -45,20 +45,20 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         SecurityContextHolder.clearContext();
-        if (!StringUtils.isEmpty(request.getHeader("Authorization"))) {
-            // 在此处将用户信息存入上下文
-            Principal principal = TokenUtil.getPrincipal(request);
-            if (principal == null) {
-                response.setCharacterEncoding("utf-8");
-                response.setContentType("application/json; charset=utf-8");
-                response.setStatus(403);
-                response.getWriter().write(JSON.toJSONString(ResponseData.FAIL("无权限",403)));
-                log.info("无权限");
-                return;
-            }
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, null, Collections.emptyList());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+//        if (!StringUtils.isEmpty(request.getHeader("Authorization"))) {
+//            // 在此处将用户信息存入上下文
+//            Principal principal = TokenUtil.getPrincipal(request);
+//            if (principal == null) {
+//                response.setCharacterEncoding("utf-8");
+//                response.setContentType("application/json; charset=utf-8");
+//                response.setStatus(403);
+//                response.getWriter().write(JSON.toJSONString(ResponseData.FAIL("无权限",403)));
+//                log.info("无权限");
+//                return;
+//            }
+//            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, null, Collections.emptyList());
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//        }
         chain.doFilter(request, response);
     }
 }

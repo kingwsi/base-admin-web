@@ -5,6 +5,7 @@ import com.kingwsi.bs.common.enumerate.RedisKeyEnum;
 import com.kingwsi.bs.entity.authority.Principal;
 import com.kingwsi.bs.entity.resource.Resource;
 import com.kingwsi.bs.entity.role.Role;
+import com.kingwsi.bs.exception.CustomException;
 import com.kingwsi.bs.mapper.*;
 import com.kingwsi.bs.entity.user.UserVO;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,23 +43,6 @@ public class AccessControlService {
         this.redisTemplate = redisTemplate;
         this.userMapper = userMapper;
         this.resourceService = resourceService;
-    }
-
-    /**
-     * 获取完整用户信息
-     *
-     * @param userId
-     * @return
-     */
-    public UserVO getUserWithRoleById(String userId) {
-        Object object = redisTemplate.opsForValue().get(RedisKeyEnum.USER_AUTH_INFO + userId);
-        if (object instanceof UserVO) {
-            return (UserVO) object;
-        } else {
-            UserVO userVO = usersAndRolesMapper.listUserWithRolesById(userId);
-            redisTemplate.opsForValue().set(RedisKeyEnum.USER_AUTH_INFO + userId, userVO, RedisKeyEnum.USER_AUTH_INFO.getExpire(), TimeUnit.MINUTES);
-            return userVO;
-        }
     }
 
     /**
@@ -105,5 +89,13 @@ public class AccessControlService {
      */
     public List<Resource> listByUserAndMethod(String userId, String method) {
         return resourceMapper.selectByUserAndMethod(userId, method);
+    }
+
+    public UserVO getUserWithRoleByUsername(String username) {
+        UserVO userVO = usersAndRolesMapper.listUserWithRolesByUsername(username);
+        if (userVO == null) {
+            throw new CustomException("获取用户信息失败");
+        }
+        return userVO;
     }
 }

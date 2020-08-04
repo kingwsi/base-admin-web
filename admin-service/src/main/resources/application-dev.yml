@@ -1,20 +1,16 @@
 spring:
-#  datasource:
+  datasource:
 #    type: com.zaxxer.hikari.HikariDataSource
-#    url: jdbc:mysql://localhost:3306/test?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true
+#    url: jdbc:mysql://192.168.123.232:3306/test?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true
 #    username: root
 #    password: root
 #  jpa:
 #    database: mysql
 #    show-sql: true
-  datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    # sql耗时
-    # driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    # url: jdbc:p6spy:h2:file:./target/h2db/db/test;DB_CLOSE_DELAY=-1
     url: jdbc:h2:file:./target/h2db/db/test;DB_CLOSE_DELAY=-1
-    username: test
-    password:
+    username: root
+    password: root
   jpa:
     database: H2
     show-sql: true

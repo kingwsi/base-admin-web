@@ -44,9 +44,6 @@ public class Resource extends BaseEntity {
     // 图标
     private String icon;
 
-    // 数据过滤 ORG;CREATOR;ROLE
-    private FilterRule filterRule;
-
     // 类型
     private ResourceTypeEnum type;
 }
