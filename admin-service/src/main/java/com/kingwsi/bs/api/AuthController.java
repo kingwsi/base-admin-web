@@ -32,10 +32,4 @@ public class AuthController {
     public ResponseData logout() {
         return ResponseData.OK();
     }
-
-    @ApiOperation("获取当前用户信息")
-    @GetMapping("/info")
-    public ResponseData getCurrentUser() {
-        return ResponseData.OK(TokenUtil.getCurrentUser());
-    }
 }

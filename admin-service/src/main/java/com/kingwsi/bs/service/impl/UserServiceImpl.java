@@ -33,17 +33,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User getEffectiveUser(AuthenticationVO authenticationVO) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", authenticationVO.getUsername());
-        User user = userMapper.selectOne(queryWrapper);
-        if (user != null && bCryptPasswordEncoder.matches(authenticationVO.getPassword(), user.getPassword())) {
-            return user;
-        }
-        return null;
-    }
-
-    @Override
     public void createUser(UserVO vo) {
         User user = userConvertMapper.toUser(vo);
         user.setPassword(bCryptPasswordEncoder.encode(vo.getPassword()));

@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
  * Date: 2019/6/29 15:52
  */
 public interface UserService extends IService<User> {
-    User getEffectiveUser(AuthenticationVO authenticationVO);
-
     void updateUser(UserVO userVO);
 
     void createUser(UserVO vo);

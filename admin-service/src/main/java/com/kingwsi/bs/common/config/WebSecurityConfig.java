@@ -1,6 +1,5 @@
 package com.kingwsi.bs.common.config;
 
-import com.kingwsi.bs.jwt.JWTAuthenticationFilter;
 import com.kingwsi.bs.service.impl.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -13,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.PrintWriter;
 
 /**
  * Description: security配置
@@ -66,7 +67,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(new JwtLoginFilter("/api/auth", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
-                .csrf().disable();
+                .csrf().disable().exceptionHandling()
+                .authenticationEntryPoint((req, resp, authException) -> {
+                            resp.setContentType("application/json;charset=utf-8");
+                            PrintWriter out = resp.getWriter();
+                            out.write("尚未登录，请先登录");
+                            out.flush();
+                            out.close();
+                        }
+                );
 
     }
 }

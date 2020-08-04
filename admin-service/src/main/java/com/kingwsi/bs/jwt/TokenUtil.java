@@ -68,6 +68,17 @@ public class TokenUtil {
         return service.getUserWithRoleByUsername(username);
     }
 
+    /**
+     * 解析TOKEN信息并获取当前用户完整信息（查询数据库）
+     *
+     * @return
+     */
+    public static String getUsernameByToken(HttpServletRequest servletRequest) {
+        String authorization = servletRequest.getHeader("Authorization");
+        Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(authorization).getBody();
+        return claims.getSubject();
+    }
+
     public static String createToken(String username) {
 //            redisTemplate.opsForValue().set(RedisKeyEnum.USER_AUTH_INFO + user.getId(), user,60, TimeUnit.SECONDS);
             return Jwts.builder()
