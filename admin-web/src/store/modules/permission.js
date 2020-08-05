@@ -63,7 +63,7 @@ const permission = {
     }
   },
   actions: {
-    GenerateRoutes ({ commit }, data) {
+    GenerateRoutes ({ commit }) {
       return new Promise(resolve => {
         // const { roles } = data
         // const accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
