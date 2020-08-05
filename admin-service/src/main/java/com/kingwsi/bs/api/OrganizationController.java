@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "组织")
+@Api(value = "资源管理")
 @RestController
 @RequestMapping("/api/organizations")
 public class OrganizationController {
@@ -21,6 +21,6 @@ public class OrganizationController {
     @ApiOperation("获取组织list")
     @GetMapping
     public ResponseData list(){
-        return ResponseData.OK(organizationService.list());
+        return ResponseData.OK();
     }
 }

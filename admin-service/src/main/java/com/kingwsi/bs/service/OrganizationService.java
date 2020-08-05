@@ -1,25 +1,31 @@
 package com.kingwsi.bs.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.kingwsi.bs.entity.organization.Organization;
+import com.kingwsi.bs.mapper.OrganizationMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public interface OrganizationService extends IService<Organization> {
+public class OrganizationService {
 
-    /**
-     * 获取子组织列表，按父级id获取
-     * @param parentId 父级id
-     * @return
-     */
-    List<Organization> listChildByParentId(String parentId);
+    private final OrganizationMapper organizationMapper;
 
-    /**
-     * 获取子组织列表，按组织id获取
-     * @param id id
-     * @return
-     */
-    List<Organization> listChildById(String id);
+    private List<Organization> organizations;
+
+    public OrganizationService(OrganizationMapper organizationMapper) {
+        this.organizationMapper = organizationMapper;
+    }
+
+    public List<Organization> recursive(List<Organization> organizations, String parentId) {
+        List<Organization> result = organizations.stream().filter(o -> o.getParentId().equals(parentId)).collect(Collectors.toList());
+        if (!result.isEmpty()){
+            this.organizations.addAll(result);
+            for (Organization o : result) {
+                recursive(organizations, o.getId());
+            }
+        }
+        return this.organizations;
+    }
 }

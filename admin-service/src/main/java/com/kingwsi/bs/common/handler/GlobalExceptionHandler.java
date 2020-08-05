@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * Description: 全局异常处理
@@ -51,26 +52,5 @@ public class GlobalExceptionHandler {
         FieldError fieldError = ex.getBindingResult().getFieldError();
         assert fieldError != null;
         return ResponseData.FAIL(fieldError.getDefaultMessage());
-    }
-
-    /**
-     * 令牌异常
-     *
-     * @return
-     */
-    @ExceptionHandler(value = ExpiredJwtException.class)
-    public ResponseData handleExpiredJwtException(ExpiredJwtException e) {
-        log.error(e.getMessage());
-        return ResponseData.FAIL("令牌已过期");
-    }
-
-    /**
-     * 令牌异常
-     *
-     * @return
-     */
-    @ExceptionHandler(value = SignatureException.class)
-    public ResponseData handleSignatureException() {
-        return ResponseData.FAIL("令牌不合法");
     }
 }

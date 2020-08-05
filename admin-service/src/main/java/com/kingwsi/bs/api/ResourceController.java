@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 路由
  */
-@Api(tags = "路由")
+@Api(tags = "资源管理")
 @RestController
 @RequestMapping("/api/resources")
 public class ResourceController {

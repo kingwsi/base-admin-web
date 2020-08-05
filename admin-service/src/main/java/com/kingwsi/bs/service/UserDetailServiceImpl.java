@@ -1,4 +1,4 @@
-package com.kingwsi.bs.service.impl;
+package com.kingwsi.bs.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kingwsi.bs.entity.user.User;

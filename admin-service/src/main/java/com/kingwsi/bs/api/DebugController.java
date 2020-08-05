@@ -2,7 +2,7 @@ package com.kingwsi.bs.api;
 
 import com.kingwsi.bs.common.helper.tableInfo.TablePermissionHelper;
 import com.kingwsi.bs.common.helper.tableInfo.TablePermissionInfo;
-import com.kingwsi.bs.jwt.TokenUtil;
+import com.kingwsi.bs.security.TokenUtil;
 import com.kingwsi.bs.service.RoleService;
 import io.swagger.annotations.Api;
 import org.springframework.http.codec.ServerSentEvent;

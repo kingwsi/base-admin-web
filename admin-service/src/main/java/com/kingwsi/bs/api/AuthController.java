@@ -1,14 +1,9 @@
 package com.kingwsi.bs.api;
 
-import com.kingwsi.bs.entity.login.AuthenticationVO;
-import com.kingwsi.bs.entity.user.UserVO;
-import com.kingwsi.bs.jwt.TokenUtil;
 import com.kingwsi.bs.util.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 /**
  * Description: 授权相关接口
