@@ -1,4 +1,4 @@
-package com.kingwsi.bs.jwt;
+package com.kingwsi.bs.security;
 
 import com.kingwsi.bs.entity.authority.Principal;
 import com.kingwsi.bs.entity.resource.Resource;
@@ -66,6 +66,17 @@ public class TokenUtil {
         Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(authorization).getBody();
         String username = claims.getSubject();
         return service.getUserWithRoleByUsername(username);
+    }
+
+    /**
+     * 解析TOKEN信息并获取当前用户完整信息（查询数据库）
+     *
+     * @return
+     */
+    public static String getUsernameByToken(HttpServletRequest servletRequest) {
+        String authorization = servletRequest.getHeader("Authorization");
+        Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(authorization).getBody();
+        return claims.getSubject();
     }
 
     public static String createToken(String username) {

@@ -1,12 +1,9 @@
-package com.kingwsi.bs.common.config;
+package com.kingwsi.bs.security;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kingwsi.bs.entity.user.User;
-import com.kingwsi.bs.jwt.TokenUtil;
 import com.kingwsi.bs.util.bean.ResponseData;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

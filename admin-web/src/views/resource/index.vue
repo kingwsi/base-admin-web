@@ -11,8 +11,9 @@
           <a-col :md="8" :sm="24">
             <a-form-item label="类型">
               <a-select v-model="queryParam.type" placeholder="请选择" default-value="ROUTE">
-                <a-select-option value="ROUTE">菜单</a-select-option>
+                <a-select-option value="MENU">菜单</a-select-option>
                 <a-select-option value="API">接口</a-select-option>
+                <a-select-option value="BUTTON">按钮</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -75,6 +76,7 @@
         <template>
           <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
+          <a @click="handleEdit(record)" type="danger">删除</a>
         </template>
       </span>
     </s-table>

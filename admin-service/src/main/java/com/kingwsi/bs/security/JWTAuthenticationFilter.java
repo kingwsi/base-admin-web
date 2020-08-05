@@ -1,8 +1,7 @@
-package com.kingwsi.bs.jwt;
+package com.kingwsi.bs.security;
 
-import com.alibaba.fastjson.JSON;
-import com.kingwsi.bs.entity.authority.Principal;
-import com.kingwsi.bs.util.bean.ResponseData;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kingwsi.bs.entity.user.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +14,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Description: token的校验
@@ -44,7 +46,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        SecurityContextHolder.clearContext();
+//        SecurityContextHolder.clearContext();
 //        if (!StringUtils.isEmpty(request.getHeader("Authorization"))) {
 //            // 在此处将用户信息存入上下文
 //            Principal principal = TokenUtil.getPrincipal(request);
@@ -59,6 +61,27 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 //            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, null, Collections.emptyList());
 //            SecurityContextHolder.getContext().setAuthentication(authentication);
 //        }
+//        chain.doFilter(request, response);
+        String jwtToken = request.getHeader("authorization");
+        if (!StringUtils.isEmpty(jwtToken)) {
+            try {
+                UserVO userVO = TokenUtil.parseToken(jwtToken.replace("Bearer", ""));
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userVO, null, Collections.emptyList());
+                SecurityContextHolder.getContext().setAuthentication(token);
+            } catch (Exception e) {
+                log.warn("Token解析失败");
+                Map<String, String> map = new HashMap<>();
+                map.put("data", "身份验证失败");
+                map.put("code", "401");
+                response.setContentType("application/json;charset=utf-8");
+                response.setStatus(401);
+                PrintWriter out = response.getWriter();
+                out.write(new ObjectMapper().writeValueAsString(map));
+                out.flush();
+                out.close();
+                return;
+            }
+        }
         chain.doFilter(request, response);
     }
 }

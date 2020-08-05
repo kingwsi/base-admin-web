@@ -2,27 +2,76 @@ package com.kingwsi.bs.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
-import com.kingwsi.bs.entity.resource.*;
+import com.kingwsi.bs.entity.resource.Resource;
+import com.kingwsi.bs.entity.resource.ResourceConvertMapper;
+import com.kingwsi.bs.entity.resource.ResourceQuery;
+import com.kingwsi.bs.entity.resource.ResourceVO;
+import com.kingwsi.bs.entity.user.UserVO;
+import com.kingwsi.bs.exception.CustomException;
+import com.kingwsi.bs.security.TokenUtil;
+import com.kingwsi.bs.mapper.ResourceMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public interface ResourceService extends IService<Resource> {
+public class ResourceService {
+    private final ResourceMapper resourceMapper;
 
-    void create(ResourceVO vo);
+    private final ResourceConvertMapper resourceConvertMapper;
 
-    int updateById(ResourceVO vo);
+    public ResourceService(ResourceMapper resourceMapper, ResourceConvertMapper resourceConvertMapper) {
+        this.resourceMapper = resourceMapper;
+        this.resourceConvertMapper = resourceConvertMapper;
+    }
 
-    List<Resource> listRoute();
+    public void create(ResourceVO vo) {
+        if (checkRepeat(vo)) {
+            throw new CustomException("资源重复");
+        }
+        Resource resource = resourceConvertMapper.resourceVOToResource(vo);
+        this.resourceMapper.insert(resource);
+    }
 
-    List<Resource> listByUserId(String id);
+    public int updateById(ResourceVO vo) {
+        if (checkRepeat(vo)) {
+            throw new CustomException("资源重复");
+        }
+        Resource resource = resourceConvertMapper.resourceVOToResource(vo);
+        return this.resourceMapper.updateById(resource);
+    }
 
-    List<Resource> listByMethodAndUserId(String resourceTypeEnum, String userId, String uri);
+    public List<Resource> listRoute() {
+        UserVO currentUser = TokenUtil.getCurrentUser();
+        return resourceMapper.selectRouteByUserId(currentUser.getId());
+    }
 
-    List<ResourceVO> listByType(ResourceTypeEnum route);
+    public List<Resource> listByUserId(String userId) {
+        return resourceMapper.selectByUserId(userId);
+    }
 
-    IPage<ResourceVO> listOfPage(Page page, ResourceQuery resourceVO);
+    public List<Resource> listByMethodAndUserId(String method, String userId, String uri) {
+        return resourceMapper.selectByMethodAndUserIdAndUri(method, userId, uri);
+    }
+
+    public List<ResourceVO> listByType(ResourceTypeEnum route) {
+        return resourceMapper.selectAllByType(route);
+    }
+
+    public IPage<ResourceVO> listOfPage(Page page, ResourceQuery resourceVO) {
+        return resourceMapper.selectOfPage(page, resourceVO);
+    }
+
+    /**
+     * 检查是否重复
+     * 规则：uri唯一，MENU类型名称唯一
+     *
+     * @param resourceVO
+     * @return true 重复 false 不重复
+     */
+    private boolean checkRepeat(ResourceVO resourceVO) {
+        int repeatCount = resourceMapper.countRepeat(resourceVO);
+        return repeatCount > 0;
+    }
 }

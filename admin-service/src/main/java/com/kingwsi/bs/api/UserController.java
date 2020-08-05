@@ -3,7 +3,9 @@ package com.kingwsi.bs.api;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserVO;
+import com.kingwsi.bs.security.TokenUtil;
 import com.kingwsi.bs.service.UserService;
+import com.kingwsi.bs.service.UserDetailServiceImpl;
 import com.kingwsi.bs.util.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondit
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +37,13 @@ public class UserController {
 
     private final UserService userService;
 
+    private final UserDetailServiceImpl userDetailService;
+
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
-    public UserController(UserService userService, RequestMappingHandlerMapping requestMappingHandlerMapping) {
+    public UserController(UserService userService, UserDetailServiceImpl userDetailService, RequestMappingHandlerMapping requestMappingHandlerMapping) {
         this.userService = userService;
+        this.userDetailService = userDetailService;
         this.requestMappingHandlerMapping = requestMappingHandlerMapping;
     }
 
@@ -59,6 +65,12 @@ public class UserController {
     @GetMapping("/page")
     public ResponseData page(Page<User> page, UserVO userVO) {
         return ResponseData.OK(userService.listUsersOfPage(page, userVO));
+    }
+
+    @ApiOperation("获取用户信息")
+    @GetMapping("/info")
+    public ResponseData getUserInfo(HttpServletRequest httpServletRequest) {
+        return ResponseData.OK(TokenUtil.getCurrentUser(httpServletRequest));
     }
 
     @GetMapping("/apis")

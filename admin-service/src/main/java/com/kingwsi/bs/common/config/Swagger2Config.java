@@ -32,7 +32,7 @@ public class Swagger2Config {
                 .modelRef(new ModelRef("string")).parameterType("header")
                 .required(false).build(); //header中的ticket参数非必填，传空也可以
         pars.add(ticketPar.build());    //
-        return new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.SPRING_WEB)
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.kingwsi.bs.api"))

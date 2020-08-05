@@ -79,9 +79,9 @@ const rootRouter = {
  * @param token
  * @returns {Promise<Router>}
  */
-export const generatorDynamicRouter = (token) => {
+export const generatorDynamicRouter = () => {
   return new Promise((resolve, reject) => {
-    loginService.getCurrentUserNav(token).then(res => {
+    loginService.getCurrentUserNav().then(res => {
       console.log('res', res)
       const { data } = res
       const menuNav = []

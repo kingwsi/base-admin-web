@@ -5,7 +5,7 @@
         <result column="id" property="id"/>
         <result property="avatar" column="avatar"/>
         <result property="username" column="username"/>
-        <result property="fullName" column="fullName"/>
+        <result property="fullName" column="full_name"/>
         <collection property="roles" ofType="string">
             <result column="roleName"/>
         </collection>
