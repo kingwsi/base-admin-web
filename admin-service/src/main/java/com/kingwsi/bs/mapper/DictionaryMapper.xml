@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingwsi.bs.mapper.DictionaryMapper">
+    <select id="selectPage" resultType="com.kingwsi.bs.entity.dictionary.Dictionary">
+        SELECT * FROM sys_dictionarirs
+        <where>
+            <if test="vo.name!=null and vo,name!=null">
+                name LIKE CONCAT('%',#{vo.name},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

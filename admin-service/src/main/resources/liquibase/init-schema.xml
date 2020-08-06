@@ -11,8 +11,6 @@
         <column name="created_date" type="timestamp" remarks="创建日期"/>
         <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
         <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
-        <column name="organization_id" type="varchar(64)" remarks="组织id"/>
-        <column name="role_ids" type="varchar(400)" remarks="角色"/>
         <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         -->
         <createTable tableName="sys_users" remarks="用户">
@@ -29,8 +27,6 @@
             <column name="created_date" type="timestamp" remarks="创建日期"/>
             <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
             <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
-            <column name="organization_id" type="varchar(64)" remarks="组织id"/>
-            <column name="role_ids" type="varchar(400)" remarks="角色"/>
             <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         </createTable>
 
@@ -70,8 +66,6 @@
             <column name="created_date" type="timestamp" remarks="创建日期"/>
             <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
             <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
-            <column name="organization_id" type="varchar(64)" remarks="组织id"/>
-            <column name="role_ids" type="varchar(400)" remarks="角色"/>
             <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         </createTable>
 

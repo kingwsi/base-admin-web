@@ -46,17 +46,4 @@ public abstract class BaseEntity implements Serializable {
 
     @TableLogic
     Boolean deleted;
-
-    /**
-     * 数据权限控制,组织id，每条数据只可拥有一个组织
-     * 默认0无效
-     */
-    private String organizationId = "0";
-
-    /**
-     * 数据权限控制
-     * 可拥有多个角色，满足其中任意一个角色即可
-     * 默认值0，不生效
-     */
-    private String roleIds = "0";
 }
