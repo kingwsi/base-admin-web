@@ -34,7 +34,7 @@
             :tree-data="treeData"
             :replaceFields="treeFields"
             v-decorator="['parentId',{rules: [{required: true}]}]"
-            placeholder="Please select"
+            placeholder="选择上级目录"
             allow-clear
             tree-default-expand-all
           >
@@ -103,8 +103,7 @@ export default {
         key: 'id',
         title: 'name',
         value: 'id'
-      },
-      formData: null
+      }
     }
   },
   created () {
@@ -129,9 +128,9 @@ export default {
             })
     },
     generatorTree () {
-      this.treeData = []
+      this.treeData = [{ 'id': '-1', 'name': '根目录' }]
       this.listToTree(this.resourceList, this.treeData, '-1')
-      console.log('加载tree')
+      console.log('加载tree->', this.treeData)
     },
     listToTree (list, tree, parentId) {
       list.forEach(item => {

@@ -6,8 +6,14 @@ package com.kingwsi.bs.entity.dictionary;
  * author: ws <br>
  * version: 1.0 <br>
  */
-import org.mapstruct.Mapper;
 
+import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
+
+@Component
 @Mapper(componentModel = "spring")
 public interface DictionaryConvertMapper {
+    Dictionary toDictionary(DictionaryVO vo);
+
+    DictionaryVO toDictionaryVO(DictionaryVO vo);
 }

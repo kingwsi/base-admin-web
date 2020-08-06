@@ -16,5 +16,5 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface DictionaryMapper extends BaseMapper<Dictionary> {
-    IPage<Dictionary> selectPage(Page<Dictionary> page, @Param("vo") DictionaryVO vo);
+    IPage<DictionaryVO> selectPage(Page<DictionaryVO> page, @Param("vo") DictionaryVO vo);
 }

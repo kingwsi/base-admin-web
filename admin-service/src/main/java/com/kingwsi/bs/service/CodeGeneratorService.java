@@ -45,7 +45,7 @@ public class CodeGeneratorService {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://localhost:3306/test?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:mysql://192.168.123.232:3306/test?useUnicode=true&useSSL=false&characterEncoding=utf8");
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
@@ -130,6 +130,9 @@ public class CodeGeneratorService {
         strategy.setControllerMappingHyphenStyle(true);
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
-        mpg.execute();
+        ConfigBuilder configBuilder = new ConfigBuilder(pc, dsc, strategy, templateConfig, gc);
+        List<TableInfo> tableInfoList = configBuilder.getTableInfoList();
+        System.out.println(tableInfoList.size());
+//        mpg.execute();
     }
 }
