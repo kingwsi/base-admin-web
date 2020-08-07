@@ -22,6 +22,12 @@ const errorHandler = (error) => {
         description: data.message
       })
     }
+    if (error.response.status === 404) {
+      notification.error({
+        message: '404',
+        description: data.message
+      })
+    }
     // 从 localstorage 获取 token
     const token = storage.get(ACCESS_TOKEN)
     if (error.response.status === 403) {

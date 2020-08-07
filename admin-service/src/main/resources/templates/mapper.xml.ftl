@@ -36,4 +36,17 @@
     </sql>
 
 </#if>
+    <select id="selectPage" resultType="${package.Entity}.${entity}VO">
+        SELECT * FROM sys_dictionaries
+        <where>
+            <#list table.fields as field>
+            <#if !field.keyFlag><#--生成普通字段 -->
+            <if test="vo.${field.propertyName} != null and vo.${field.propertyName} != ''">
+                AND ${field.propertyName} LIKE CONCAT('%',<#noparse>#{</#noparse>vo.${field.propertyName}},'%')
+            </if>
+            </#if>
+            </#list>
+            AND deleted = 0
+        </where>
+    </select>
 </mapper>

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(tags = "字典管理")
 @RestController
-@RequestMapping("/api/dictionaries")
+@RequestMapping("/api/dictionary")
 public class DictionaryController {
 
     private final DictionaryService dictionaryService;
@@ -54,7 +54,7 @@ public class DictionaryController {
         return result ? ResponseData.OK() : ResponseData.FAIL();
     }
 
-    @DeleteMapping("/page")
+    @GetMapping("/page")
     @ApiOperation("获取字典分页")
     public ResponseData listOfPage(Page<DictionaryVO> page, DictionaryVO vo) {
         IPage<DictionaryVO> pageInfo = dictionaryService.listOfPage(page, vo);

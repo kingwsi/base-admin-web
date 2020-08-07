@@ -1,20 +1,16 @@
 package ${package.Entity};
 
-<#list table.importPackages as pkg>
-import ${pkg};
-</#list>
+<#if superEntityClass??>
+import com.kingwsi.bs.entity.common.BaseEntityVO;
+</#if>
 <#if swagger2>
-import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModentity.java.ftlel;
 import io.swagger.annotations.ApiModelProperty;
 </#if>
 <#if entityLombokModel>
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-    <#if chainModel>
-import lombok.experimental.Accessors;
-    </#if>
 </#if>
-import java.io.Serializable;
 
 /**
  * <p>
@@ -24,19 +20,22 @@ import java.io.Serializable;
  * @author ${author}
  * @since ${date}
  */
-<#if entityLombokModel>
 @Data
-    <#if chainModel>
-@Accessors(chain = true)
+    <#if superEntityClass??>
+@EqualsAndHashCode(callSuper = true)
+    <#else>
+@EqualsAndHashCode(callSuper = false)
     </#if>
-</#if>
-<#if table.convert>
-@TableName("${table.name}")
-</#if>
 <#if swagger2>
-@ApiModel(value="${entity}对象", description="${table.comment!}")
+@ApiModel(value="${entity}VO", description="${table.comment!}")
 </#if>
+<#if superEntityClass??>
+public class ${entity}VO extends ${superEntityClass}VO<#if activeRecord><${entity}></#if> {
+<#elseif activeRecord>
+public class ${entity}VO extends Model<${entity}> {
+<#else>
 public class ${entity}VO implements Serializable {
+</#if>
 
 <#if entitySerialVersionUID>
     private static final long serialVersionUID = 1L;
@@ -59,22 +58,22 @@ public class ${entity}VO implements Serializable {
     <#if field.keyFlag>
         <#-- 主键 -->
         <#if field.keyIdentityFlag>
-    @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
+    @TableId(value = "${field.name}", type = IdType.AUTO)
         <#elseif idType??>
-    @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
+    @TableId(value = "${field.name}", type = IdType.${idType})
         <#elseif field.convert>
-    @TableId("${field.annotationColumnName}")
+    @TableId("${field.name}")
         </#if>
         <#-- 普通字段 -->
     <#elseif field.fill??>
     <#-- -----   存在字段填充设置   ----->
         <#if field.convert>
-    @TableField(value = "${field.annotationColumnName}", fill = FieldFill.${field.fill})
+    @TableField(value = "${field.name}", fill = FieldFill.${field.fill})
         <#else>
     @TableField(fill = FieldFill.${field.fill})
         </#if>
     <#elseif field.convert>
-    @TableField("${field.annotationColumnName}")
+    @TableField("${field.name}")
     </#if>
     <#-- 乐观锁注解 -->
     <#if (versionFieldName!"") == field.name>
@@ -99,13 +98,13 @@ public class ${entity}VO implements Serializable {
         return ${field.propertyName};
     }
 
-    <#if chainModel>
+    <#if entityBuilderModel>
     public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
     <#else>
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
     </#if>
         this.${field.propertyName} = ${field.propertyName};
-        <#if chainModel>
+        <#if entityBuilderModel>
         return this;
         </#if>
     }
