@@ -1,4 +1,4 @@
-package com.kingwsi.bs.common.config;
+package com.kingwsi.bs.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kingwsi.bs.security.JWTAuthenticationFilter;
@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtLoginFilter("/api/auth", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JWTAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable().exceptionHandling()
                 .authenticationEntryPoint((req, resp, authException) -> {
                             resp.setContentType("application/json;charset=utf-8");

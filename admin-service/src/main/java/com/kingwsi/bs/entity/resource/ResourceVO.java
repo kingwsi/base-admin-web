@@ -1,7 +1,6 @@
 package com.kingwsi.bs.entity.resource;
 
 import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
-import com.kingwsi.bs.entity.role.RoleVO;
 import lombok.Data;
 
 import java.util.List;
@@ -18,9 +17,7 @@ public class ResourceVO {
     private String sort;
     private String component;
     private String icon;
+    private String remark;
     private List<String> resourceIds;
 
-    public RoleVO toRoleVO() {
-        return new RoleVO(this.id, this.name, this.description, this.resourceIds);
-    }
 }

@@ -110,7 +110,6 @@ export const generatorDynamicRouter = () => {
  */
 export const generator = (routerMap, parent) => {
   return routerMap.map(item => {
-    const { show, hideChildren } = item.meta || {}
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
       // path: item.uri,
@@ -137,11 +136,11 @@ export const generator = (routerMap, parent) => {
       }
     }
     // 是否设置了隐藏菜单
-    if (show === false) {
+    if (item.remark && item.remark === 'hidden') {
       currentRouter.hidden = true
     }
     // 是否设置了隐藏子菜单
-    if (hideChildren) {
+    if (item.remark && item.remark === 'hidden') {
       currentRouter.hideChildrenInMenu = true
     }
     // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠

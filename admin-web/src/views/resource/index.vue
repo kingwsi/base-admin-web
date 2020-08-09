@@ -147,7 +147,6 @@ export default {
             return res.data
           })
       }
-
     }
   },
   created () {

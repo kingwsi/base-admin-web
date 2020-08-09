@@ -1,169 +1,209 @@
 <template>
-  <a-card :bordered="false" :style="{ height: '100%' }">
-    <a-row :gutter="24">
-      <a-col :md="4">
-        <a-list itemLayout="vertical" :dataSource="roles">
-          <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
-            <a-list-item-meta :style="{ marginBottom: '0' }">
-              <span slot="description" style="text-align: center; display: block">{{ item.describe }}</span>
-              <a slot="title" style="text-align: center; display: block" @click="edit(item)">{{ item.name }}</a>
-            </a-list-item-meta>
-          </a-list-item>
-        </a-list>
-      </a-col>
-      <a-col :md="20">
-        <div style="max-width: 800px">
-          <a-divider v-if="isMobile()" />
-          <div v-if="mdl.id">
-            <h3>角色：{{ mdl.name }}</h3>
-          </div>
-          <a-form :form="form" :layout="isMobile() ? 'vertical' : 'horizontal'">
-            <a-form-item label="唯一键">
-              <a-input v-decorator="[ 'id', {rules: [{ required: true, message: 'Please input unique key!' }]} ]" placeholder="请填写唯一键" />
+  <a-card :bordered="false">
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline">
+        <a-row :gutter="48">
+          <a-col :md="8" :sm="24">
+            <a-form-item label="角色ID">
+              <a-input placeholder="请输入"/>
             </a-form-item>
-
-            <a-form-item label="角色名称">
-              <a-input v-decorator="[ 'name', {rules: [{ required: true, message: 'Please input role name!' }]} ]" placeholder="请填写角色名称" />
-            </a-form-item>
-
+          </a-col>
+          <a-col :md="8" :sm="24">
             <a-form-item label="状态">
-              <a-select v-decorator="[ 'status', {rules: []} ]">
-                <a-select-option :value="1">正常</a-select-option>
-                <a-select-option :value="2">禁用</a-select-option>
+              <a-select placeholder="请选择" default-value="0">
+                <a-select-option value="0">全部</a-select-option>
+                <a-select-option value="1">正常</a-select-option>
+                <a-select-option value="2">禁用</a-select-option>
               </a-select>
             </a-form-item>
+          </a-col>
+          <a-col :md="8" :sm="24">
+            <span class="table-page-search-submitButtons">
+              <a-button type="primary">查询</a-button>
+              <a-button style="margin-left: 8px">重置</a-button>
+            </span>
+          </a-col>
+        </a-row>
+      </a-form>
+    </div>
 
-            <a-form-item label="备注说明">
-              <a-textarea :row="3" v-decorator="[ 'describe', {rules: [{ required: true, message: 'Please input role name!' }]} ]" placeholder="请填写角色名称" />
-            </a-form-item>
+    <s-table
+      ref="table"
+      size="default"
+      rowKey="id"
+      :columns="columns"
+      :data="loadData"
+    >
+      <span slot="action" slot-scope="text, record">
+        <template>
+          <a @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleEdit(record)" type="danger">删除</a>
+        </template>
+      </span>
+    </s-table>
 
-            <a-form-item label="拥有权限">
-              <a-row :gutter="16" v-for="(permission, index) in permissions" :key="index">
-                <a-col :xl="4" :lg="24">
-                  {{ permission.name }}：
-                </a-col>
-                <a-col :xl="20" :lg="24">
-                  <a-checkbox
-                    v-if="permission.actionsOptions.length > 0"
-                    :indeterminate="permission.indeterminate"
-                    :checked="permission.checkedAll"
-                    @change="onChangeCheckAll($event, permission)">
-                    全选
-                  </a-checkbox>
-                  <a-checkbox-group :options="permission.actionsOptions" v-model="permission.selected" @change="onChangeCheck(permission)" />
-                </a-col>
-              </a-row>
-            </a-form-item>
+    <form-modal
+      ref="createModal"
+      :visible="visible"
+      :loading="confirmLoading"
+      :model="mdl"
+      @cancel="handleCancel"
+      @ok="handleOk"
+    />
 
-          </a-form>
-        </div>
-      </a-col>
-    </a-row>
   </a-card>
 </template>
 
 <script>
-import pick from 'lodash.pick'
-import { getRoleList, getPermissions } from '@/api/manage'
-import { actionToObject } from '@/utils/permissions'
-import { baseMixin } from '@/store/app-mixin'
+import moment from 'moment'
+import { STable } from '@/components'
+import FormModal from './modules/FormModal'
+import { Page } from '@/api/role'
 
 export default {
-  name: 'RoleList',
-  mixins: [baseMixin],
-  components: {},
+  name: 'TableList',
+  components: {
+    STable,
+    FormModal
+  },
   data () {
     return {
-      form: this.$form.createForm(this),
+      description: '列表使用场景：后台管理中的权限管理以及角色管理，可用于基于 RBAC 设计的角色权限控制，颗粒度细到每一个操作类型。',
+
+      visible: false,
+
+      form: null,
       mdl: {},
 
-      roles: [],
-      permissions: []
+      confirmLoading: false,
+
+      // 高级搜索 展开/关闭
+      advanced: false,
+      // 查询参数
+      queryParam: {},
+      // 表头
+      columns: [
+        {
+          title: 'ID',
+          dataIndex: 'id'
+        },
+        {
+          title: '角色名称',
+          dataIndex: 'name'
+        },
+        {
+          title: '状态',
+          dataIndex: 'status'
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'createdDate',
+          sorter: true
+        }, {
+          title: '操作',
+          width: '150px',
+          dataIndex: 'action',
+          scopedSlots: { customRender: 'action' }
+        }
+      ],
+      // 加载数据方法 必须为 Promise 对象
+      loadData: parameter => {
+        console.log('loadData.parameter', parameter)
+        return Page(Object.assign(parameter, this.queryParam))
+          .then(res => {
+            return res.data
+          })
+      },
+      selectedRowKeys: [],
+      selectedRows: []
     }
-  },
-  created () {
-    getRoleList().then((res) => {
-      this.roles = res.result.data
-      this.roles.push({
-        id: '-1',
-        name: '新增角色',
-        describe: '新增一个角色'
-      })
-      console.log('this.roles', this.roles)
-    })
-    this.loadPermissions()
   },
   methods: {
-    callback (val) {
-      console.log(val)
+    handleAdd () {
+      this.mdl = null
+      this.visible = true
+    },
+    handleEdit (record) {
+      console.log(record)
+      this.visible = true
+      this.mdl = { ...record }
+    },
+    handleOk () {
+      const form = this.$refs.createModal.form
+      this.confirmLoading = true
+      form.validateFields((errors, values) => {
+        if (!errors) {
+          console.log('values', values)
+          if (values.id > 0) {
+            // 修改 e.g.
+            // updateById(values).then(res => {
+            //   this.visible = false
+            //   this.confirmLoading = false
+            //   // 重置表单数据
+            //   form.resetFields()
+            //   // 刷新表格
+            //   this.$refs.table.refresh()
+
+            //   this.$message.info('修改成功')
+            // }).catch((err) => {
+            //   console.log(`form update error:->${err}`)
+            //   this.confirmLoading = false
+            // })
+          } else {
+            // 新增
+            // create(values).then(res => {
+            //   this.visible = false
+            //   this.confirmLoading = false
+            //   // 重置表单数据
+            //   form.resetFields()
+            //   // 刷新表格
+            //   this.$refs.table.refresh()
+
+            //   this.$message.info('新增成功')
+            // }).catch((err) => {
+            //   console.log(`form update error:->${err}`)
+            //   this.confirmLoading = false
+            // })
+          }
+        } else {
+          this.confirmLoading = false
+        }
+      })
+    },
+    onChange (selectedRowKeys, selectedRows) {
+      this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
+    },
+    toggleAdvanced () {
+      this.advanced = !this.advanced
+    },
+    handleCancel () {
+      this.visible = false
+
+      const form = this.$refs.createModal.form
+      form.resetFields() // 清理表单数据（可不做）
     },
 
-    add () {
-      this.edit({ id: 0 })
-    },
-
-    edit (record) {
-      this.mdl = Object.assign({}, record)
-      // 有权限表，处理勾选
-      if (this.mdl.permissions && this.permissions) {
-        // 先处理要勾选的权限结构
-        const permissionsAction = {}
-        this.mdl.permissions.forEach(permission => {
-          permissionsAction[permission.permissionId] = permission.actionEntitySet.map(entity => entity.action)
-        })
-
-        console.log('permissionsAction', permissionsAction)
-        // 把权限表遍历一遍，设定要勾选的权限 action
-        this.permissions.forEach(permission => {
-          const selected = permissionsAction[permission.id]
-          permission.selected = selected || []
-          this.onChangeCheck(permission)
-        })
-
-        console.log('this.permissions', this.permissions)
+    resetSearchForm () {
+      this.queryParam = {
+        date: moment(new Date())
       }
-
-      this.$nextTick(() => {
-        this.form.setFieldsValue(pick(this.mdl, 'id', 'name', 'status', 'describe'))
-      })
-      console.log('this.mdl', this.mdl)
-    },
-
-    onChangeCheck (permission) {
-      permission.indeterminate = !!permission.selected.length && (permission.selected.length < permission.actionsOptions.length)
-      permission.checkedAll = permission.selected.length === permission.actionsOptions.length
-    },
-    onChangeCheckAll (e, permission) {
-      console.log('permission:', permission)
-
-      Object.assign(permission, {
-        selected: e.target.checked ? permission.actionsOptions.map(obj => obj.value) : [],
-        indeterminate: false,
-        checkedAll: e.target.checked
-      })
-    },
-    loadPermissions () {
-      getPermissions().then(res => {
-        const result = res.result
-        this.permissions = result.map(permission => {
-          const options = actionToObject(permission.actionData)
-          permission.checkedAll = false
-          permission.selected = []
-          permission.indeterminate = false
-          permission.actionsOptions = options.map(option => {
-            return {
-              label: option.describe,
-              value: option.action
-            }
-          })
-          return permission
-        })
-      })
     }
+  },
+  watch: {
+    /*
+      'selectedRows': function (selectedRows) {
+        this.needTotalList = this.needTotalList.map(item => {
+          return {
+            ...item,
+            total: selectedRows.reduce( (sum, val) => {
+              return sum + val[item.dataIndex]
+            }, 0)
+          }
+        })
+      }
+      */
   }
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -46,4 +46,6 @@ public class Resource extends BaseEntity {
 
     // 类型
     private ResourceTypeEnum type;
+
+    private String remark;
 }

@@ -4,7 +4,7 @@ package ${package.Entity};
 import ${pkg};
 </#list>
 <#if swagger2>
-import io.swagger.annotations.ApiModentity.java.ftlel;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 </#if>
 <#if entityLombokModel>

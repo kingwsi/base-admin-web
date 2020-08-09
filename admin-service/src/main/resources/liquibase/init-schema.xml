@@ -36,6 +36,12 @@
             </column>
             <column name="name" type="varchar(100)" remarks="角色名"/>
             <column name="description" type="varchar(32)" remarks="描述"/>
+            <column name="status" type="varchar(10)" remarks="状态"/>
+            <column name="creator" type="varchar(100)" remarks="创建者"/>
+            <column name="created_date" type="timestamp" remarks="创建日期"/>
+            <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
+            <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
+            <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         </createTable>
 
         <createTable tableName="sys_users_and_roles" remarks="用户角色关联">

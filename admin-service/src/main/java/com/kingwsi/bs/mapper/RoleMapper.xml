@@ -5,13 +5,15 @@
     <resultMap id="RoleWithResourceMap" type="com.kingwsi.bs.entity.role.RoleVO">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
+        <result column="status" property="status"/>
+        <result column="created_date" property="createdDate"/>
         <result column="description" property="description"/>
         <collection property="resourceIds" ofType="string">
             <result column="resource_id"/>
         </collection>
     </resultMap>
 
-    <select id="selectWithResourcesPage" resultMap="RoleWithResourceMap">
+    <select id="selectPageWithResources" resultMap="RoleWithResourceMap">
         SELECT r.*, rar.resource_id
         FROM sys_roles r
         LEFT JOIN sys_roles_and_resources rar ON r.id = rar.role_id

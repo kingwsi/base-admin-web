@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-tabs default-active-key="1" @change="callback">
+    <a-tabs default-active-key="1">
       <a-tab-pane key="1" tab="基本信息">
         <a-row type="flex" justify="center" v-if="!tableInfo">
           <a-col :span="12">
@@ -30,7 +30,13 @@
         </a-card>
       </a-tab-pane>
       <a-tab-pane key="2" tab="列明细" force-render>
-        列明细
+        <div class="title">详细</div>
+        <a-table
+          :columns="fieldColumns"
+          :data-source="tableInfo.fields"
+          row-key="name"
+          v-if="tableInfo">
+        </a-table>
       </a-tab-pane>
       <a-tab-pane key="3" tab="Tab 3">
         Content of Tab Pane 3
@@ -40,13 +46,39 @@
 </template>
 <script>
 import { GetTableInfo } from '@/api/generatorCode'
+import { STable } from '@/components'
 export default {
   data () {
     return {
       tableInfo: null,
       visible: false,
-      confirmLoading: false
+      confirmLoading: false,
+      fieldColumns: [
+        {
+          title: '列',
+          dataIndex: 'name',
+          key: 'name'
+        },
+        {
+          title: '属性',
+          dataIndex: 'propertyName',
+          key: 'propertyName'
+        },
+        {
+          title: '数据类型',
+          dataIndex: 'columnType',
+          key: 'columnType'
+        },
+        {
+          title: 'propertyType',
+          dataIndex: 'propertyType',
+          key: 'propertyType'
+        }
+      ]
     }
+  },
+  components: {
+    STable
   },
   methods: {
     onSearch (value) {
@@ -58,7 +90,14 @@ export default {
           this.$message.err('表信息获取失败！')
         }
       })
-    }
+    },
+    loadData: () => {
+        return new Promise(resolve => {
+          resolve({
+            data: this.tableInfo.fields
+            })
+        })
+      }
   }
 }
 </script>

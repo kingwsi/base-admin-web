@@ -36,13 +36,6 @@ public class RoleService {
         this.rolesAndResourcesMapper = rolesAndResourcesMapper;
     }
 
-    public List<RoleVO> listRoles() {
-        List<ResourceVO> resourceVOS = resourceMapper.selectWithResource();
-        ArrayList<RoleVO> list = new ArrayList<>();
-        resourceVOS.forEach(vo -> list.add(vo.toRoleVO()));
-        return list;
-    }
-
     @Transactional(rollbackFor = Exception.class)
     public void createRoleVO(RoleVO roleVO) {
         Role role = new Role();
@@ -66,7 +59,7 @@ public class RoleService {
         roleMapper.updateById(role);
     }
 
-    public IPage<Role> listOfPages(Page<Role> page, RoleVO roleVO) {
-        return roleMapper.selectWithResourcesPage(page, roleVO);
+    public IPage<RoleVO> listOfPages(Page<RoleVO> page, RoleVO roleVO) {
+        return roleMapper.selectPageWithResources(page, roleVO);
     }
 }
