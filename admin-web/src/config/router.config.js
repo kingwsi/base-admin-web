@@ -6,15 +6,6 @@ const RouteView = {
   name: 'RouteView',
   render: (h) => h('router-view')
 }
-/**
- * 路由components
- */
-export const constantRouterComponents = {
-  layout: BasicLayout,
-  // 路由配置
-  route: () => import('@/views/dashboard/Analysis'),
-  role: () => import('@/views/other/RoleList')
-}
 
 export const asyncRouterMap = [
 
@@ -342,6 +333,7 @@ export const asyncRouterMap = [
 
 /**
  * 基础路由
+ * 公共路由 不走权限控制
  * @type { *[] }
  */
 export const constantRouterMap = [
@@ -374,41 +366,25 @@ export const constantRouterMap = [
     ]
   },
 
+  // dashboard
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    redirect: '/dashboard/workplace',
+    component: RouteView,
+    meta: { title: 'menu.dashboard', icon: bxAnaalyse },
+    children: [
+      {
+        path: '/dashboard/workplace',
+        name: 'Workplace',
+        component: () => import('@/views/dashboard/Workplace'),
+        meta: { title: 'menu.dashboard.workplace' }
+      }
+    ]
+  },
+
   {
     path: '/404',
     component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
   }
-
 ]
-
-/**
- * 格式化 后端 结构信息并递归生成层级路由表
- *
- * @param routerMap
- * @param parent
- * @returns {*}
- */
-export const generator = (routerMap, parent) => {
-  return routerMap.map(item => {
-    const currentRouter = {
-      // 路由地址 动态拼接生成如 /dashboard/workplace
-      path: item.uri,
-      // 路由名称，建议唯一
-      name: item.name || item.component || '',
-      // 该路由对应页面的 组件
-      component: constantRouterComponents[item.component || item.key],
-      // meta: 页面标题, 菜单图标, 页面权限(供指令权限用，可去掉)
-      meta: { title: item.title, icon: item.icon || undefined, permission: item.key && [ item.key ] || null }
-    }
-    // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
-    currentRouter.path = currentRouter.path.replace('//', '/')
-    // 重定向
-    item.redirect && (currentRouter.redirect = item.redirect)
-    // 是否有子菜单，并递归处理
-    if (item.children && item.children.length > 0) {
-      // Recursion
-      currentRouter.children = generator(item.children, currentRouter)
-    }
-    return currentRouter
-  })
-}

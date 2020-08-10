@@ -3,17 +3,12 @@ package com.kingwsi.bs.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.kingwsi.bs.entity.resource.ResourceVO;
 import com.kingwsi.bs.entity.role.*;
-import com.kingwsi.bs.mapper.ResourceMapper;
 import com.kingwsi.bs.mapper.RoleMapper;
 import com.kingwsi.bs.mapper.RolesAndResourcesMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Description: 角色服务<br>
@@ -26,13 +21,13 @@ public class RoleService {
 
     private final RoleMapper roleMapper;
 
-    private final ResourceMapper resourceMapper;
+    private final RoleConvertMapper roleConvertMapper;
 
     private final RolesAndResourcesMapper rolesAndResourcesMapper;
 
-    public RoleService(RoleMapper roleMapper, ResourceMapper resourceMapper, RolesAndResourcesMapper rolesAndResourcesMapper) {
+    public RoleService(RoleMapper roleMapper, RoleConvertMapper roleConvertMapper, RolesAndResourcesMapper rolesAndResourcesMapper) {
         this.roleMapper = roleMapper;
-        this.resourceMapper = resourceMapper;
+        this.roleConvertMapper = roleConvertMapper;
         this.rolesAndResourcesMapper = rolesAndResourcesMapper;
     }
 
@@ -54,12 +49,20 @@ public class RoleService {
         queryWrapper.eq("role_id", roleVO.getId());
         rolesAndResourcesMapper.delete(queryWrapper);
         rolesAndResourcesMapper.batchInsertRoleResources(roleVO.getId(), roleVO.getResourceIds());
-        Role role = new Role();
-        BeanUtils.copyProperties(roleVO, role);
+        Role role = roleConvertMapper.toRole(roleVO);
         roleMapper.updateById(role);
     }
 
     public IPage<RoleVO> listOfPages(Page<RoleVO> page, RoleVO roleVO) {
         return roleMapper.selectPageWithResources(page, roleVO);
+    }
+
+    /**
+     * 根据id获取角色信息
+     * @param id
+     * @return
+     */
+    public RoleVO getRoleWithResources(String id) {
+        return roleMapper.selectRoleWithResource(id);
     }
 }

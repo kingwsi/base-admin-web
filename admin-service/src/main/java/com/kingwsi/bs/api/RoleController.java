@@ -25,6 +25,12 @@ public class RoleController {
         return ResponseData.OK();
     }
 
+    @GetMapping("/resources")
+    public ResponseData listByRoleId(@RequestParam String id) {
+        RoleVO roleVO = roleService.getRoleWithResources(id);
+        return ResponseData.OK(roleVO);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseData delete(@PathVariable("id") String id) {
         roleService.deleteById(id);
@@ -32,7 +38,7 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseData update(@PathVariable("id") String id, @RequestBody RoleVO roleVO) {
+    public ResponseData updateById(@PathVariable("id") String id, @RequestBody RoleVO roleVO) {
         roleVO.setId(id);
         roleService.updateById(roleVO);
         return ResponseData.OK();

@@ -29,6 +29,14 @@
             </if>
         </where>
     </select>
+
+    <select id="selectRoleWithResource" resultMap="RoleWithResourceMap">
+        SELECT r.*, rar.resource_id
+        FROM sys_roles r
+        LEFT JOIN sys_roles_and_resources rar ON r.id = rar.role_id
+        WHERE deleted = 0 AND id = #{id}
+    </select>
+
     <select id="selectByUserId" resultType="com.kingwsi.bs.entity.role.Role">
         SELECT
             r.*
