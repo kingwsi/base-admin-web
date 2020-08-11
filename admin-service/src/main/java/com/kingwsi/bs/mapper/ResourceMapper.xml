@@ -61,6 +61,7 @@
     <select id="selectOfPage" resultType="com.kingwsi.bs.entity.resource.ResourceVO">
         SELECT * FROM sys_resources
         <where>
+            deleted = 0
             <if test="query.name != null and query.name != ''">
                 AND name LIKE CONCAT('%',#{query.name},'%')
             </if>
@@ -78,14 +79,15 @@
     <select id="countRepeat" resultType="java.lang.Integer">
         SELECT COUNT(0) FROM sys_resources
         <where>
+            deleted = 0
             <if test="type.name=='MENU'">
-                (name = #{name} OR uri = #{uri})
+                AND (name = #{name} OR uri = #{uri})
             </if>
             <if test="type.name=='API'">
-                (name = #{name} OR uri = #{uri})
+                AND (name = #{name} OR uri = #{uri}) AND type = 'API'
             </if>
             <if test="type.name=='BUTTON'">
-                parent_id = #{parentId} AND name = #{name}
+                AND parent_id = #{parentId} AND name = #{name}
             </if>
             <if test="id != null and id != ''">
                 AND id != #{id}

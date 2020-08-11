@@ -10,7 +10,7 @@ const userApi = {
   SendSmsErr: '/account/sms_err',
   // get my info
   UserInfo: '/auth/info',
-  UserMenu: '/resources/list'
+  UserMenu: '/resource/routes'
   // UserMenu: '/user/nav'
 }
 
@@ -54,10 +54,7 @@ export function getInfo () {
 export function getCurrentUserNav () {
   return request({
     url: userApi.UserMenu,
-    method: 'get',
-    params: {
-      type: 'MENU'
-    }
+    method: 'get'
   })
 }
 

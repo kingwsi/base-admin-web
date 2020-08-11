@@ -30,7 +30,7 @@ public class ResourceController {
     @ApiOperation("获取菜单列表")
     @GetMapping("/list")
     public ResponseData list(HttpServletRequest request) {
-        return ResponseData.OK(resourceService.listByUserId(TokenUtil.getCurrentUser(request).getId()));
+        return ResponseData.OK(resourceService.list());
     }
 
     @ApiOperation("获取菜单列表")
@@ -60,5 +60,11 @@ public class ResourceController {
     @GetMapping("/page")
     public ResponseData page(Page page, ResourceQuery resourceVO) {
         return ResponseData.OK(resourceService.listOfPage(page, resourceVO));
+    }
+
+    @ApiOperation("更新资源")
+    @DeleteMapping("/{id}")
+    public ResponseData deleteById(@PathVariable String id) {
+        return resourceService.deleteById(id) ? ResponseData.OK() : ResponseData.FAIL("删除失败");
     }
 }

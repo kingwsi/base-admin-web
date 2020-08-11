@@ -126,8 +126,9 @@ export default {
     },
     handleEdit (record) {
       console.log(record)
-      this.visible = true
-      this.mdl = { ...record }
+      this.$router.push({
+          path: `/system/role/permission/${record.id}`
+        })
     },
     handleOk () {
       const form = this.$refs.createModal.form

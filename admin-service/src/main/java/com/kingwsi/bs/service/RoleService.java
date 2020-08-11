@@ -36,7 +36,7 @@ public class RoleService {
         Role role = new Role();
         BeanUtils.copyProperties(roleVO, role);
         this.roleMapper.insert(role);
-        roleVO.getResourceIds().forEach(id -> rolesAndResourcesMapper.insert(new RolesAndResources(role.getId(), id)));
+        roleVO.getResourceIdList().forEach(id -> rolesAndResourcesMapper.insert(new RolesAndResources(role.getId(), id)));
     }
 
     public void deleteById(String id) {
@@ -48,7 +48,7 @@ public class RoleService {
         QueryWrapper<RolesAndResources> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("role_id", roleVO.getId());
         rolesAndResourcesMapper.delete(queryWrapper);
-        rolesAndResourcesMapper.batchInsertRoleResources(roleVO.getId(), roleVO.getResourceIds());
+        rolesAndResourcesMapper.batchInsertRoleResources(roleVO.getId(), roleVO.getResourceIdList());
         Role role = roleConvertMapper.toRole(roleVO);
         roleMapper.updateById(role);
     }
@@ -63,6 +63,6 @@ public class RoleService {
      * @return
      */
     public RoleVO getRoleWithResources(String id) {
-        return roleMapper.selectRoleWithResource(id);
+        return roleMapper.selectRoleWithResources(id);
     }
 }

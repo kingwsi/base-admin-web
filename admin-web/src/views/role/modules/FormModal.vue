@@ -60,7 +60,7 @@
 <script>
 import pick from 'lodash.pick'
 import { TreeSelect } from 'ant-design-vue'
-import { getList } from '@/api/resource/index'
+import { GetRouteList } from '@/api/resource/index'
 // import { listToTree } from '@/components/Tree/TreeUtils'
 
 // 表单字段
@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     loadTreeData () {
-      getList({ 'type': 'MENU' }).then(res => {
+      GetRouteList().then(res => {
                 this.resourceList = res.data
                 this.generatorTree()
             }).catch(err => {

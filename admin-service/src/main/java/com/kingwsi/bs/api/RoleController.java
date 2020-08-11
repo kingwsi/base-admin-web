@@ -1,7 +1,6 @@
 package com.kingwsi.bs.api;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.kingwsi.bs.entity.role.Role;
 import com.kingwsi.bs.entity.role.RoleVO;
 import com.kingwsi.bs.service.RoleService;
 import com.kingwsi.bs.util.bean.ResponseData;
@@ -9,7 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
-@Api(value = "角色")
+@Api(tags = "角色信息")
 @RestController
 @RequestMapping("/api/role")
 public class RoleController {

@@ -45,7 +45,8 @@ import {
   Descriptions,
   message,
   notification,
-  TreeSelect
+  TreeSelect,
+  Tree
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
 
@@ -67,6 +68,7 @@ Vue.use(Radio)
 Vue.use(Checkbox)
 Vue.use(Select)
 Vue.use(TreeSelect)
+Vue.use(Tree)
 Vue.use(Card)
 Vue.use(Form)
 Vue.use(Row)

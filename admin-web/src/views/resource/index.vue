@@ -76,7 +76,17 @@
         <template>
           <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleEdit(record)" type="danger">删除</a>
+          <a-popconfirm
+            title="确认删除这条数据？"
+            ok-text="确认"
+            okType="danger"
+            cancel-text="取消"
+            @confirm="handleDelete(record)"
+            placement="left"
+          >
+            <a-icon slot="icon" type="question-circle-o" style="color: red" />
+            <a style="color:#ff4d4f">删除</a>
+          </a-popconfirm>
         </template>
       </span>
     </s-table>
@@ -94,7 +104,8 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import { page, updateById, create } from '@/api/resource/index'
+import { page, updateById, create, DeleteById } from '@/api/resource/index'
+import { listToTree } from '@/utils/util'
 
 import CreateForm from './modules/CreateForm'
 
@@ -144,7 +155,12 @@ export default {
         console.log('loadData.parameter', parameter)
         return page(Object.assign(parameter, this.queryParam))
           .then(res => {
-            return res.data
+            // 处理 records
+            const resultData = res.data
+            const treeData = []
+            listToTree(res.data.records, treeData, '-1')
+            resultData.records = treeData
+            return resultData
           })
       }
     }
@@ -158,7 +174,6 @@ export default {
       this.visible = true
     },
     handleEdit (record) {
-      console.log(record)
       this.visible = true
       this.mdl = { ...record }
     },
@@ -168,7 +183,7 @@ export default {
       form.validateFields((errors, values) => {
         if (!errors) {
           console.log('values', values)
-          if (values.id > 0) {
+          if (values.id) {
             // 修改 e.g.
             updateById(values).then(res => {
               this.visible = false
@@ -199,6 +214,7 @@ export default {
               this.confirmLoading = false
             })
           }
+          this.$refs.createModal.loadTreeData()
         } else {
           this.confirmLoading = false
         }
@@ -209,11 +225,18 @@ export default {
     },
     handleCancel () {
       this.visible = false
-
+      // 重置
+      this.$refs.createModal.resetTree()
       const form = this.$refs.createModal.form
       form.resetFields() // 清理表单数据（可不做）
     },
-
+    handleDelete (row) {
+      DeleteById(row.id).then(res => {
+        this.$message.info('删除成功')
+        // 刷新表格
+        this.$refs.table.refresh()
+      })
+    },
     resetSearchForm () {
       this.queryParam = {
         date: moment(new Date())

@@ -2,17 +2,11 @@ import request from '@/utils/request'
 
 const resourceApi = {
   // get my info
-  PageInfo: '/resources/page',
-  Route: '/resources/routes',
-  List: '/resources/list',
-  Update: '/resources'
-}
-
-export function getRoutes () {
-  return request({
-    url: resourceApi.Route,
-    method: 'get'
-  })
+  PageInfo: '/resource/page',
+  Route: '/resource/routes',
+  Update: '/resource',
+  AllList: 'resource/list',
+  Delete: 'resource'
 }
 
 export function page (parameter) {
@@ -23,11 +17,17 @@ export function page (parameter) {
   })
 }
 
-export function getList (parameter) {
+export function GetRouteList () {
   return request({
-    url: resourceApi.List,
-    method: 'get',
-    params: parameter
+    url: resourceApi.Route,
+    method: 'get'
+  })
+}
+
+export function GetAllResources () {
+  return request({
+    url: resourceApi.AllList,
+    method: 'get'
   })
 }
 
@@ -47,10 +47,9 @@ export function updateById (parameter) {
   })
 }
 
-export function remove (parameter) {
+export function DeleteById (id) {
   return request({
-    url: resourceApi.Update,
-    method: 'put',
-    data: parameter
+    url: `${resourceApi.Delete}/${id}`,
+    method: 'delete'
   })
 }

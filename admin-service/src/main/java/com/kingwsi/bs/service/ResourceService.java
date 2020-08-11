@@ -1,6 +1,7 @@
 package com.kingwsi.bs.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.common.enumerate.ResourceTypeEnum;
 import com.kingwsi.bs.entity.resource.Resource;
@@ -73,5 +74,15 @@ public class ResourceService {
     private boolean checkRepeat(ResourceVO resourceVO) {
         int repeatCount = resourceMapper.countRepeat(resourceVO);
         return repeatCount > 0;
+    }
+
+    public boolean deleteById(String id) {
+        int rowCount = resourceMapper.deleteById(id);
+        return rowCount > 0;
+    }
+
+    public List<ResourceVO> list() {
+        List<Resource> resources = resourceMapper.selectList(Wrappers.emptyWrapper());
+        return resourceConvertMapper.toResourceVOs(resources);
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="新增资源"
+    :title="model && model.id ? '新增资源':'更新资源'"
     :width="640"
     :visible="visible"
     :confirmLoading="loading"
@@ -9,12 +9,17 @@
   >
     <a-spin :spinning="loading">
       <a-form :form="form" v-bind="formLayout">
-        <!-- 检查是否有 id 并且大于0，大于0是修改。其他是新增，新增不显示主键ID -->
-        <a-form-item v-show="model && model.id > 0" label="主键ID">
-          <a-input v-decorator="['id', { initialValue: 0 }]" disabled />
+        <!-- 检查是否有 id，有是修改。其他是新增，新增不显示主键ID -->
+        <a-form-item v-show="model && model.id" label="主键ID">
+          <a-input v-decorator="['id']" disabled />
         </a-form-item>
         <a-form-item label="资源类型">
-          <a-select v-decorator="['type',{rules: [{required: true, message: '请输入至少2个字符的名称！'}]}]">
+          <a-select
+            v-decorator="[
+              'type',
+              { rules: [{ required: true, message: '请输入至少2个字符的名称！' }], initialValue: 'MENU' },
+            ]"
+            @change="typeSelectChange">
             <a-select-option value="MENU">
               菜单
             </a-select-option>
@@ -46,7 +51,7 @@
         <a-form-item label="地址">
           <a-input v-decorator="['uri', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
         </a-form-item>
-        <a-form-item label="组件">
+        <a-form-item label="组件" v-if="resourceType==='MENU'">
           <a-input v-decorator="['component', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
         </a-form-item>
         <a-form-item label="排序">
@@ -60,13 +65,16 @@
 <script>
 import pick from 'lodash.pick'
 import { TreeSelect } from 'ant-design-vue'
-import { getList } from '@/api/resource/index'
+import { GetAllResources } from '@/api/resource/index'
 // import { listToTree } from '@/components/Tree/TreeUtils'
 
 // 表单字段
 const fields = ['id', 'uri', 'type', 'name', 'component', 'parentId', 'sort']
 
 export default {
+  components: {
+    TreeSelect
+  },
   props: {
     visible: {
       type: Boolean,
@@ -81,9 +89,6 @@ export default {
       default: () => null
     }
   },
-  components: {
-    TreeSelect
-  },
   data () {
     this.formLayout = {
       labelCol: {
@@ -97,6 +102,7 @@ export default {
     }
     return {
       form: this.$form.createForm(this),
+      resourceType: 'MENU',
       resourceList: [],
       treeData: [],
       treeFields: {
@@ -114,23 +120,24 @@ export default {
     // 当 model 发生改变时，为表单设置值
     this.$watch('model', () => {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
+      this.resourceType = this.model && this.model.type || this.resourceType
       // 生成tree
-      this.generatorTree()
+      this.generatorTree(this.resourceType)
     })
   },
   methods: {
     loadTreeData () {
-      getList({ 'type': 'MENU' }).then(res => {
+      GetAllResources().then(res => {
                 this.resourceList = res.data
-                this.generatorTree()
+                this.generatorTree(this.resourceType)
             }).catch(err => {
                 console.log(`load user err: ${err.message}`)
             })
     },
-    generatorTree () {
+    generatorTree (type) {
       this.treeData = [{ 'id': '-1', 'name': '根目录' }]
-      this.listToTree(this.resourceList, this.treeData, '-1')
-      console.log('加载tree->', this.treeData)
+      console.log('resource filter, type -> ', type)
+      this.listToTree(this.resourceList.filter(item => item.type === type), this.treeData, '-1')
     },
     listToTree (list, tree, parentId) {
       list.forEach(item => {
@@ -156,6 +163,16 @@ export default {
           tree.push(child)
         }
       })
+    },
+    typeSelectChange (ele) {
+      this.resourceType = ele
+      // 重新构建树
+      this.generatorTree(this.resourceType)
+    },
+    resetTree () {
+      console.log('重置treeData')
+      this.resourceType = 'MENU'
+      this.generatorTree(this.resourceType)
     }
   }
 }
