@@ -36,9 +36,8 @@ public class RoleController {
         return ResponseData.OK();
     }
 
-    @PutMapping("/{id}")
-    public ResponseData updateById(@PathVariable("id") String id, @RequestBody RoleVO roleVO) {
-        roleVO.setId(id);
+    @PutMapping
+    public ResponseData updateById(@RequestBody RoleVO roleVO) {
         roleService.updateById(roleVO);
         return ResponseData.OK();
     }

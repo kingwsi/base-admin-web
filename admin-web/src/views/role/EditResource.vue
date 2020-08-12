@@ -1,34 +1,77 @@
 <template>
-  <page-header-wrapper :title="false" content="角色资源配置">
-    <a-row>
-      <a-col :span="12">
-        <a-tree
-          v-model="roleInfo.menuResources"
-          :defaultExpandAll="true"
-          checkable
-          :tree-data="treeData.menuTree"
-          :replaceFields="treeFields"
-          @select="onSelect"
-        />
-      </a-col>
-      <a-col :span="12">
-        <a-tree
-          v-model="roleInfo.apiResources"
-          checkable
-          :tree-data="treeData.apiTree"
-          :replaceFields="treeFields"
-          @select="onSelect"
-        />
-      </a-col>
-    </a-row>
+  <page-header-wrapper title="角色资源配置">
+    <a-spin :spinning="loading">
+      <a-card :bordered="false">
+        <a-row>
+          <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+            <a-form-item v-show="roleId" label="主键ID">
+              <a-input v-decorator="['id']" disabled />
+            </a-form-item>
+            <a-form-item label="名称">
+              <a-input v-decorator="['name', { }]" />
+            </a-form-item>
+            <a-form-item label="描述">
+              <a-input v-decorator="['description', { }]" />
+            </a-form-item>
+            <a-form-item label="菜单权限">
+              <a-row>
+                <a-col :span="10">
+                  <a-tree
+                    :checkedKeys="menuSelectedKeys"
+                    :auto-expand-parent="autoExpandParent"
+                    checkable
+                    show-line
+                    :tree-data="treeData.menuTree"
+                    :replaceFields="treeFields"
+                    @check="onMenuCheck"
+                  >
+                    <a-icon slot="switcherIcon" type="down" />
+                  </a-tree>
+                </a-col>
+                <a-col :span="10">
+                  <a-tree
+                    checkable
+                    :checkedKeys="apiSelectedKeys"
+                    :tree-data="treeData.apiTree"
+                    :replaceFields="treeFields"
+                    @check="onApiCheck"
+                  />
+                </a-col>
+              </a-row>
+            </a-form-item>
+            <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
+              <a-row>
+                <a-col :span="6">
+                  <a-button icon="reload" @click="reloadSelectedKeys">
+                    重置
+                  </a-button>
+                </a-col>
+                <a-col :span="6">
+                  <a-button icon="close" @click="clearSelectedKeys">
+                    清空
+                  </a-button>
+                </a-col>
+                <a-col :span="6" @click="handleOk">
+                  <a-button type="primary" icon="check">
+                    提交
+                  </a-button>
+                </a-col>
+              </a-row>
+            </a-form-item>
+          </a-form>
+        </a-row>
+      </a-card>
+    </a-spin>
   </page-header-wrapper>
 </template>
 <script>
+import pick from 'lodash.pick'
 import { GetAllResources } from '@/api/resource/index'
-import { GetRoleById } from '@/api/role'
+import { GetRoleById, UpdateById, CreateRole } from '@/api/role'
 import { listToTree } from '@/utils/util'
 import { Tree } from 'ant-design-vue'
-
+// 表单字段
+const fields = ['id', 'name', 'description']
 export default {
     name: 'EditResource',
     components: {
@@ -37,15 +80,14 @@ export default {
     data () {
       return {
         roleId: null,
-        roleInfo: {
-          menuResources: [],
-          apiResources: [],
-          btnResources: []
-        },
+        form: this.$form.createForm(this),
+        roleInfo: null,
+        loading: false,
         resourceList: [],
-        expandedKeys: ['-1'],
         autoExpandParent: true,
-        selectedKeys: [],
+        expandedKeys: true,
+        menuSelectedKeys: [],
+        apiSelectedKeys: [],
         treeData: {
           apiTree: [],
           btnTree: [],
@@ -65,58 +107,96 @@ export default {
           this.resourceList = response.data
           this.treeData.menuTree = [{ 'id': '-1', 'name': '根目录' }]
           this.treeData.apiTree = [{ 'id': '-1', 'name': '根目录' }]
-          this.treeData.btnTree = [{ 'id': '-1', 'name': '根目录' }]
-          // response.data.forEach(element =>{
-          //   switch (element.type) {
-          //     case 'MENU':
-          //       this.treeData.menuTree.push(element)
-          //       break
-          //     case 'API':
-          //       this.treeData.apiTree.push(element)
-          //       break
-          //     case 'BUTTON':
-          //       this.treeData.btnTree.push(element)
-          //       break
-          //   }
-          // })
-          listToTree(response.data.filter(res => res.type === 'MENU'), this.treeData.menuTree, '-1')
+          listToTree(response.data.filter(res => res.type === 'MENU' || res.type === 'BUTTON'), this.treeData.menuTree, '-1')
           listToTree(response.data.filter(res => res.type === 'API'), this.treeData.apiTree, '-1')
-          listToTree(response.data.filter(res => res.type === 'BUTTON'), this.treeData.btnTree, '-1')
-          console.log(this.treeData)
         })
       },
-      /* 加载当前角色拥有的资源 */
+      /* 加载当前角色信息以及拥有的资源 */
       loadSelectedList () {
+        this.loading = true
         this.roleId = this.$route.params.id
-        GetRoleById(this.roleId).then(resp => {
-          this.roleInfo = resp.data
-          this.getResourceByType()
+          GetRoleById(this.roleId).then(resp => {
+            this.roleInfo = resp.data
+            // 为form表单填充值
+            this.form.setFieldsValue(pick(resp.data, fields))
+            // 选中复选框处理
+            if (resp.data && resp.data.resourceList) {
+              this.menuSelectedKeys = []
+              this.apiSelectedKeys = []
+              this.roleInfo.resourceList.forEach(element => {
+                if (element.type === 'MENU') {
+                  this.menuSelectedKeys.push(element.id)
+                } else {
+                  this.apiSelectedKeys.push(element.id)
+                }
+              })
+          }
+          this.loading = false
         })
       },
-      getResourceByType () {
-        if (this.roleInfo && this.roleInfo.resourceList) {
-          this.roleInfo.menuResources = []
-          this.roleInfo.apiResources = []
-          this.roleInfo.btnResources = []
-          this.roleInfo.resourceList.forEach(element => {
-            switch (element.type) {
-              case 'MENU':
-                this.roleInfo.menuResources.push(element.id)
-                break
-              case 'API':
-                this.roleInfo.apiResources.push(element.id)
-                break
-              case 'BUTTON':
-                this.roleInfo.btnResources.push(element.id)
-                break
-            }
-          })
-          console.log(this.roleInfo)
-        }
+      onMenuCheck (checkedKeys, info) {
+        this.menuSelectedKeys = checkedKeys
       },
-      onSelect (selectedKeys, info) {
-        console.log('onSelect', info)
-        this.selectedKeys = selectedKeys
+      onApiCheck (selectedKeys, info) {
+        this.apiSelectedKeys = selectedKeys
+      },
+      handleOk () {
+        this.loading = true
+        this.form.validateFields((errors, formData) => {
+          if (!errors) {
+            formData.resourceIdList = this.menuSelectedKeys.concat(this.apiSelectedKeys)
+            if (formData.id) {
+              // 修改 e.g.
+              UpdateById(formData).then(res => {
+                this.loading = false
+                this.$message.info('修改成功')
+                this.$router.push({
+                  // path: `/system/role/permission/${formData.id}`
+                  path: '/system/role'
+                })
+              }).catch((err) => {
+                console.log(`form update error:->${err}`)
+                this.confirmLoading = false
+              })
+            } else {
+              // 新增
+              CreateRole(formData).then(res => {
+                this.loading = false
+                this.$message.info('新增成功')
+                this.$router.push({
+                  path: '/system/role'
+                })
+              }).catch((err) => {
+                console.log(`form update error:->${err}`)
+                this.loading = false
+              })
+            }
+          } else {
+            this.loading = false
+          }
+        })
+      },
+      clearSelectedKeys () {
+        this.menuSelectedKeys = []
+        this.apiSelectedKeys = []
+      },
+      reloadSelectedKeys () {
+        this.loading = true
+        this.loadSelectedList()
+        this.loading = false
+      },
+      onExpand (expandedKeys) {
+        this.expandedKeys = expandedKeys
+        this.autoExpandParent = false
+      },
+      onChange (e) {
+        const value = e.target.value
+        this.treeData.menuTree = [{ 'id': '-1', 'name': '根目录' }]
+        this.treeData.apiTree = [{ 'id': '-1', 'name': '根目录' }]
+        const menuresources = this.resourceList.filter(res => (res.type === 'MENU' || res.type === 'BUTTON') && res.name.indexOf(value) > -1)
+        console.log(menuresources)
+        // listToTree(menuresources, this.treeData.menuTree, '-1')
+        // listToTree(this.resourceList.filter(res => res.type === 'API'), this.treeData.apiTree, '-1')
       }
     },
     created () {

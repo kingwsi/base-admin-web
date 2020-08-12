@@ -36,7 +36,7 @@ public class RoleService {
         Role role = new Role();
         BeanUtils.copyProperties(roleVO, role);
         this.roleMapper.insert(role);
-        roleVO.getResourceIdList().forEach(id -> rolesAndResourcesMapper.insert(new RolesAndResources(role.getId(), id)));
+        rolesAndResourcesMapper.batchInsertRoleResources(role.getId(), roleVO.getResourceIdList());
     }
 
     public void deleteById(String id) {

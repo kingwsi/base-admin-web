@@ -8,6 +8,8 @@
         <result column="status" property="status"/>
         <result column="created_date" property="createdDate"/>
         <result column="description" property="description"/>
+        <result column="last_updater" property="lastUpdater"/>
+        <result column="last_update_date" property="lastUpdateDate"/>
         <collection property="resourceIdList" ofType="string">
             <result column="resource_id"/>
         </collection>
@@ -38,14 +40,11 @@
         FROM sys_roles r
         LEFT JOIN sys_roles_and_resources rar ON r.id = rar.role_id
         <where>
-            <if test="roleVO.name != null">
-            r.name = #{roleVO.name}
+            <if test="roleVO.name != null and roleVO.name != ''">
+            r.name LIKE CONCAT('%',#{roleVO.name},'%')
             </if>
-            <if test="roleVO.id != null">
-                AND r.id = #{roleVO.id}
-            </if>
-            <if test="roleVO.description != null">
-                AND r.description = #{roleVO.description}
+            <if test="roleVO.status != null and roleVO.status != ''">
+                AND r.status = #{roleVO.status}
             </if>
         </where>
     </select>
@@ -76,6 +75,6 @@
         FROM sys_roles sr
                  LEFT JOIN sys_roles_and_resources srar ON sr.id = srar.role_id
                  LEFT JOIN sys_resources s ON srar.resource_id = s.id
-                 WHERE s.deleted = 0 AND sr.id = #{id}
+                 WHERE sr.deleted = 0 AND sr.id = #{id}
     </select>
 </mapper>
