@@ -4,13 +4,13 @@
       <a-form layout="inline">
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
-            <a-form-item label="角色ID">
-              <a-input placeholder="请输入"/>
+            <a-form-item label="角色名称">
+              <a-input placeholder="请输入" v-model="queryParam.name"/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item label="状态">
-              <a-select placeholder="请选择" default-value="0">
+              <a-select placeholder="请选择" default-value="0" v-model="queryParam.status">
                 <a-select-option value="0">全部</a-select-option>
                 <a-select-option value="1">正常</a-select-option>
                 <a-select-option value="2">禁用</a-select-option>
@@ -19,7 +19,7 @@
           </a-col>
           <a-col :md="8" :sm="24">
             <span class="table-page-search-submitButtons">
-              <a-button type="primary">查询</a-button>
+              <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
               <a-button style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
@@ -38,7 +38,17 @@
         <template>
           <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleEdit(record)" type="danger">删除</a>
+          <a-popconfirm
+            title="确认删除这条数据？"
+            ok-text="确认"
+            okType="danger"
+            cancel-text="取消"
+            @confirm="handleDelete(record)"
+            placement="left"
+          >
+            <a-icon slot="icon" type="question-circle-o" style="color: red" />
+            <a style="color:#ff4d4f">删除</a>
+          </a-popconfirm>
         </template>
       </span>
     </s-table>
@@ -125,52 +135,17 @@ export default {
       this.visible = true
     },
     handleEdit (record) {
-      console.log(record)
       this.$router.push({
           path: `/system/role/permission/${record.id}`
         })
     },
-    handleOk () {
-      const form = this.$refs.createModal.form
-      this.confirmLoading = true
-      form.validateFields((errors, values) => {
-        if (!errors) {
-          console.log('values', values)
-          if (values.id > 0) {
-            // 修改 e.g.
-            // updateById(values).then(res => {
-            //   this.visible = false
-            //   this.confirmLoading = false
-            //   // 重置表单数据
-            //   form.resetFields()
-            //   // 刷新表格
-            //   this.$refs.table.refresh()
-
-            //   this.$message.info('修改成功')
-            // }).catch((err) => {
-            //   console.log(`form update error:->${err}`)
-            //   this.confirmLoading = false
-            // })
-          } else {
-            // 新增
-            // create(values).then(res => {
-            //   this.visible = false
-            //   this.confirmLoading = false
-            //   // 重置表单数据
-            //   form.resetFields()
-            //   // 刷新表格
-            //   this.$refs.table.refresh()
-
-            //   this.$message.info('新增成功')
-            // }).catch((err) => {
-            //   console.log(`form update error:->${err}`)
-            //   this.confirmLoading = false
-            // })
-          }
-        } else {
-          this.confirmLoading = false
-        }
-      })
+    handleOk (row) {
+      console.log('deleted..')
+      // DeleteById(row.id).then(res => {
+      //   this.$message.info('删除成功')
+      //   // 刷新表格
+      //   this.$refs.table.refresh()
+      // })
     },
     onChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
