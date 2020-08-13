@@ -23,11 +23,19 @@ public class User extends BaseEntity {
     @Column(name = "username")
     private String username;
 
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "avatar")
     private String avatar;
 
+    @Column(name = "introduction")
     private String introduction;
 
+    @Column(name = "fullName")
     private String fullName;
+
+    // 状态 0 禁用 1 启用
+    @Column(name = "status")
+    private String status;
 }

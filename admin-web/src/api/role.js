@@ -8,33 +8,33 @@ const Api = {
 }
 
 export function Page (parameter) {
-    return request({
-      url: Api.RoleList,
-      method: 'get',
-      params: parameter
-    })
-  }
+  return request({
+    url: Api.RoleList,
+    method: 'get',
+    params: parameter
+  })
+}
 
 export function GetRoleById (id) {
-    return request({
-      url: Api.Permission,
-      method: 'get',
-      params: { 'id': id }
-    })
-  }
+  return request({
+    url: Api.Permission,
+    method: 'get',
+    params: { 'id': id }
+  })
+}
 
 export function CreateRole (data) {
-    return request({
-      url: Api.Role,
-      method: 'post',
-      data: data
-    })
-  }
+  return request({
+    url: Api.Role,
+    method: 'post',
+    data: data
+  })
+}
 
 export function UpdateById (data) {
-    return request({
-      url: Api.Role,
-      method: 'put',
-      data: data
-    })
-  }
+  return request({
+    url: Api.Role,
+    method: 'put',
+    data: data
+  })
+}

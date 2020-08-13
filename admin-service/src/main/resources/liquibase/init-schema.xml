@@ -21,6 +21,7 @@
             <column name="username" type="varchar(100)" remarks="用户名"/>
             <column name="password" type="varchar(255)" remarks="密码"/>
             <column name="full_name" type="varchar(50)" remarks="全名"/>
+            <column name="status" type="varchar(2)" remarks="状态 1启用， 0 禁用" defaultValue="1"/>
             <column name="avatar" type="varchar(255)" remarks="头像"/>
             <column name="introduction" type="varchar(255)" remarks="介绍"/>
             <column name="creator" type="varchar(100)" remarks="创建者"/>

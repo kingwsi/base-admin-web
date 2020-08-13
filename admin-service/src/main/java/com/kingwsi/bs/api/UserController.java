@@ -30,9 +30,9 @@ import java.util.Map;
  * Author: wangshu
  * Date: 2019/6/29 23:33
  */
-@Api(tags = "用户相关接口")
+@Api(tags = "系统用户")
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -56,7 +56,7 @@ public class UserController {
 
     @ApiOperation("更新用户")
     @PutMapping
-    public ResponseData update(@RequestBody UserVO userVO) {
+    public ResponseData update(@Validated @RequestBody UserVO userVO) {
         userService.updateUser(userVO);
         return ResponseData.OK();
     }
