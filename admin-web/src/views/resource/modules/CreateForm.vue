@@ -45,6 +45,9 @@
           >
           </a-tree-select>
         </a-form-item>
+        <a-form-item label="图标">
+          <icon-selector v-model="selectedIcon" @change="handleIconChange"/>
+        </a-form-item>
         <a-form-item label="资源名称">
           <a-input v-decorator="['name', {rules: [{required: true, min: 2, message: '请输入至少2个字符的名称！'}]}]" />
         </a-form-item>
@@ -66,6 +69,7 @@
 import pick from 'lodash.pick'
 import { TreeSelect } from 'ant-design-vue'
 import { GetAllResources } from '@/api/resource/index'
+import IconSelector from '@/components/IconSelector'
 // import { listToTree } from '@/components/Tree/TreeUtils'
 
 // 表单字段
@@ -73,7 +77,8 @@ const fields = ['id', 'uri', 'type', 'name', 'component', 'parentId', 'sort']
 
 export default {
   components: {
-    TreeSelect
+    TreeSelect,
+    IconSelector
   },
   props: {
     visible: {
@@ -109,7 +114,8 @@ export default {
         key: 'id',
         title: 'name',
         value: 'id'
-      }
+      },
+      selectedIcon: null
     }
   },
   created () {
@@ -173,6 +179,10 @@ export default {
       console.log('重置treeData')
       this.resourceType = 'MENU'
       this.generatorTree(this.resourceType)
+    },
+    handleIconChange (icon) {
+      console.log('change Icon', icon)
+      this.$message.info(<span>选中图标 <code>{icon}</code></span>)
     }
   }
 }
