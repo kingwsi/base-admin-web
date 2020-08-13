@@ -1,9 +1,7 @@
 package com.kingwsi.bs.common.handler;
 
-import com.kingwsi.bs.exception.CustomException;
-import com.kingwsi.bs.util.bean.ResponseData;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.SignatureException;
+import com.kingwsi.bs.common.exception.CustomException;
+import com.kingwsi.bs.common.bean.ResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,20 +17,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-//    @Override
-//    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-//        ResponseEntity<Object> customExceptionResponseEntity = new ResponseEntity<>(handlerExceptionTest(ex), status);
-//        return customExceptionResponseEntity;
-//    }
-
-//    @ExceptionHandler(value = CustomException.class)
-//    public CustomException handlerException(Exception ex) {
-//        StackTraceElement stackTraceElement = ex.getStackTrace()[0];
-//        CustomException customException = new CustomException(ex.getMessage());
-//        log.error("异常:[{}],在[{}]第[{}]行,方法:[{}]", ex.getMessage(), stackTraceElement.getClassName(), stackTraceElement.getLineNumber(), stackTraceElement.getMethodName());
-//        return customException;
-//    }
 
     @ExceptionHandler(value = CustomException.class)
     public ResponseData handlerExceptionTest(CustomException ex) {
@@ -51,26 +35,5 @@ public class GlobalExceptionHandler {
         FieldError fieldError = ex.getBindingResult().getFieldError();
         assert fieldError != null;
         return ResponseData.FAIL(fieldError.getDefaultMessage());
-    }
-
-    /**
-     * 令牌异常
-     *
-     * @return
-     */
-    @ExceptionHandler(value = ExpiredJwtException.class)
-    public ResponseData handleExpiredJwtException(ExpiredJwtException e) {
-        log.error(e.getMessage());
-        return ResponseData.FAIL("令牌已过期");
-    }
-
-    /**
-     * 令牌异常
-     *
-     * @return
-     */
-    @ExceptionHandler(value = SignatureException.class)
-    public ResponseData handleSignatureException() {
-        return ResponseData.FAIL("令牌不合法");
     }
 }

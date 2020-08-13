@@ -1,7 +1,7 @@
 package com.kingwsi.bs.common.handler;
 
 import com.kingwsi.bs.entity.common.BaseEntity;
-import com.kingwsi.bs.jwt.TokenUtil;
+import com.kingwsi.bs.common.security.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;

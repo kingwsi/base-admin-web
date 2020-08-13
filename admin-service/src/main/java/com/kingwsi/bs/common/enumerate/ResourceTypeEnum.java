@@ -1,9 +1,9 @@
 package com.kingwsi.bs.common.enumerate;
 
 public enum ResourceTypeEnum {
-    ROUTE("路由"),
+    MENU("路由"),
     BUTTON("按钮"),
-    URL("请求地址");
+    API("请求地址");
 
     private String description;
 
@@ -13,5 +13,9 @@ public enum ResourceTypeEnum {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

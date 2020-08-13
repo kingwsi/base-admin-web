@@ -1,2 +1,2 @@
-id,username,password,avatar,organization_id,role_ids
-1,admin,$2a$10$vswPCKaH2RJ.hzBPOHsrVO2k72nqkVt3VigmJUvboHYiOAjN4XlX.,https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif,1,1;2
+id,username,full_name,password,avatar
+1,admin,管理员,$2a$10$vswPCKaH2RJ.hzBPOHsrVO2k72nqkVt3VigmJUvboHYiOAjN4XlX.,https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png

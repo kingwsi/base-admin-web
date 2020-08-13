@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingwsi.bs.mapper.ResourceMapper">
+    <resultMap id="RoleWithResourceIdsMap" type="com.kingwsi.bs.entity.resource.ResourceVO">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <collection property="resourceIds" ofType="java.lang.String">
+            <result column="resource_id"/>
+        </collection>
+    </resultMap>
+    <select id="selectRouteByUserId" parameterType="string" resultType="com.kingwsi.bs.entity.resource.Resource">
+    SELECT r.*
+    FROM sys_resources r
+             LEFT JOIN sys_roles_and_resources rar ON r.id = rar.resource_id
+             LEFT JOIN sys_users_and_roles uar ON uar.role_id = rar.role_id
+    WHERE uar.user_id = #{userId}
+    AND r.type = 'ROUTE'
+    </select>
+    <select id="selectByUserId" resultType="com.kingwsi.bs.entity.resource.Resource">
+        SELECT r.*
+        FROM sys_resources r
+                 LEFT JOIN sys_roles_and_resources rar ON r.id = rar.resource_id
+                 LEFT JOIN sys_users_and_roles uar ON uar.role_id = rar.role_id
+        WHERE uar.user_id = #{userId}
+    </select>
+    <select id="selectByMethodAndUserIdAndUri" resultType="com.kingwsi.bs.entity.resource.Resource">
+        SELECT r.*
+        FROM sys_resources r
+                 LEFT JOIN sys_roles_and_resources rar ON r.id = rar.resource_id
+                 LEFT JOIN sys_users_and_roles uar ON uar.role_id = rar.role_id
+        WHERE uar.user_id = #{userId}
+        AND r.type = 'URL'
+        AND r.uri = #{uri}
+        AND r.method LIKE CONCAT('%', #{method}, '%');
+    </select>
+    <select id="selectUriByUser" resultType="java.lang.String">
+        SELECT sr.uri
+        FROM sys_resources sr
+         LEFT JOIN sys_roles_and_resources srar ON sr.id = srar.resource_id
+         LEFT JOIN sys_users_and_roles suar on srar.role_id = suar.role_id
+        WHERE suar.user_id = #{userId} AND sr.type = 'URL'
+    </select>
+    <select id="selectByUser" resultType="com.kingwsi.bs.entity.resource.Resource">
+        SELECT sr.*
+        FROM sys_resources sr
+         LEFT JOIN sys_roles_and_resources srar ON sr.id = srar.resource_id
+         LEFT JOIN sys_users_and_roles suar on srar.role_id = suar.role_id
+        WHERE suar.user_id = #{userId} AND sr.type = 'URL'
+    </select>
+    <select id="selectByUserAndMethod" resultType="com.kingwsi.bs.entity.resource.Resource">
+        SELECT sr.*
+        FROM sys_resources sr
+         LEFT JOIN sys_roles_and_resources srar ON sr.id = srar.resource_id
+         LEFT JOIN sys_users_and_roles suar on srar.role_id = suar.role_id
+        WHERE
+            suar.user_id = #{userId}
+        AND sr.type = 'URL'
+        AND sr.method = #{method}
+    </select>
+    <select id="selectOfPage" resultType="com.kingwsi.bs.entity.resource.ResourceVO">
+        SELECT * FROM sys_resources
+        <where>
+            deleted = 0
+            <if test="query.name != null and query.name != ''">
+                AND name LIKE CONCAT('%',#{query.name},'%')
+            </if>
+            <if test="query.type != null">
+                AND type = #{query.type}
+            </if>
+        </where>
+    </select>
+    <!--
+    查找是否重复 规则：
+    BUTTON - 同一parentId 与 name 唯一
+    API    - uri 和 name 唯一
+    MENU   - uri 和 name 唯一
+    -->
+    <select id="countRepeat" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM sys_resources
+        <where>
+            deleted = 0
+            <if test="type.name=='MENU'">
+                AND (name = #{name} OR uri = #{uri})
+            </if>
+            <if test="type.name=='API'">
+                AND (name = #{name} OR uri = #{uri}) AND type = 'API'
+            </if>
+            <if test="type.name=='BUTTON'">
+                AND parent_id = #{parentId} AND name = #{name}
+            </if>
+            <if test="id != null and id != ''">
+                AND id != #{id}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -12,7 +12,11 @@ import java.util.List;
 
 @Component
 public interface RoleMapper extends BaseMapper<Role> {
-    IPage<Role> selectWithResourcesPage(@Param("page") Page<Role> page, @Param("roleVO") RoleVO roleVO);
+    IPage<RoleVO> selectPageWithResources(Page<RoleVO> page, @Param("roleVO") RoleVO roleVO);
+
+    RoleVO selectRoleWithResourceIds(@Param("id") String id);
+
+    RoleVO selectRoleWithResources(@Param("id") String id);
 
     List<Role> selectByUserId(@Param("userId") String userId);
 }

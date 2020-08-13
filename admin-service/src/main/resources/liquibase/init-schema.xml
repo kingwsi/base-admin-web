@@ -11,8 +11,6 @@
         <column name="created_date" type="timestamp" remarks="创建日期"/>
         <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
         <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
-        <column name="organization_id" type="varchar(64)" remarks="组织id"/>
-        <column name="role_ids" type="varchar(400)" remarks="角色"/>
         <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         -->
         <createTable tableName="sys_users" remarks="用户">
@@ -29,8 +27,6 @@
             <column name="created_date" type="timestamp" remarks="创建日期"/>
             <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
             <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
-            <column name="organization_id" type="varchar(64)" remarks="组织id"/>
-            <column name="role_ids" type="varchar(400)" remarks="角色"/>
             <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         </createTable>
 
@@ -40,6 +36,12 @@
             </column>
             <column name="name" type="varchar(100)" remarks="角色名"/>
             <column name="description" type="varchar(32)" remarks="描述"/>
+            <column name="status" type="varchar(10)" remarks="状态"/>
+            <column name="creator" type="varchar(100)" remarks="创建者"/>
+            <column name="created_date" type="timestamp" remarks="创建日期"/>
+            <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
+            <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
+            <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         </createTable>
 
         <createTable tableName="sys_users_and_roles" remarks="用户角色关联">
@@ -62,16 +64,14 @@
             <column name="sort" type="varchar(100)" remarks="排序"/>
             <column name="icon" type="varchar(100)" remarks="图标"/>
             <column name="type" type="varchar(20)" remarks="资源类型"/>
-            <column name="component" type="varchar(20)" remarks="资源类型"/>
-            <column name="filter_rule" type="varchar(100)" remarks="过滤规则"/>
+            <column name="component" type="varchar(20)" remarks=""/>
+<!--            <column name="filter_rule" type="varchar(100)" remarks="过滤规则"/>-->
             <column name="remark" type="varchar(100)" remarks="备注"/>
             <column name="parent_id" type="varchar(100)" remarks="上级id"/>
             <column name="creator" type="varchar(100)" remarks="创建者"/>
             <column name="created_date" type="timestamp" remarks="创建日期"/>
             <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
             <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
-            <column name="organization_id" type="varchar(64)" remarks="组织id"/>
-            <column name="role_ids" type="varchar(400)" remarks="角色"/>
             <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
         </createTable>
 
@@ -106,6 +106,28 @@
                 <constraints nullable="false"/>
             </column>
             <column name="organization_id" type="varchar(32)" remarks="组织id">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="sys_dictionaries" remarks="用户角色关联">
+            <column name="id" type="varchar(32)" remarks="角色id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="varchar(100)" remarks="创建者"/>
+            <column name="created_date" type="timestamp" remarks="创建日期"/>
+            <column name="last_updater" type="varchar(100)" remarks="最后更新人"/>
+            <column name="last_update_date" type="timestamp" remarks="最后更新时间"/>
+            <column name="deleted" defaultValue="0" type="int(1)" remarks="删除标记"/>
+            <column name="name" type="varchar(32)" remarks="角色id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="varchar(32)" remarks="角色id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(32)" remarks="角色id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sort" type="varchar(32)" remarks="角色id">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingwsi.bs.mapper.UsersAndRolesMapper">
+    <resultMap id="UserWithRoleMap" type="com.kingwsi.bs.entity.user.UserVO">
+        <result column="id" property="id"/>
+        <result property="avatar" column="avatar"/>
+        <result property="username" column="username"/>
+        <result property="fullName" column="full_name"/>
+        <collection property="roles" ofType="string">
+            <result column="roleName"/>
+        </collection>
+    </resultMap>
+    <insert id="batchInsert" parameterType="arraylist">
+        INSERT INTO sys_users_and_roles(user_id, role_id)
+        VALUES
+        <foreach collection="roleIds" item="id" index="index" separator=",">
+            (#{userId}, #{id})
+        </foreach>
+    </insert>
+    <delete id="deleteByUserId">
+        DELETE sys_users_and_roles WHERE user_id = #{userId}
+    </delete>
+    <select id="listUserWithRoles" parameterType="string" resultMap="UserWithRoleMap">
+        SELECT u.*,r.* FROM sys_users u LEFT JOIN sys_users_and_roles uar ON u.id = uar.user_id LEFT JOIN sys_roles r ON uar.role_id = r.id WHERE u.username = #{userName}
+    </select>
+    <select id="listUserWithRolesByUsername" resultType="com.kingwsi.bs.entity.user.UserVO" resultMap="UserWithRoleMap">
+        SELECT u.*,r.name roleName FROM sys_users u LEFT JOIN sys_users_and_roles uar ON u.id = uar.user_id LEFT JOIN sys_roles r ON uar.role_id = r.id WHERE u.username = #{username}
+    </select>
+</mapper>

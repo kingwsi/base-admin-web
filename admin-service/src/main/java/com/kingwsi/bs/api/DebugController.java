@@ -2,9 +2,11 @@ package com.kingwsi.bs.api;
 
 import com.kingwsi.bs.common.helper.tableInfo.TablePermissionHelper;
 import com.kingwsi.bs.common.helper.tableInfo.TablePermissionInfo;
+import com.kingwsi.bs.common.security.TokenUtil;
 import com.kingwsi.bs.service.RoleService;
 import io.swagger.annotations.Api;
 import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,14 @@ public class DebugController {
 //        roleService.listRoles();
         TablePermissionInfo sys_users = TablePermissionHelper.getTablePermissionInfo("sys_users");
         return "SUCCESS";
+    }
+
+    @GetMapping("/token")
+    public String generatorToken(String username){
+        if (StringUtils.isEmpty(username)) {
+            username = "admin";
+        }
+        return TokenUtil.createToken(username);
     }
 
     /**

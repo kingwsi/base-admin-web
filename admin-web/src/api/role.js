@@ -1,45 +1,40 @@
 import request from '@/utils/request'
 
-export function getRoutes() {
-  return request({
-    url: '/api/resources/routes',
-    method: 'get'
-  })
+const Api = {
+  // get my info
+  RoleList: '/role/page',
+  Permission: '/role/resources',
+  Role: '/role'
 }
 
-export function getRoles() {
-  return request({
-    url: '/api/roles',
-    method: 'get'
-  })
-}
+export function Page (parameter) {
+    return request({
+      url: Api.RoleList,
+      method: 'get',
+      params: parameter
+    })
+  }
 
-export function getRolesPage() {
-  return request({
-    url: '/api/roles/page',
-    method: 'get'
-  })
-}
+export function GetRoleById (id) {
+    return request({
+      url: Api.Permission,
+      method: 'get',
+      params: { 'id': id }
+    })
+  }
 
-export function addRole(data) {
-  return request({
-    url: '/api/roles',
-    method: 'post',
-    data
-  })
-}
+export function CreateRole (data) {
+    return request({
+      url: Api.Role,
+      method: 'post',
+      data: data
+    })
+  }
 
-export function updateRole(id, data) {
-  return request({
-    url: `/api/roles/${id}`,
-    method: 'put',
-    data
-  })
-}
-
-export function deleteRole(id) {
-  return request({
-    url: `/api/roles/${id}`,
-    method: 'delete'
-  })
-}
+export function UpdateById (data) {
+    return request({
+      url: Api.Role,
+      method: 'put',
+      data: data
+    })
+  }
