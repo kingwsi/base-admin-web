@@ -38,7 +38,7 @@ public class UserVO {
     private Instant createdDate;
     private String lastUpdater;
     private Instant lastUpdateDate;
-    private String organizationId;
-    private String roleIds;
 
+    // 状态 0 禁用 1 启用
+    private String status;
 }

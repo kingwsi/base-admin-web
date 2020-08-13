@@ -8,6 +8,7 @@ import com.kingwsi.bs.service.AccessControlService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ import java.util.List;
  * Author: wangshu<br>
  */
 @Component
+@Slf4j
 public class TokenUtil {
     public static final String KEY = "bf6a0773bd30c4a479c24ef6cfeb246e";
 
@@ -57,7 +59,8 @@ public class TokenUtil {
     }
 
     /**
-     * 解析TOKEN信息并获取当前用户完整信息（查询数据库）
+     * 解析TOKEN信息并获取当前用户完整信息
+     * 根据token中标识插叙
      *
      * @return
      */
@@ -69,19 +72,26 @@ public class TokenUtil {
     }
 
     /**
-     * 解析TOKEN信息并获取当前用户完整信息（查询数据库）
      *
      * @return
      */
-    public static String getUsernameByToken(HttpServletRequest servletRequest) {
-        String authorization = servletRequest.getHeader("Authorization");
-        Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(authorization).getBody();
-        return claims.getSubject();
+    public static String getUsername() {
+        String username = "unknow";
+        try {
+            ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            assert servletRequestAttributes != null;
+            String authorization = servletRequestAttributes.getRequest().getHeader("Authorization");
+            Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(authorization).getBody();
+            username = claims.getSubject();
+        } catch (Exception e) {
+            log.warn("Token解析用户信息失败->{}", e.getMessage());
+        }
+        return username;
     }
 
     public static String createToken(String username) {
 //            redisTemplate.opsForValue().set(RedisKeyEnum.USER_AUTH_INFO + user.getId(), user,60, TimeUnit.SECONDS);
-            return Jwts.builder()
+        return Jwts.builder()
                     .setSubject(username)
                     .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
                     .signWith(SignatureAlgorithm.HS512, TokenUtil.KEY)

@@ -1,6 +1,6 @@
 import storage from 'store'
 import { login, logout } from '@/api/login'
-import { getInfo } from '@/api/user'
+import { GetUserInfo } from '@/api/user'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
 
@@ -50,12 +50,13 @@ const user = {
     // 获取用户信息
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
-        getInfo().then(response => {
+        GetUserInfo().then(response => {
           const { data } = response
           if (!data) {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
           const { roles, username, avatar } = data
+          console.log(data)
           commit('SET_ROLES', roles)
           commit('SET_INFO', data)
           // if (result.role && result.role.permissions.length > 0) {
