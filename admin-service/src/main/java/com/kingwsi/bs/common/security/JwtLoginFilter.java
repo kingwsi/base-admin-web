@@ -1,13 +1,12 @@
-package com.kingwsi.bs.security;
+package com.kingwsi.bs.common.security;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kingwsi.bs.entity.user.User;
-import com.kingwsi.bs.util.bean.ResponseData;
+import com.kingwsi.bs.common.bean.ResponseData;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -50,11 +49,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse resp, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();//获取登录用户的角色
-        StringBuffer sb = new StringBuffer();
-        for (GrantedAuthority authority : authorities) {
-            sb.append(authority.getAuthority()).append(",");
-        }
+//        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();//获取登录用户的角色
         String token = TokenUtil.createToken(authResult.getName());
         Map<String, Object> map = new HashMap<>();
         map.put("data", token);

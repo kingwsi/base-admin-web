@@ -1,4 +1,4 @@
-package com.kingwsi.bs.security;
+package com.kingwsi.bs.common.security;
 
 /**
  * description: JwtFilter <br>

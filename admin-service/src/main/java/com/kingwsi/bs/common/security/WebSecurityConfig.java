@@ -1,10 +1,8 @@
-package com.kingwsi.bs.security;
+package com.kingwsi.bs.common.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kingwsi.bs.security.JWTAuthenticationFilter;
-import com.kingwsi.bs.security.JwtLoginFilter;
 import com.kingwsi.bs.service.UserDetailServiceImpl;
-import com.kingwsi.bs.util.bean.ResponseData;
+import com.kingwsi.bs.common.bean.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -51,8 +49,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**/*.gif", "/**/*.png", "/**/*.jpg", "/**/*.html", "/**/*.js", "/**/*.css", "/**/*.ico").permitAll()
 //                .antMatchers("/**").access("@customResourceFilterHandler.hasPermission(request ,authentication)")
                 .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(new JwtLoginFilter("/api/auth", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                // 解决页面frame嵌套报错问题
+                .and().headers().frameOptions().disable()
+                .and().addFilterBefore(new JwtLoginFilter("/api/auth", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable().exceptionHandling()
                 .authenticationEntryPoint((req, resp, authException) -> {

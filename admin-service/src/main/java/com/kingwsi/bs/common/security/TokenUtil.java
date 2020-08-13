@@ -1,4 +1,4 @@
-package com.kingwsi.bs.security;
+package com.kingwsi.bs.common.security;
 
 import com.kingwsi.bs.entity.authority.Principal;
 import com.kingwsi.bs.entity.resource.Resource;

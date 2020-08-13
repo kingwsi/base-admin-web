@@ -1,4 +1,4 @@
-package com.kingwsi.bs.util.bean;
+package com.kingwsi.bs.common.bean;
 
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
 import com.baomidou.mybatisplus.extension.incrementer.H2KeyGenerator;

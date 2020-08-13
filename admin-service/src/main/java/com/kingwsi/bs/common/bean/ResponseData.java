@@ -1,4 +1,4 @@
-package com.kingwsi.bs.util.bean;
+package com.kingwsi.bs.common.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * 同意返回对象封装
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

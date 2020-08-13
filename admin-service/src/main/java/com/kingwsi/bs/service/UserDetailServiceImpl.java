@@ -50,7 +50,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return new UserDetails() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
-                return AuthorityUtils.commaSeparatedStringToAuthorityList("admin");
+                return AuthorityUtils.commaSeparatedStringToAuthorityList(null);
             }
 
             @Override

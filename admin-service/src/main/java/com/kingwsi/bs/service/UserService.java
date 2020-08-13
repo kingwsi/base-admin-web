@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserConvertMapper;
 import com.kingwsi.bs.entity.user.UserVO;
-import com.kingwsi.bs.exception.CustomException;
+import com.kingwsi.bs.common.exception.CustomException;
 import com.kingwsi.bs.mapper.UserMapper;
 import com.kingwsi.bs.mapper.UsersAndRolesMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

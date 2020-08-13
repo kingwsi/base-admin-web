@@ -3,7 +3,7 @@ package com.kingwsi.bs.service;
 import com.kingwsi.bs.entity.authority.Principal;
 import com.kingwsi.bs.entity.resource.Resource;
 import com.kingwsi.bs.entity.role.Role;
-import com.kingwsi.bs.exception.CustomException;
+import com.kingwsi.bs.common.exception.CustomException;
 import com.kingwsi.bs.mapper.*;
 import com.kingwsi.bs.entity.user.UserVO;
 import org.springframework.data.redis.core.RedisTemplate;

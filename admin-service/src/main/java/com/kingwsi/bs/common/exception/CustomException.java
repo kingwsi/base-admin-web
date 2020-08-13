@@ -1,4 +1,4 @@
-package com.kingwsi.bs.exception;
+package com.kingwsi.bs.common.exception;
 
 import org.springframework.http.HttpStatus;
 

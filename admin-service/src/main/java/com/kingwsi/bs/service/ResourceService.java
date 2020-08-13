@@ -9,8 +9,8 @@ import com.kingwsi.bs.entity.resource.ResourceConvertMapper;
 import com.kingwsi.bs.entity.resource.ResourceQuery;
 import com.kingwsi.bs.entity.resource.ResourceVO;
 import com.kingwsi.bs.entity.user.UserVO;
-import com.kingwsi.bs.exception.CustomException;
-import com.kingwsi.bs.security.TokenUtil;
+import com.kingwsi.bs.common.exception.CustomException;
+import com.kingwsi.bs.common.security.TokenUtil;
 import com.kingwsi.bs.mapper.ResourceMapper;
 import org.springframework.stereotype.Service;
 

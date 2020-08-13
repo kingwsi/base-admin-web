@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.entity.dictionary.DictionaryVO;
 import com.kingwsi.bs.service.DictionaryService;
-import com.kingwsi.bs.util.bean.ResponseData;
+import com.kingwsi.bs.common.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;

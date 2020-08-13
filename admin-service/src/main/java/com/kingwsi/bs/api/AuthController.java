@@ -1,6 +1,6 @@
 package com.kingwsi.bs.api;
 
-import com.kingwsi.bs.util.bean.ResponseData;
+import com.kingwsi.bs.common.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;

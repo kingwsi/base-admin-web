@@ -43,8 +43,7 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("BASE-SERVICE快速开发基础平台")
-                .description("开箱即用，快速开发")
+                .title("BASE-SERVICE")
                 .termsOfServiceUrl("https://github.com/kingwsi")
                 .version("0.1")
                 .build();

@@ -13,7 +13,7 @@ import ${superControllerClassPackage};
 </#if>
 import ${package.Entity}.${entity}VO;
 import ${package.Service}.${entity}Service;
-import com.kingwsi.bs.util.bean.ResponseData;
+import com.kingwsi.bs.common.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;
