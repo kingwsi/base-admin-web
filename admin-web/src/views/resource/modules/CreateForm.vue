@@ -45,7 +45,7 @@
           >
           </a-tree-select>
         </a-form-item>
-        <a-form-item label="图标">
+        <a-form-item label="图标" v-if="resourceType!=='API'">
           <icon-selector v-model="selectedIcon" @change="handleIconChange"/>
         </a-form-item>
         <a-form-item label="资源名称">
@@ -127,6 +127,7 @@ export default {
     this.$watch('model', () => {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
       this.resourceType = this.model && this.model.type || this.resourceType
+      this.selectedIcon = this.model.icon
       // 生成tree
       this.generatorTree(this.resourceType)
     })
@@ -181,7 +182,7 @@ export default {
       this.generatorTree(this.resourceType)
     },
     handleIconChange (icon) {
-      console.log('change Icon', icon)
+      this.selectedIcon = icon
       this.$message.info(<span>选中图标 <code>{icon}</code></span>)
     }
   }
