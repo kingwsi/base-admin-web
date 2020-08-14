@@ -29,7 +29,7 @@ export function GetUserPage (parameter) {
 
 export function UpdateUserById (data) {
   return request({
-    url: Api.UserInfo,
+    url: Api.User,
     method: 'put',
     data: data
   })
@@ -37,7 +37,7 @@ export function UpdateUserById (data) {
 
 export function DeleteUserById (id) {
   return request({
-    url: Api.UserInfo,
+    url: Api.User,
     method: 'get',
     params: { 'id': id }
   })
@@ -45,7 +45,7 @@ export function DeleteUserById (id) {
 
 export function UpdateStatusById (id) {
   return request({
-    url: Api.UserInfo,
+    url: Api.User,
     method: 'get',
     params: { 'id': id }
   })

@@ -48,7 +48,7 @@ public class UserService {
         usersAndRolesMapper.batchInsert(user.getId(), vo.getRoles());
     }
 
-    public IPage<UserVO> listUsersOfPage(Page<User> page, UserVO userVO) {
+    public IPage<UserVO> listUsersOfPage(Page<UserVO> page, UserVO userVO) {
         return userMapper.listUsersOfPage(page, userVO);
     }
 

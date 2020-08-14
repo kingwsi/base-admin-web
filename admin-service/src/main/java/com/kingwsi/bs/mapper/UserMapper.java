@@ -11,5 +11,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface UserMapper extends BaseMapper<User> {
 
-    IPage<UserVO> listUsersOfPage(Page<User> page, @Param("user") UserVO userVO);
+    IPage<UserVO> listUsersOfPage(Page<UserVO> page, @Param("user") UserVO userVO);
 }

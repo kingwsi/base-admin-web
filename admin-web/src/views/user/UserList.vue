@@ -74,7 +74,11 @@
     >
       <span slot="avatar" slot-scope="avatar">
         <a-avatar v-if="avatar" :src="avatar" />
-        <a-avatar v-if="!avatar" icon="user" />
+        <a-avatar v-else icon="user" />
+      </span>
+      <span slot="status" slot-scope="status">
+        <a-tag v-if="status==='1'" color="green">启用</a-tag>
+        <a-tag v-else color="red">禁用</a-tag>
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
@@ -102,25 +106,6 @@
       @cancel="handleCancel"
       @ok="handleOk"
     />
-    <a-row>
-      <a-upload
-        name="avatar"
-        list-type="picture-card"
-        class="avatar-uploader"
-        :show-upload-list="false"
-        action="http://localhost:8094/api/oss/image"
-        :before-upload="beforeUpload"
-        @change="handleChange"
-      >
-        <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
-        <div v-else>
-          <a-icon :type="loading ? 'loading' : 'plus'" />
-          <div class="ant-upload-text">
-            Upload
-          </div>
-        </div>
-      </a-upload>
-    </a-row>
   </div>
 </template>
 
@@ -130,15 +115,8 @@ import { STable } from '@/components'
 import { GetUserPage, UpdateUserById, CreateUser, DeleteUserById } from '@/api/user'
 
 import CreateForm from './modules/CreateForm'
-
-function getBase64 (img, callback) {
-  const reader = new FileReader()
-  reader.addEventListener('load', () => callback(reader.result))
-  reader.readAsDataURL(img)
-}
-
 export default {
-  name: 'Dictionary',
+  name: 'User',
   components: {
     STable,
     CreateForm
@@ -149,7 +127,7 @@ export default {
       visible: false,
       warningVisible: false,
       confirmLoading: false,
-      mdl: null,
+      mdl: {},
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
@@ -175,7 +153,8 @@ export default {
         },
         {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'status',
+          scopedSlots: { customRender: 'status' }
         },
         {
           title: '操作',
@@ -191,9 +170,7 @@ export default {
           .then(res => {
             return res.data
           })
-      },
-      loading: false,
-      imageUrl: ''
+      }
     }
   },
   created () {
@@ -201,29 +178,30 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.mdl = null
+      this.mdl = {}
       this.visible = true
     },
     handleEdit (record) {
+      console.log(record)
       this.visible = true
       this.mdl = { ...record }
     },
     handleOk () {
-      const form = this.$refs.createModal.form
+      const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
-      form.validateFields((errors, values) => {
-        if (!errors) {
-          console.log('values', values)
-          if (values.id > 0) {
+      form.validate(valid => {
+        console.log(valid)
+        if (valid) {
+          console.log('formData', this.mdl)
+          if (this.mdl.id) {
             // 修改 e.g.
-            UpdateUserById(values).then(res => {
+            UpdateUserById(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('修改成功')
             }).catch((err) => {
               console.log(`form update error:->${err}`)
@@ -231,7 +209,7 @@ export default {
             })
           } else {
             // 新增
-            CreateUser(values).then(res => {
+            CreateUser(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
@@ -247,6 +225,7 @@ export default {
           }
         } else {
           this.confirmLoading = false
+          return false
         }
       })
     },
@@ -255,9 +234,7 @@ export default {
     },
     handleCancel () {
       this.visible = false
-
-      const form = this.$refs.createModal.form
-      form.resetFields() // 清理表单数据（可不做）
+      this.resetCreateForm()
     },
     handleDelete (row) {
         DeleteUserById(row.id).then(res => {
@@ -275,29 +252,9 @@ export default {
         date: moment(new Date())
       }
     },
-    handleChange (info) {
-      if (info.file.status === 'uploading') {
-        this.loading = true
-        return
-      }
-      if (info.file.status === 'done') {
-        // Get this url from response in real world.
-        getBase64(info.file.originFileObj, imageUrl => {
-          this.imageUrl = imageUrl
-          this.loading = false
-        })
-      }
-    },
-    beforeUpload (file) {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-      if (!isJpgOrPng) {
-        this.$message.error('You can only upload JPG file!')
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isLt2M) {
-        this.$message.error('Image must smaller than 2MB!')
-      }
-      return isJpgOrPng && isLt2M
+    resetCreateForm () {
+      const form = this.$refs.createModal.$refs.form
+      form.resetFields()
     }
   }
 }

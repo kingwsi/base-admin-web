@@ -33,6 +33,6 @@ public class OssController {
         if (StringUtils.isEmpty(path)) {
             return ResponseData.FAIL();
         }
-        return ResponseData.OK();
+        return ResponseData.OK(path);
     }
 }

@@ -47,4 +47,10 @@ public class RoleController {
     public ResponseData page(Page<RoleVO> page, RoleVO vo) {
         return ResponseData.OK(roleService.listOfPages(page, vo));
     }
+
+    @GetMapping("/list")
+    @ApiOperation("获取列表")
+    public ResponseData getList(RoleVO vo) {
+        return ResponseData.OK(roleService.list(vo));
+    }
 }

@@ -18,7 +18,7 @@
                 <a-col :span="10">
                   <a-tree
                     :checkedKeys="menuSelectedKeys"
-                    :auto-expand-parent="autoExpandParent"
+                    :default-expand-all="true"
                     checkable
                     show-line
                     :tree-data="treeData.menuTree"
@@ -31,6 +31,7 @@
                 <a-col :span="10">
                   <a-tree
                     checkable
+                    show-line
                     :checkedKeys="apiSelectedKeys"
                     :tree-data="treeData.apiTree"
                     :replaceFields="treeFields"
@@ -39,29 +40,17 @@
                 </a-col>
               </a-row>
             </a-form-item>
-            <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
-              <a-row>
-                <a-col :span="6">
-                  <a-button icon="reload" @click="reloadSelectedKeys">
-                    重置
-                  </a-button>
-                </a-col>
-                <a-col :span="6">
-                  <a-button icon="close" @click="clearSelectedKeys">
-                    清空
-                  </a-button>
-                </a-col>
-                <a-col :span="6" @click="handleOk">
-                  <a-button type="primary" icon="check">
-                    提交
-                  </a-button>
-                </a-col>
-              </a-row>
-            </a-form-item>
           </a-form>
         </a-row>
       </a-card>
     </a-spin>
+    <footer-tool-bar>
+      <a-button icon="reload" @click="reloadSelectedKeys">重置</a-button>
+      <a-divider type="vertical" />
+      <a-button icon="close" @click="clearSelectedKeys">清空</a-button>
+      <a-divider type="vertical" />
+      <a-button type="primary" icon="check" @click="handleOk">提交</a-button>
+    </footer-tool-bar>
   </page-header-wrapper>
 </template>
 <script>
@@ -70,12 +59,15 @@ import { GetAllResources } from '@/api/resource/index'
 import { GetRoleById, UpdateById, CreateRole } from '@/api/role'
 import { listToTree } from '@/utils/util'
 import { Tree } from 'ant-design-vue'
+import FooterToolBar from '@/components/FooterToolbar'
+
 // 表单字段
 const fields = ['id', 'name', 'description']
 export default {
     name: 'EditResource',
     components: {
-      Tree
+      Tree,
+      FooterToolBar
     },
     data () {
       return {
@@ -84,8 +76,6 @@ export default {
         roleInfo: null,
         loading: false,
         resourceList: [],
-        autoExpandParent: true,
-        expandedKeys: true,
         menuSelectedKeys: [],
         apiSelectedKeys: [],
         treeData: {
@@ -184,10 +174,6 @@ export default {
         this.loading = true
         this.loadSelectedList()
         this.loading = false
-      },
-      onExpand (expandedKeys) {
-        this.expandedKeys = expandedKeys
-        this.autoExpandParent = false
       },
       onChange (e) {
         const value = e.target.value

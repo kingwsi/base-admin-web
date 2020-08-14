@@ -7,6 +7,12 @@
         <result column="username" property="username"/>
         <result column="avatar" property="avatar"/>
         <result column="introduction" property="introduction"/>
+        <result column="full_name" property="fullName"/>
+        <result column="creator" property="creator"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="last_updater" property="lastUpdater"/>
+        <result column="last_update_date" property="lastUpdateDate"/>
+        <result column="status" property="status"/>
         <collection property="roles" ofType="string">
             <result column="role_id"/>
         </collection>

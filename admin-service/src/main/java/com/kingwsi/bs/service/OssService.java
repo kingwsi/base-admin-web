@@ -30,24 +30,25 @@ public class OssService {
     private static String bucketName = "vant-admin";
 
     public String uploadImage(MultipartFile multipartFile) {
-        String suffix = Objects.requireNonNull(multipartFile.getOriginalFilename()).substring(multipartFile.getOriginalFilename().lastIndexOf(".")).toLowerCase();
-        if (!suffix.equals(".png") && !suffix.equals(".jpg") && !suffix.equals(".gif")) {
-            throw new CustomException("文件格式错误");
-        }
-        String fullPath = "";
-        OSS client = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-        String key = UUID.randomUUID().toString() + suffix;
-        try {
-            File file = File.createTempFile("oss-avatar-", suffix);
-            file.deleteOnExit();
-            multipartFile.transferTo(file);
-            PutObjectResult result = client.putObject(new PutObjectRequest(bucketName, key, file));
-            fullPath = "https://" + bucketName + "." + endpoint + "/" + key;
-            log.info("oss上传文件成功，格式->{}，文件名->{}", suffix, key);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return fullPath;
+//        String suffix = Objects.requireNonNull(multipartFile.getOriginalFilename()).substring(multipartFile.getOriginalFilename().lastIndexOf(".")).toLowerCase();
+//        if (!suffix.equals(".png") && !suffix.equals(".jpg") && !suffix.equals(".gif")) {
+//            throw new CustomException("文件格式错误");
+//        }
+//        String fullPath = "";
+//        OSS client = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+//        String key = UUID.randomUUID().toString() + suffix;
+//        try {
+//            File file = File.createTempFile("oss-avatar-", suffix);
+//            file.deleteOnExit();
+//            multipartFile.transferTo(file);
+//            PutObjectResult result = client.putObject(new PutObjectRequest(bucketName, key, file));
+//            fullPath = "https://" + bucketName + "." + endpoint + "/" + key;
+//            log.info("oss上传文件成功，格式->{}，文件名->{}", suffix, key);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return fullPath;
+        return "https://vant-admin.oss-cn-hangzhou.aliyuncs.com/c749e499-ef95-49b1-9336-c2d1c2267552.png";
     }
 }
 

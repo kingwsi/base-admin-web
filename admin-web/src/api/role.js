@@ -38,3 +38,11 @@ export function UpdateById (data) {
     data: data
   })
 }
+
+export function GetRoleList (parameter) {
+  return request({
+    url: `${Api.Role}/list`,
+    method: 'get',
+    params: parameter
+  })
+}

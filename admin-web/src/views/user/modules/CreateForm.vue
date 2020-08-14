@@ -8,12 +8,16 @@
     @cancel="() => { $emit('cancel') }"
   >
     <a-spin :spinning="loading">
-      <a-form :form="form" v-bind="formLayout">
+      <a-form-model
+        ref="form"
+        :model="model"
+        :rules="rules"
+        v-bind="formLayout">
         <!-- 检查是否有 id 并且大于0，大于0是修改。其他是新增，新增不显示主键ID -->
-        <a-form-item v-show="model && model.id" label="ID">
-          <a-input v-decorator="['id', {}]" disabled />
-        </a-form-item>
-        <a-form-item label="头像">
+        <a-form-model-item v-show="model && model.id" label="ID">
+          <a-input v-model="model.id" disabled />
+        </a-form-model-item>
+        <a-form-model-item label="头像">
           <a-upload
             name="avatar"
             list-type="picture-card"
@@ -23,7 +27,7 @@
             :before-upload="beforeUpload"
             @change="handleChange"
           >
-            <img v-if="avatarUrl" :src="avatarUrl" alt="avatar" style="height:150px" />
+            <img v-if="model.avatar" :src="model.avatar" alt="avatar" style="height:150px" />
             <div v-else>
               <a-icon :type="uploadLoading ? 'loading' : 'plus'" />
               <div class="ant-upload-text">
@@ -31,49 +35,37 @@
               </div>
             </div>
           </a-upload>
-        </a-form-item>
-        <a-form-item label="用户名">
-          <a-input v-decorator="['username', {}]" :disabled="model && model.id?true:false" placeholder="请输入用户名，设置后将不可更改" />
-        </a-form-item>
-        <a-form-item v-show="!model || !model.id" label="密码">
-          <a-input v-decorator="['password', {}]"/>
-        </a-form-item>
-        <a-form-item label="全称">
-          <a-input v-decorator="['fullName']"/>
-        </a-form-item>
-        <a-form-item label="介绍">
-          <a-input v-decorator="['introduction']"/>
-        </a-form-item>
-        <a-form-item label="角色">
+        </a-form-model-item>
+        <a-form-model-item label="用户名" prop="username">
+          <a-input v-model="model.username" :disabled="model && model.id?true:false" placeholder="请输入用户名，设置后将不可更改" />
+        </a-form-model-item>
+        <a-form-model-item v-if="!model || !model.id" label="密码" placeholder="请输入密码，6-20位" prop="password">
+          <a-input v-model="model.password"/>
+        </a-form-model-item>
+        <a-form-model-item label="全称" prop="fullName">
+          <a-input v-model="model.fullName"/>
+        </a-form-model-item>
+        <a-form-model-item label="角色" prop="roles">
           <a-select
             mode="multiple"
-            v-decorator="['role']"
+            v-model="model.roles"
             style="width: 100%"
             placeholder="请选择角色"
           >
             <a-select-option v-for="role in roleList" :key="role.id">{{ role.name }}</a-select-option>
           </a-select>
-        </a-form-item>
-      </a-form>
+        </a-form-model-item>
+        <a-form-model-item label="介绍" prop="introduction">
+          <a-input v-model="model.introduction" type="textarea"/>
+        </a-form-model-item>
+      </a-form-model>
     </a-spin>
-    <a-form-model :model="tmpForm" v-bind="formLayout">
-      <a-form-model-item label="name">
-        <a-input v-model="tmpForm.username" />
-      </a-form-model-item>
-      <a-form-model-item label="age">
-        <a-input v-model="tmpForm.password" />
-      </a-form-model-item>
-    </a-form-model>
   </a-modal>
 </template>
 
 <script>
-import pick from 'lodash.pick'
 import { UploadAvatar } from '@/api/fileResource'
 import { GetRoleList } from '@/api/role'
-
-// 表单字段
-const fields = ['id', 'username', 'avatar', 'fullName', 'introduction', 'role']
 
 export default {
   props: {
@@ -102,33 +94,21 @@ export default {
       }
     }
     return {
-      form: this.$form.createForm(this),
+      form: {},
       roleList: [],
       uploadLoading: false,
-      avatarUrl: '',
-      roleSelectorProps: {
-        key: 'id',
-        value: 'id',
-        label: 'name'
-      },
-      tmpForm: {}
+      rules: {
+        fullName: [{ required: true, message: '请输入全称', trigger: 'change' }],
+        username: [{ required: true, message: '请输入用户名', trigger: 'change' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'change' }],
+        roles: [{ required: true, message: '请选择角色', trigger: 'change' }]
+      }
     }
   },
   created () {
     console.log('custom modal created')
     // 加载roles
     this.loadRoles()
-    // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
-    // 当 model 发生改变时，为表单设置值
-    this.$watch('model', () => {
-      fields.forEach(v => this.form.getFieldDecorator(v))
-      this.model && this.form.setFieldsValue(pick(this.model, fields))
-      this.tmpForm = this.model
-      if (this.model && this.model.avatar) {
-        this.avatarUrl = this.model.avatar
-      }
-    })
   },
   methods: {
     loadRoles () {
@@ -158,7 +138,7 @@ export default {
       formData.append('file', data.file)
       UploadAvatar(formData).then(response => {
         if (response.code === 200) {
-          this.avatarUrl = response.data
+          this.model.avatar = response.data
           this.uploadLoading = false
         }
       }).catch((err) => {
