@@ -9,6 +9,7 @@ import com.kingwsi.bs.service.UserDetailServiceImpl;
 import com.kingwsi.bs.common.bean.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -56,14 +57,14 @@ public class UserController {
 
     @ApiOperation("更新用户")
     @PutMapping
-    public ResponseData update(@Validated @RequestBody UserVO userVO) {
+    public ResponseData update(@Validated(Update.class) @RequestBody UserVO userVO) {
         userService.updateUser(userVO);
         return ResponseData.OK();
     }
 
     @ApiOperation("获取用户分页")
     @GetMapping("/page")
-    public ResponseData page(Page<User> page, UserVO userVO) {
+    public ResponseData page(Page<UserVO> page, UserVO userVO) {
         return ResponseData.OK(userService.listUsersOfPage(page, userVO));
     }
 

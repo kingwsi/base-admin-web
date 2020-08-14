@@ -2,6 +2,7 @@ package com.kingwsi.bs.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kingwsi.bs.entity.role.*;
 import com.kingwsi.bs.mapper.RoleMapper;
@@ -9,6 +10,8 @@ import com.kingwsi.bs.mapper.RolesAndResourcesMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Description: 角色服务<br>
@@ -64,5 +67,10 @@ public class RoleService {
      */
     public RoleVO getRoleWithResources(String id) {
         return roleMapper.selectRoleWithResources(id);
+    }
+
+    public List<RoleVO> list(RoleVO vo) {
+        List<Role> roles = roleMapper.selectList(Wrappers.emptyWrapper());
+        return roleConvertMapper.rolesToRoleVOs(roles);
     }
 }
