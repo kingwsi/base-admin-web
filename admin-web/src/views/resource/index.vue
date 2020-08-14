@@ -181,6 +181,7 @@ export default {
       const form = this.$refs.createModal.form
       this.confirmLoading = true
       form.validateFields((errors, values) => {
+        values.icon = this.$refs.createModal.selectedIcon
         if (!errors) {
           console.log('values', values)
           if (values.id) {
