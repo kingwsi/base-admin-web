@@ -72,11 +72,11 @@ public class TokenUtil {
     }
 
     /**
-     *
+     * 获取用户名
      * @return
      */
     public static String getUsername() {
-        String username = "unknow";
+        String username = "unknown";
         try {
             ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             assert servletRequestAttributes != null;
@@ -89,13 +89,32 @@ public class TokenUtil {
         return username;
     }
 
-    public static String createToken(String username) {
+    /**
+     * 获取用户id
+     * @return
+     */
+    public static String getUserId() {
+        String userId = "-1";
+        try {
+            ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            assert servletRequestAttributes != null;
+            String authorization = servletRequestAttributes.getRequest().getHeader("Authorization");
+            Claims claims = Jwts.parser().setSigningKey(TokenUtil.KEY).parseClaimsJws(authorization).getBody();
+            userId = claims.getId();
+        } catch (Exception e) {
+            log.warn("解析token获取userId失败->{}", e.getMessage());
+        }
+        return userId;
+    }
+
+    public static String createToken(String id, String username) {
 //            redisTemplate.opsForValue().set(RedisKeyEnum.USER_AUTH_INFO + user.getId(), user,60, TimeUnit.SECONDS);
         return Jwts.builder()
-                    .setSubject(username)
-                    .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
-                    .signWith(SignatureAlgorithm.HS512, TokenUtil.KEY)
-                    .compact();
+                .setSubject(username)
+                .setId(id)
+                .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
+                .signWith(SignatureAlgorithm.HS512, TokenUtil.KEY)
+                .compact();
     }
 
     @SuppressWarnings("unchecked")

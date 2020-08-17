@@ -1,7 +1,6 @@
 package com.kingwsi.bs.api;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.entity.user.UserVO;
 import com.kingwsi.bs.common.security.TokenUtil;
 import com.kingwsi.bs.service.UserService;

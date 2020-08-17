@@ -4,6 +4,7 @@ package com.kingwsi.bs.common.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.common.bean.ResponseData;
+import com.kingwsi.bs.service.auth.UserDetailsImpl;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -50,7 +51,8 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse resp, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 //        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();//获取登录用户的角色
-        String token = TokenUtil.createToken(authResult.getName());
+        String userId = ((UserDetailsImpl) authResult.getPrincipal()).getId();
+        String token = TokenUtil.createToken(userId, authResult.getName());
         Map<String, Object> map = new HashMap<>();
         map.put("data", token);
         map.put("code", 200);

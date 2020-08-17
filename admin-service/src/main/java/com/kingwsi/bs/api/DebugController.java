@@ -46,7 +46,7 @@ public class DebugController {
         if (StringUtils.isEmpty(username)) {
             username = "admin";
         }
-        return TokenUtil.createToken(username);
+        return TokenUtil.createToken("1",username);
     }
 
     /**
