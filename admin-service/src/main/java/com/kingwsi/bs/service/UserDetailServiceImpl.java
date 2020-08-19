@@ -4,14 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kingwsi.bs.entity.user.User;
 import com.kingwsi.bs.mapper.UserMapper;
 import com.kingwsi.bs.service.auth.UserDetailsImpl;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 
 /**
  * description: UserDetailServiceImpl <br>

@@ -11,6 +11,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -109,6 +111,7 @@ public class TokenUtil {
 
     public static String createToken(String id, String username) {
 //            redisTemplate.opsForValue().set(RedisKeyEnum.USER_AUTH_INFO + user.getId(), user,60, TimeUnit.SECONDS);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return Jwts.builder()
                 .setSubject(username)
                 .setId(id)

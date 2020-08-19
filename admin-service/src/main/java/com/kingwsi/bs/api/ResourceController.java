@@ -32,7 +32,7 @@ public class ResourceController {
         return ResponseData.OK(resourceService.list());
     }
 
-    @ApiOperation("获取菜单列表")
+    @ApiOperation("获取菜单列表(当前用户)")
     @GetMapping("/routes")
     public ResponseData listRoutes() {
         return ResponseData.OK(resourceService.listByType(ResourceTypeEnum.MENU));
