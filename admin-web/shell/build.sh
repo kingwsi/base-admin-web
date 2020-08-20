@@ -1,2 +1,3 @@
 cd ..
+pwd
 yarn install
