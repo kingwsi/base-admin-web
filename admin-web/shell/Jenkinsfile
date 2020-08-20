@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                sh 'yarn install' 
+                sh 'cd admin-web & yarn install' 
             }
         }
     }
