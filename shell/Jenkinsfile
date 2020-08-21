@@ -14,7 +14,7 @@ pipeline {
         },
         stage('Deliver') {
             steps {
-                sh 'cd shell/ & docker build -t base-admin-web'
+                sh 'sh ./shell/docker-build.sh'
             }
         }
     }
