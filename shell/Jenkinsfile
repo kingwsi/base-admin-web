@@ -14,7 +14,8 @@ pipeline {
         }
         stage('Deliver') {
             steps {
-                sh 'sh ./shell/docker-build.sh'
+                sh 'pwd'
+                sh 'sh docker-build.sh'
             }
         }
     }
