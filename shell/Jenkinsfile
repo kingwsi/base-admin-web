@@ -11,6 +11,11 @@ pipeline {
                 sh 'yarn install'
                 sh 'yarn build'
             }
+        },
+        stage('Deliver') {
+            steps {
+                sh 'cd shell/ & docker build -t base-admin-web'
+            }
         }
     }
 }
