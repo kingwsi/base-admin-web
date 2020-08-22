@@ -4,10 +4,6 @@ pipeline {
             image 'node:12-alpine' 
             args '-p 3000:3000' 
         }
-        dockerfile {
-            filename 'Dockerfile'
-            dir 'shell'
-        }
     }
     stages {
         stage('Build') { 
@@ -19,9 +15,12 @@ pipeline {
     }
 }
 node{
-    def customImage = docker.build("base-adnub-web")
-
-    customImage.inside {
-        sh 'make test'
+    stage('docker镜像构建') { 
+      dir('./shell'){
+        def customImage = docker.build("base-adnub-web")
+        customImage.inside {
+            sh 'make test'
+        }
+      }
     }
 }
