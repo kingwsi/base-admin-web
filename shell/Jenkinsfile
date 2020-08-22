@@ -15,15 +15,17 @@ pipeline {
     }
 }
 node{
-    stage('clean') { 
-      sh 'docker images'
-    }
     stage('docker镜像构建') { 
       dir('./shell'){
         sh 'cp -r ../dist ./'
         def img = docker.build("base-admin-web")
-        img.run('--rm --name admin-web -d  -p 18092:80')
         echo 'docker镜像构建完成'
       }
+    }
+    stage('clean') {
+      echo '停止docker...'
+      sh 'docker stop base-admin-web'
+      sh 'docker run --rm --name admin-web -d  -p 18092:80 base-admin-web'
+      sh '已启动'
     }
 }
