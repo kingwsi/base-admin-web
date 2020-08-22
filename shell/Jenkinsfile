@@ -12,9 +12,12 @@ pipeline {
                 sh 'yarn build'
             }
         }
-        def customImage = docker.build("bas-admin-web")
-        customImage.inside {
-            sh 'make test'
-        }
+    }
+}
+node {
+    def customImage = docker.build("base-adnub-web")
+
+    customImage.inside {
+        sh 'make test'
     }
 }
