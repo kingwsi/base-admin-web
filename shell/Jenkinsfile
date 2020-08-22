@@ -17,6 +17,7 @@ pipeline {
 node{
     stage('docker镜像构建') { 
       dir('./shell'){
+        sh 'cp -r ../dist ./'
         def customImage = docker.build("base-adnub-web")
         customImage.inside {
             sh 'make test'
