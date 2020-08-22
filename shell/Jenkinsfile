@@ -12,11 +12,9 @@ pipeline {
                 sh 'yarn build'
             }
         }
-        stage('Deliver') {
-            steps {
-                sh 'pwd'
-                sh 'sh ./shell/build-docker.sh'
-            }
+        def customImage = docker.build("bas-admin-web")
+        customImage.inside {
+            sh 'make test'
         }
     }
 }
