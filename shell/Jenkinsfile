@@ -18,13 +18,12 @@ node{
     stage('docker镜像构建') { 
       dir('./shell'){
         sh 'cp -r ../dist ./'
-        docker.build("base-admin-web")
+        def = img docker.build("base-admin-web")
+        img.run('--rm --name admin-web -d  -p 18092:80')
         echo 'docker镜像构建完成'
       }
     }
     stage('clean') { 
-      sh 'cp -r ../dist ./'
-      def = img docker.build("base-admin-web")
-      img.run('--rm --name admin-web -d  -p 18092:80')
+      sh 'docker images'
     }
 }
