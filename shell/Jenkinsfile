@@ -4,9 +4,6 @@ pipeline {
             image 'node:12-alpine' 
             args '-p 3000:3000' 
         }
-    }
-    agent {
-        // Equivalent to "docker build -f Dockerfile.build --build-arg version=1.0.2 ./build/
         dockerfile {
             filename 'Dockerfile'
             dir 'shell'
@@ -16,16 +13,9 @@ pipeline {
         stage('Build') { 
             steps {
                 sh 'yarn install'
-                sh 'yarn build'
+                echo '打包完成，准备构建docker'
+                docker.build("base-adnub-web")
             }
         }
-    }
-}
-node {
-    
-    def customImage = docker.build("base-adnub-web")
-
-    customImage.inside {
-        sh 'make test'
     }
 }
