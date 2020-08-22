@@ -15,6 +15,9 @@ pipeline {
     }
 }
 node{
+    stage('clean') { 
+      sh 'docker images'
+    }
     stage('docker镜像构建') { 
       dir('./shell'){
         sh 'cp -r ../dist ./'
@@ -22,8 +25,5 @@ node{
         img.run('--rm --name admin-web -d  -p 18092:80')
         echo 'docker镜像构建完成'
       }
-    }
-    stage('clean') { 
-      sh 'docker images'
     }
 }
