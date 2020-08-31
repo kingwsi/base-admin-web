@@ -45,7 +45,7 @@
       </a-card>
     </a-spin>
     <footer-tool-bar>
-      <a-button icon="reload" @click="reloadSelectedKeys">重置</a-button>
+      <a-button icon="reload" @click="loadSelectedList">重置</a-button>
       <a-divider type="vertical" />
       <a-button icon="close" @click="clearSelectedKeys">清空</a-button>
       <a-divider type="vertical" />
@@ -80,14 +80,14 @@ export default {
         apiSelectedKeys: [],
         treeData: {
           apiTree: [],
-          btnTree: [],
           menuTree: []
         },
         treeFields: {
           key: 'id',
           title: 'name',
           value: 'id'
-        }
+        },
+        parentIds: []
       }
     },
     methods: {
@@ -95,8 +95,8 @@ export default {
       loadTree () {
         GetAllResources().then(response => {
           this.resourceList = response.data
-          this.treeData.menuTree = [{ 'id': '-1', 'name': '根目录' }]
-          this.treeData.apiTree = [{ 'id': '-1', 'name': '根目录' }]
+          this.treeData.menuTree = []
+          this.treeData.apiTree = []
           listToTree(response.data.filter(res => res.type === 'MENU' || res.type === 'BUTTON'), this.treeData.menuTree, '-1')
           listToTree(response.data.filter(res => res.type === 'API'), this.treeData.apiTree, '-1')
         })
@@ -120,12 +120,14 @@ export default {
                   this.apiSelectedKeys.push(element.id)
                 }
               })
+              this.handleTreeChecked()
           }
           this.loading = false
         })
       },
       onMenuCheck (checkedKeys, info) {
         this.menuSelectedKeys = checkedKeys
+        console.log(info.halfCheckedKeys)
       },
       onApiCheck (selectedKeys, info) {
         this.apiSelectedKeys = selectedKeys
@@ -170,19 +172,23 @@ export default {
         this.menuSelectedKeys = []
         this.apiSelectedKeys = []
       },
-      reloadSelectedKeys () {
-        this.loading = true
-        this.loadSelectedList()
-        this.loading = false
-      },
-      onChange (e) {
-        const value = e.target.value
-        this.treeData.menuTree = [{ 'id': '-1', 'name': '根目录' }]
-        this.treeData.apiTree = [{ 'id': '-1', 'name': '根目录' }]
-        const menuresources = this.resourceList.filter(res => (res.type === 'MENU' || res.type === 'BUTTON') && res.name.indexOf(value) > -1)
-        console.log(menuresources)
-        // listToTree(menuresources, this.treeData.menuTree, '-1')
-        // listToTree(this.resourceList.filter(res => res.type === 'API'), this.treeData.apiTree, '-1')
+      /**
+       *
+       */
+      handleTreeChecked () {
+        const parentMap = new Map()
+        this.resourceList.forEach(item => {
+          const child = []
+          this.resourceList.forEach(o2 => {
+            if (o2.parentId === item.id) {
+              child.push(o2.id)
+            }
+          })
+          if (child.length > 0) {
+            parentMap.set(item.id, child)
+          }
+        })
+        console.log(parentMap)
       }
     },
     created () {
