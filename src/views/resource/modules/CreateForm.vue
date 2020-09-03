@@ -8,17 +8,18 @@
     @cancel="() => { $emit('cancel') }"
   >
     <a-spin :spinning="loading">
-      <a-form :form="form" v-bind="formLayout">
+      <a-form-model
+        ref="form"
+        :model="model"
+        :rules="rules"
+        v-bind="formLayout">
         <!-- 检查是否有 id，有是修改。其他是新增，新增不显示主键ID -->
-        <a-form-item v-show="model && model.id" label="主键ID">
-          <a-input v-decorator="['id']" disabled />
-        </a-form-item>
-        <a-form-item label="资源类型">
+        <a-form-model-item v-if="model && model.id" label="主键ID">
+          <a-input v-model="model.id" disabled />
+        </a-form-model-item>
+        <a-form-model-item label="资源类型">
           <a-select
-            v-decorator="[
-              'type',
-              { rules: [{ required: true, message: '请输入至少2个字符的名称！' }], initialValue: 'MENU' },
-            ]"
+            v-model="model.type"
             @change="typeSelectChange">
             <a-select-option value="MENU">
               菜单
@@ -30,51 +31,53 @@
               按钮
             </a-select-option>
           </a-select>
-        </a-form-item>
-        <a-form-item label="父级id">
+        </a-form-model-item>
+        <a-form-model-item label="父级id">
           <a-tree-select
             show-search
             style="width: 100%"
             :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
             :tree-data="treeData"
             :replaceFields="treeFields"
-            v-decorator="['parentId',{rules: [{required: true}]}]"
+            v-model="model.parentId"
             placeholder="选择上级目录"
             allow-clear
             tree-default-expand-all
           >
           </a-tree-select>
-        </a-form-item>
-        <a-form-item label="图标" v-if="resourceType!=='API'">
-          <icon-selector v-model="selectedIcon" @change="handleIconChange"/>
-        </a-form-item>
-        <a-form-item label="资源名称">
-          <a-input v-decorator="['name', {rules: [{required: true, min: 2, message: '请输入至少2个字符的名称！'}]}]" />
-        </a-form-item>
-        <a-form-item label="地址">
-          <a-input v-decorator="['uri', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
-        </a-form-item>
-        <a-form-item label="组件" v-if="resourceType==='MENU'">
-          <a-input v-decorator="['component', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
-        </a-form-item>
-        <a-form-item label="排序">
-          <a-input v-decorator="['sort', {}]"/>
-        </a-form-item>
-      </a-form>
+        </a-form-model-item>
+        <a-form-model-item label="资源名称">
+          <a-input v-model="model.name"/>
+        </a-form-model-item>
+        <a-form-model-item label="地址" v-if="model.type==='MENU'">
+          <a-input v-model="model.uri"/>
+        </a-form-model-item>
+        <a-form-model-item label="组件" v-if="model.type==='MENU'">
+          <a-input v-model="model.component"/>
+        </a-form-model-item>
+        <a-form-model-item label="隐藏菜单" v-if="model.type==='MENU'">
+          <a-switch
+            :checked="model.remark=='hidden'"
+            @change="onHideChange"/>
+        </a-form-model-item>
+        <a-form-model-item label="排序">
+          <a-input v-model="model.sort"/>
+        </a-form-model-item>
+        <a-form-model-item label="图标" v-if="model.type!=='API'">
+          <icon-selector v-model="model.icon"/>
+        </a-form-model-item>
+      </a-form-model>
     </a-spin>
   </a-modal>
 </template>
 
 <script>
-import pick from 'lodash.pick'
 import { TreeSelect } from 'ant-design-vue'
 import { GetAllResources } from '@/api/resource/index'
 import IconSelector from '@/components/IconSelector'
 // import { listToTree } from '@/components/Tree/TreeUtils'
 
 // 表单字段
-const fields = ['id', 'uri', 'type', 'name', 'component', 'parentId', 'sort']
-
 export default {
   components: {
     TreeSelect,
@@ -107,7 +110,6 @@ export default {
     }
     return {
       form: this.$form.createForm(this),
-      resourceType: 'MENU',
       resourceList: [],
       treeData: [],
       treeFields: {
@@ -115,22 +117,17 @@ export default {
         title: 'name',
         value: 'id'
       },
-      selectedIcon: null
+      rules: {
+          name: [{ required: true, min: 2, message: '请输入至少2个字符的名称！' }],
+          component: [{ required: true, message: '请输入资源地址！' }],
+          uri: [{ required: true, message: '请输入资源地址！' }],
+          type: [{ required: true, message: '请输入至少2个字符的名称！' }]
+      }
     }
   },
   created () {
     console.log('custom modal created')
-    // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
-    this.loadTreeData()
-    // 当 model 发生改变时，为表单设置值
-    this.$watch('model', () => {
-      this.model && this.form.setFieldsValue(pick(this.model, fields))
-      this.resourceType = this.model && this.model.type || this.resourceType
-      this.selectedIcon = this.model.icon
-      // 生成tree
-      this.generatorTree(this.resourceType)
-    })
+    this.generatorTree(this.model.type)
   },
   methods: {
     loadTreeData () {
@@ -171,19 +168,22 @@ export default {
         }
       })
     },
-    typeSelectChange (ele) {
-      this.resourceType = ele
+    typeSelectChange () {
       // 重新构建树
-      this.generatorTree(this.resourceType)
+      this.generatorTree(this.model.type === 'BUTTON' ? 'MENU' : this.model.type)
     },
     resetTree () {
       console.log('重置treeData')
-      this.resourceType = 'MENU'
-      this.generatorTree(this.resourceType)
+      this.model.type = 'MENU'
+      this.generatorTree(this.model.type)
     },
     handleIconChange (icon) {
       this.selectedIcon = icon
       this.$message.info(<span>选中图标 <code>{icon}</code></span>)
+    },
+    onHideChange (checked) {
+      const result = checked ? 'hidden' : null
+      this.model.remark = result
     }
   }
 }

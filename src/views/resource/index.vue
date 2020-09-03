@@ -120,7 +120,7 @@ export default {
       // create model
       visible: false,
       confirmLoading: false,
-      mdl: null,
+      mdl: { type: 'MENU' },
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
@@ -170,7 +170,7 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.mdl = null
+      this.mdl = { type: 'MENU' }
       this.visible = true
     },
     handleEdit (record) {
@@ -178,22 +178,20 @@ export default {
       this.mdl = { ...record }
     },
     handleOk () {
-      const form = this.$refs.createModal.form
+      const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
-      form.validateFields((errors, values) => {
-        values.icon = this.$refs.createModal.selectedIcon
-        if (!errors) {
-          console.log('values', values)
-          if (values.id) {
+      form.validate(valid => {
+        if (valid) {
+          console.log('formData', this.mdl)
+          if (this.mdl.id) {
             // 修改 e.g.
-            updateById(values).then(res => {
+            updateById(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('修改成功')
             }).catch((err) => {
               console.log(`form update error:->${err}`)
@@ -201,7 +199,7 @@ export default {
             })
           } else {
             // 新增
-            create(values).then(res => {
+            create(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据

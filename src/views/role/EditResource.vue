@@ -3,21 +3,26 @@
     <a-spin :spinning="loading">
       <a-card :bordered="false">
         <a-row>
-          <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-            <a-form-item v-show="roleId" label="主键ID">
-              <a-input v-decorator="['id']" disabled />
-            </a-form-item>
-            <a-form-item label="名称">
-              <a-input v-decorator="['name', { }]" />
-            </a-form-item>
-            <a-form-item label="描述">
-              <a-input v-decorator="['description', { }]" />
-            </a-form-item>
-            <a-form-item label="菜单权限">
+          <a-form-model
+            ref="form"
+            :model="model"
+            :rules="rules"
+            :label-col="{ span: 4 }"
+            :wrapper-col="{ span: 20 }">
+            <a-form-model-item v-show="roleId" label="主键ID" :wrapper-col="{ span: 12 }">
+              <a-input v-model="model.id" disabled />
+            </a-form-model-item>
+            <a-form-model-item label="名称" :wrapper-col="{ span: 12 }">
+              <a-input v-model="model.name" />
+            </a-form-model-item>
+            <a-form-model-item label="描述" :wrapper-col="{ span: 12 }">
+              <a-input v-model="model.description" type="textarea"/>
+            </a-form-model-item>
+            <a-form-model-item label="菜单权限">
               <a-row>
                 <a-col :span="10">
                   <a-tree
-                    :checkedKeys="menuSelectedKeys"
+                    v-model="menuSelectedKeys"
                     :default-expand-all="true"
                     checkable
                     show-line
@@ -39,8 +44,8 @@
                   />
                 </a-col>
               </a-row>
-            </a-form-item>
-          </a-form>
+            </a-form-model-item>
+          </a-form-model>
         </a-row>
       </a-card>
     </a-spin>
@@ -54,15 +59,12 @@
   </page-header-wrapper>
 </template>
 <script>
-import pick from 'lodash.pick'
 import { GetAllResources } from '@/api/resource/index'
 import { GetRoleById, UpdateById, CreateRole } from '@/api/role'
-import { listToTree } from '@/utils/util'
 import { Tree } from 'ant-design-vue'
 import FooterToolBar from '@/components/FooterToolbar'
 
 // 表单字段
-const fields = ['id', 'name', 'description']
 export default {
     name: 'EditResource',
     components: {
@@ -72,9 +74,12 @@ export default {
     data () {
       return {
         roleId: null,
-        form: this.$form.createForm(this),
+        model: {},
         roleInfo: null,
         loading: false,
+        rules: {
+          name: [{ required: true, message: '请输入角色名称', trigger: 'change' }]
+        },
         resourceList: [],
         menuSelectedKeys: [],
         apiSelectedKeys: [],
@@ -87,7 +92,8 @@ export default {
           title: 'name',
           value: 'id'
         },
-        parentIds: []
+        parentIds: [],
+        test: []
       }
     },
     methods: {
@@ -97,8 +103,10 @@ export default {
           this.resourceList = response.data
           this.treeData.menuTree = []
           this.treeData.apiTree = []
-          listToTree(response.data.filter(res => res.type === 'MENU' || res.type === 'BUTTON'), this.treeData.menuTree, '-1')
-          listToTree(response.data.filter(res => res.type === 'API'), this.treeData.apiTree, '-1')
+          // listToTree(response.data.filter(res => res.type === 'MENU' || res.type === 'BUTTON'), this.treeData.menuTree, '-1')
+          this.treeData.apiTree = response.data.filter(res => res.type === 'API')
+          this.loadResTree(response.data.filter(res => res.type === 'MENU' || res.type === 'BUTTON'), this.treeData.menuTree, '-1')
+          this.loadSelectedList()
         })
       },
       /* 加载当前角色信息以及拥有的资源 */
@@ -108,7 +116,7 @@ export default {
           GetRoleById(this.roleId).then(resp => {
             this.roleInfo = resp.data
             // 为form表单填充值
-            this.form.setFieldsValue(pick(resp.data, fields))
+            this.model = this.roleInfo
             // 选中复选框处理
             if (resp.data && resp.data.resourceList) {
               this.menuSelectedKeys = []
@@ -120,30 +128,30 @@ export default {
                   this.apiSelectedKeys.push(element.id)
                 }
               })
-              this.handleTreeChecked()
+              this.copyChecked(this.menuSelectedKeys)
           }
           this.loading = false
         })
       },
       onMenuCheck (checkedKeys, info) {
         this.menuSelectedKeys = checkedKeys
-        console.log(info.halfCheckedKeys)
+        // 半选节点处理
+        this.parentIds = info.halfCheckedKeys
       },
       onApiCheck (selectedKeys, info) {
         this.apiSelectedKeys = selectedKeys
       },
       handleOk () {
         this.loading = true
-        this.form.validateFields((errors, formData) => {
-          if (!errors) {
-            formData.resourceIdList = this.menuSelectedKeys.concat(this.apiSelectedKeys)
-            if (formData.id) {
-              // 修改 e.g.
-              UpdateById(formData).then(res => {
+        this.$refs.form.validate(valid => {
+          if (valid) {
+            this.model.resourceIdList = this.menuSelectedKeys.concat(this.apiSelectedKeys).concat(this.parentIds)
+            if (this.model.id) {
+              // 修改
+              UpdateById(this.model).then(res => {
                 this.loading = false
                 this.$message.info('修改成功')
                 this.$router.push({
-                  // path: `/system/role/permission/${formData.id}`
                   path: '/system/role'
                 })
               }).catch((err) => {
@@ -152,7 +160,7 @@ export default {
               })
             } else {
               // 新增
-              CreateRole(formData).then(res => {
+              CreateRole(this.model).then(res => {
                 this.loading = false
                 this.$message.info('新增成功')
                 this.$router.push({
@@ -165,6 +173,7 @@ export default {
             }
           } else {
             this.loading = false
+            return false
           }
         })
       },
@@ -173,27 +182,41 @@ export default {
         this.apiSelectedKeys = []
       },
       /**
-       *
+       * 反选问题处理
+       * 找出已选中keys，对比所有childKeys
        */
-      handleTreeChecked () {
-        const parentMap = new Map()
-        this.resourceList.forEach(item => {
-          const child = []
-          this.resourceList.forEach(o2 => {
-            if (o2.parentId === item.id) {
-              child.push(o2.id)
-            }
-          })
-          if (child.length > 0) {
-            parentMap.set(item.id, child)
+      copyChecked (arr) {
+        this.menuSelectedKeys = []
+        arr.forEach(item => {
+          if (this.test.indexOf(item) > -1) {
+            this.menuSelectedKeys.push(item)
           }
         })
-        console.log(parentMap)
+      },
+      loadResTree (list, tree, parentId) {
+        list.forEach(item => {
+          // 判断是否为父级
+          if (item.parentId === parentId) {
+            const child = {
+              ...item,
+              children: []
+            }
+            // 迭代 list
+            this.loadResTree(list, child.children, item.id)
+            // 删掉不存在 children 值的属性
+            if (child.children.length <= 0) {
+              delete child.children
+              // 收集没有children的节点
+              this.test.push(item.id)
+            }
+            // 加入到树中
+            tree.push(child)
+          }
+        })
       }
     },
     created () {
       this.loadTree()
-      this.loadSelectedList()
     }
 }
 </script>

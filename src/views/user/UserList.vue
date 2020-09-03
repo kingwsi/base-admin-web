@@ -190,7 +190,6 @@ export default {
       const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
       form.validate(valid => {
-        console.log(valid)
         if (valid) {
           console.log('formData', this.mdl)
           if (this.mdl.id) {

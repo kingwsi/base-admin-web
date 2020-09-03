@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     handleToCenter () {
-      this.$router.push({ path: '/account/center' })
+      this.$router.push({ path: '/user/center' })
     },
     handleToSettings () {
       this.$router.push({ path: '/account/settings' })
