@@ -86,7 +86,8 @@ export const generator = (routerMap, parent) => {
       // }
       meta: {
         title: item.name,
-        icon: item.icon || undefined
+        icon: item.icon || undefined,
+        keepAlive: true
       }
     }
     // 是否设置了隐藏菜单
@@ -132,9 +133,18 @@ const listToTree = (list, tree, parentId) => {
       // 删掉不存在 children 值的属性
       if (child.children.length <= 0) {
         delete child.children
+      } else {
+        // 排序子菜单
+        child.children.sort((o1, o2) => {
+          return o1.sort - o2.sort
+        })
       }
       // 加入到树中
       tree.push(child)
     }
+  })
+  // 排序
+  tree.sort((o1, o2) => {
+    return o1.sort - o2.sort
   })
 }

@@ -196,9 +196,7 @@ export default {
               state.loginBtn = false
             })
         } else {
-          setTimeout(() => {
-            state.loginBtn = false
-          }, 600)
+          state.loginBtn = false
         }
       })
     },
@@ -269,7 +267,7 @@ export default {
       this.isLoginError = false
     },
     requestFailed (err) {
-      this.isLoginError = true
+      // this.isLoginError = true
       console.log(err)
     }
   }

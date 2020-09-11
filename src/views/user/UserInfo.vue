@@ -5,10 +5,10 @@
         <a-card :bordered="false">
           <div class="account-center-avatarHolder">
             <div class="avatar">
-              <img :src="avatar">
+              <img :src="user.avatar">
             </div>
-            <div class="username">{{ nickname }}</div>
-            <div class="bio">海纳百川，有容乃大</div>
+            <div class="username">{{ user.nickname }}</div>
+            <div class="bio">{{ user.introduction }}</div>
           </div>
           <div class="account-center-detail">
             <p>
@@ -26,8 +26,14 @@
           <a-divider/>
 
           <div class="account-center-tags">
-            <div class="tagsTitle">标签</div>
-
+            <div class="tagsTitle">角色</div>
+            <div>
+              <template v-for="(role, index) in user.roles">
+                <a-tag
+                  :key="index"
+                >{{ `${tag.slice(0, 20)}...` }}</a-tag>
+              </template>
+            </div>
           </div>
           <a-divider :dashed="true"/>
 
@@ -65,6 +71,7 @@
 
 <script>
 import { PageView, RouteView } from '@/layouts'
+import { GetUserInfo } from '@/api/user'
 
 import { mapGetters } from 'vuex'
 
@@ -79,7 +86,7 @@ export default {
 
       tagInputVisible: false,
       tagInputValue: '',
-
+      user: {},
       teams: [],
       teamSpinning: true,
 
@@ -113,38 +120,12 @@ export default {
         this.teamSpinning = false
       })
     },
-
-    handleTabChange (key, type) {
-      this[type] = key
-    },
-
-    handleTagClose (removeTag) {
-      const tags = this.tags.filter(tag => tag !== removeTag)
-      this.tags = tags
-    },
-
-    showTagInput () {
-      this.tagInputVisible = true
-      this.$nextTick(() => {
-        this.$refs.tagInput.focus()
-      })
-    },
-
-    handleInputChange (e) {
-      this.tagInputValue = e.target.value
-    },
-
-    handleTagInputConfirm () {
-      const inputValue = this.tagInputValue
-      let tags = this.tags
-      if (inputValue && !tags.includes(inputValue)) {
-        tags = [...tags, inputValue]
-      }
-
-      Object.assign(this, {
-        tags,
-        tagInputVisible: false,
-        tagInputValue: ''
+    getCurrentUser () {
+      GetUserInfo().then(res => {
+        console.log(res.data)
+        this.user = res.data
+      }).catch(e => {
+        console.log(e)
       })
     }
   }
