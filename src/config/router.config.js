@@ -365,24 +365,6 @@ export const constantRouterMap = [
       }
     ]
   },
-
-  // dashboard
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    redirect: '/dashboard/workplace',
-    component: RouteView,
-    meta: { title: 'menu.dashboard', icon: bxAnaalyse },
-    children: [
-      {
-        path: '/dashboard/workplace',
-        name: 'Workplace',
-        component: () => import('@/views/dashboard/Workplace'),
-        meta: { title: 'menu.dashboard.workplace' }
-      }
-    ]
-  },
-
   {
     path: '/404',
     component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')

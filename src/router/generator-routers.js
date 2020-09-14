@@ -42,7 +42,7 @@ export const generatorDynamicRouter = () => {
       const { data } = res
       const menuNav = []
       const childrenNav = []
-      //      后端数据, 根级树数组,  根级 PID
+      // 后端数据, 根级树数组,  根级 PID
       listToTree(data, childrenNav, '-1')
       rootRouter.children = childrenNav
       menuNav.push(rootRouter)
@@ -66,27 +66,16 @@ export const generator = (routerMap, parent) => {
   return routerMap.map(item => {
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
-      // path: item.uri,
       path: item.path || `${parent && parent.path || ''}/${item.uri}`,
       // 路由名称，建议唯一
       name: item.name || '',
       // 该路由对应页面的 组件 :方案1
-      // component: constantRouterComponents[item.component || item.key],
       // 该路由对应页面的 组件 :方案2 (动态加载)
       component: (constantRouterComponents[item.component]) || (() => import(`@/views/${item.component}`)),
-      // component: constantRouterComponents[item.component],
-
-      // meta: 页面标题, 菜单图标, 页面权限(供指令权限用，可去掉)
-      // meta: {
-      //   title: title,
-      //   icon: icon || undefined,
-      //   hiddenHeaderContent: hiddenHeaderContent,
-      //   target: target,
-      //   permission: item.name
-      // }
       meta: {
         title: item.name,
-        icon: item.icon || undefined
+        icon: item.icon || undefined,
+        keepAlive: true
       }
     }
     // 是否设置了隐藏菜单
@@ -132,9 +121,18 @@ const listToTree = (list, tree, parentId) => {
       // 删掉不存在 children 值的属性
       if (child.children.length <= 0) {
         delete child.children
+      } else {
+        // 排序子菜单
+        child.children.sort((o1, o2) => {
+          return o1.sort - o2.sort
+        })
       }
       // 加入到树中
       tree.push(child)
     }
+  })
+  // 排序
+  tree.sort((o1, o2) => {
+    return o1.sort - o2.sort
   })
 }
