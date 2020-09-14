@@ -1,6 +1,6 @@
 #docker 镜像/容器名字或者jar名字 这里都命名为这个
 SERVER_NAME=base-admin-web
-echo '---------start 准备构建$SERVER_NAME---------'
+echo "---------start 准备构建$SERVER_NAME---------"
 
 #容器id
 CID=$(docker ps | grep "$SERVER_NAME" | awk '{print $1}')
@@ -34,7 +34,7 @@ else
 fi
 
 # 运行docker容器
-docker run \
+echo docker run \
 --rm \
 --name $SERVER_NAME \
 -d \
@@ -46,4 +46,4 @@ if [ $? -ne 0 ];then
 else
     echo "$SERVER_NAME 已启动..."
 fi
-echo '---------end 准备构建$SERVER_NAME---------'
+echo "---------end 准备构建$SERVER_NAME---------"
