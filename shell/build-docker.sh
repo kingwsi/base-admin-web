@@ -38,7 +38,7 @@ echo docker run \
 --rm \
 --name $SERVER_NAME \
 -d \
--p 18103:80 \
+-p 8103:80 \
 $SERVER_NAME
 
 if [ $? -ne 0 ];then
