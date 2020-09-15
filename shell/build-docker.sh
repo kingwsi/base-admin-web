@@ -46,4 +46,4 @@ if [ $? -ne 0 ];then
 else
     echo "$SERVER_NAME 已启动..."
 fi
-echo "---------end 准备构建$SERVER_NAME---------"
+echo "---------应用$SERVER_NAME构建完成---------"
