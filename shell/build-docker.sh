@@ -1,9 +1,9 @@
 #docker 镜像/容器名字或者jar名字 这里都命名为这个
 SERVER_NAME=base-admin-web
-echo "---------start 准备构建$SERVER_NAME---------"
+echo "---------Start---------"
 
 #容器id
-CID=$(docker ps | grep "$SERVER_NAME" | awk '{print $1}')
+CID=$(docker ps -a | grep "$SERVER_NAME" | awk '{print $1}')
 #镜像id
 IID=$(docker images | grep "$SERVER_NAME" | awk '{print $3}')
 
@@ -28,6 +28,7 @@ fi
 if [ -n "$CID" ]; then
         echo "正在停止$SERVER_NAME，CID=$CID"
         docker stop $CID
+        docker rm $CID
         echo "$SERVER_NAME已停止！"
 else
         echo "容器 $SERVER_NAME 未运行，即将启动..."
@@ -41,9 +42,12 @@ echo docker run \
 -p 8103:80 \
 $SERVER_NAME
 
-if [ $? -ne 0 ];then
-    echo "$SERVER_NAME 启动失败！"
-else
+# 是否启动成功
+RES=$(docker ps | grep "$SERVER_NAME" | awk '{print $3}')
+
+if [ -n "$RES" ]; then
     echo "$SERVER_NAME 已启动..."
+else
+    echo "$SERVER_NAME 启动失败！"
 fi
-echo "---------应用$SERVER_NAME构建完成---------"
+echo "---------End---------"
