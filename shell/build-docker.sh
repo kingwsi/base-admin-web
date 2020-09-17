@@ -28,7 +28,6 @@ fi
 if [ -n "$CID" ]; then
         echo "正在停止$SERVER_NAME，CID=$CID"
         docker stop $CID
-        docker rm $CID
         echo "$SERVER_NAME已停止！"
 else
         echo "容器 $SERVER_NAME 未运行，即将启动..."
