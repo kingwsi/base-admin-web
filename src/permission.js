@@ -23,8 +23,10 @@ router.beforeEach((to, from, next) => {
       next({ path: defaultRoutePath })
       NProgress.done()
     } else {
-      // check login user.roles is null
-      if (store.getters.roles.length === 0) {
+      console.log('---info', store.getters.name)
+      if (store.getters.name) {
+        next()
+      } else {
         // request login userInfo
         store
           .dispatch('GetInfo')
@@ -56,8 +58,6 @@ router.beforeEach((to, from, next) => {
               next({ path: loginRoutePath, query: { redirect: to.fullPath } })
             })
           })
-      } else {
-        next()
       }
     }
   } else {

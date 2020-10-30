@@ -62,7 +62,9 @@
           :activeTabKey="noTitleKey"
           @tabChange="key => handleTabChange(key, 'noTitleKey')"
         >
-
+          <article-page v-if="noTitleKey === 'article'"></article-page>
+          <app-page v-else-if="noTitleKey === 'app'"></app-page>
+          <project-page v-else-if="noTitleKey === 'project'"></project-page>
         </a-card>
       </a-col>
     </a-row>
@@ -92,19 +94,15 @@ export default {
 
       tabListNoTitle: [
         {
-          key: 'article',
-          tab: '文章(8)'
+          key: 'info',
+          tab: '个人信息'
         },
         {
-          key: 'app',
-          tab: '应用(8)'
-        },
-        {
-          key: 'project',
-          tab: '项目(8)'
+          key: 'notify',
+          tab: '通知'
         }
       ],
-      noTitleKey: 'app'
+      noTitleKey: 'info'
     }
   },
   computed: {
