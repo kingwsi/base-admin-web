@@ -52,11 +52,10 @@ const user = {
       return new Promise((resolve, reject) => {
         GetUserInfo().then(response => {
           const { data } = response
-          if (!data) {
+          if (!data || !data.roles || data.roles < 1) {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
           const { roles, nickname, avatar } = data
-          console.log(nickname)
           commit('SET_ROLES', roles)
           commit('SET_INFO', data)
           // if (result.role && result.role.permissions.length > 0) {
@@ -77,7 +76,6 @@ const user = {
 
           commit('SET_NAME', { name: nickname, welcome: welcome() })
           commit('SET_AVATAR', avatar)
-
           resolve(response)
         }).catch(error => {
           reject(error)

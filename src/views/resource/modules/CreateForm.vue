@@ -52,10 +52,10 @@
           <a-input v-decorator="['name', {rules: [{required: true, min: 2, message: '请输入至少2个字符的名称！'}]}]" />
         </a-form-item>
         <a-form-item label="地址">
-          <a-input v-decorator="['uri', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
+          <a-input placeholder="访问地址" v-decorator="['uri', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
         </a-form-item>
         <a-form-item label="组件" v-if="resourceType==='MENU'">
-          <a-input v-decorator="['component', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
+          <a-input placeholder="组件路径" v-decorator="['component', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
         </a-form-item>
         <a-form-item label="排序">
           <a-input v-decorator="['sort', {}]"/>

@@ -1,21 +1,24 @@
 <template>
   <div class="page-header-index-wide page-header-wrapper-grid-content-main">
     <a-row :gutter="24">
-      <a-col :md="24" :lg="7">
+      <a-col :md="24" :lg="24">
         <a-card :bordered="false">
           <div class="account-center-avatarHolder">
             <div class="avatar">
               <img :src="user.avatar">
             </div>
             <div class="username">{{ user.nickname }}</div>
-            <div class="bio">{{ user.introduction }}</div>
+            <div class="bio">{{ user.introduction || '很懒，什么介绍都没有' }}</div>
           </div>
           <div class="account-center-detail">
             <p>
-              <i class="title"></i>交互专家
+              <i class="title"></i>登录名: {{ user.username }}
             </p>
             <p>
-              <i class="group"></i>蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED
+              <i class="group"></i>全称: {{ user.fullname }}
+            </p>
+            <p>
+              <i class="group"></i>全称: {{ user.fullname }}
             </p>
             <p>
               <i class="address"></i>
@@ -29,42 +32,17 @@
             <div class="tagsTitle">角色</div>
             <div>
               <template v-for="(role, index) in user.roles">
-                <a-tag
-                  :key="index"
-                >{{ `${tag.slice(0, 20)}...` }}</a-tag>
+                <a-tooltip :key="index">
+                  <template slot="title">
+                    {{ role.description || role.name }}
+                  </template>
+                  <a-tag
+                    :key="index"
+                  >{{ role.name }}</a-tag>
+                </a-tooltip>
               </template>
             </div>
           </div>
-          <a-divider :dashed="true"/>
-
-          <div class="account-center-team">
-            <div class="teamTitle">团队</div>
-            <a-spin :spinning="teamSpinning">
-              <div class="members">
-                <a-row>
-                  <a-col :span="12" v-for="(item, index) in teams" :key="index">
-                    <a>
-                      <a-avatar size="small" :src="item.avatar"/>
-                      <span class="member">{{ item.name }}</span>
-                    </a>
-                  </a-col>
-                </a-row>
-              </div>
-            </a-spin>
-          </div>
-        </a-card>
-      </a-col>
-      <a-col :md="24" :lg="17">
-        <a-card
-          style="width:100%"
-          :bordered="false"
-          :tabList="tabListNoTitle"
-          :activeTabKey="noTitleKey"
-          @tabChange="key => handleTabChange(key, 'noTitleKey')"
-        >
-          <article-page v-if="noTitleKey === 'article'"></article-page>
-          <app-page v-else-if="noTitleKey === 'app'"></app-page>
-          <project-page v-else-if="noTitleKey === 'project'"></project-page>
         </a-card>
       </a-col>
     </a-row>
@@ -73,7 +51,6 @@
 
 <script>
 import { PageView, RouteView } from '@/layouts'
-import { GetUserInfo } from '@/api/user'
 
 import { mapGetters } from 'vuex'
 
@@ -84,24 +61,11 @@ export default {
   },
   data () {
     return {
-      tags: ['很有想法的', '专注设计', '辣~', '大长腿', '川妹子', '海纳百川'],
-
       tagInputVisible: false,
       tagInputValue: '',
       user: {},
       teams: [],
       teamSpinning: true,
-
-      tabListNoTitle: [
-        {
-          key: 'info',
-          tab: '个人信息'
-        },
-        {
-          key: 'notify',
-          tab: '通知'
-        }
-      ],
       noTitleKey: 'info'
     }
   },
@@ -109,7 +73,7 @@ export default {
     ...mapGetters(['nickname', 'avatar'])
   },
   mounted () {
-    this.getTeams()
+    this.getCurrentUser()
   },
   methods: {
     getTeams () {
@@ -119,12 +83,8 @@ export default {
       })
     },
     getCurrentUser () {
-      GetUserInfo().then(res => {
-        console.log(res.data)
-        this.user = res.data
-      }).catch(e => {
-        console.log(e)
-      })
+      this.user = this.$store.getters.info
+      this.teamSpinning = false
     }
   }
 }
