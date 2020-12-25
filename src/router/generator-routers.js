@@ -38,7 +38,6 @@ const rootRouter = {
 export const generatorDynamicRouter = () => {
   return new Promise((resolve, reject) => {
     loginService.getCurrentUserNav().then(res => {
-      console.log('res', res)
       const { data } = res
       const menuNav = []
       const childrenNav = []

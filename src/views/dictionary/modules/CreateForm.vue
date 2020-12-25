@@ -8,34 +8,32 @@
     @cancel="() => { $emit('cancel') }"
   >
     <a-spin :spinning="loading">
-      <a-form :form="form" v-bind="formLayout">
-        <!-- 检查是否有 id 并且大于0，大于0是修改。其他是新增，新增不显示主键ID -->
-        <a-form-item v-show="model && model.id" label="主键ID">
-          <a-input v-decorator="['id', {}]" disabled />
-        </a-form-item>
-        <a-form-item label="字典名称">
-          <a-input v-decorator="['name', {rules: [{required: true, min: 2, message: '请输入至少2个字符的名称！'}]}]" />
-        </a-form-item>
-        <a-form-item label="编码">
-          <a-input v-decorator="['code', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
-        </a-form-item>
-        <a-form-item label="组件">
-          <a-input v-decorator="['description', {rules: [{required: true, message: '请输入资源地址！'}]}]"/>
-        </a-form-item>
-        <a-form-item label="排序">
-          <a-input v-decorator="['sort', {initialValue: 0}]"/>
-        </a-form-item>
-      </a-form>
+      <a-form-model
+        ref="form"
+        :model="model"
+        :rules="rules"
+        v-bind="formLayout">
+        <a-form-model-item v-show="false" label="ID">
+          <a-input v-model="model.id" disabled />
+        </a-form-model-item>
+        <a-form-model-item label="字典名称">
+          <a-input v-model="model.name" />
+        </a-form-model-item>
+        <a-form-model-item label="字典编码">
+          <a-input v-model="model.code"/>
+        </a-form-model-item>
+        <a-form-model-item label="描述">
+          <a-input v-model="model.description"/>
+        </a-form-model-item>
+        <a-form-model-item label="排序">
+          <a-input type="number" v-model="model.sort"/>
+        </a-form-model-item>
+      </a-form-model>
     </a-spin>
   </a-modal>
 </template>
 
 <script>
-import pick from 'lodash.pick'
-
-// 表单字段
-const fields = ['id', 'name', 'code', 'name', 'description', 'sort']
-
 export default {
   props: {
     visible: {
@@ -63,18 +61,22 @@ export default {
       }
     }
     return {
-      form: this.$form.createForm(this)
+      form: {},
+      rules: {
+        code: [{ required: true, message: '请输入编码', trigger: 'change' }],
+        name: [{ required: true, message: '请输入名称', trigger: 'change' }]
+      }
     }
   },
   created () {
     console.log('custom modal created')
     // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
+    // fields.forEach(v => this.form.getFieldDecorator(v))
 
     // 当 model 发生改变时，为表单设置值
-    this.$watch('model', () => {
-      this.model && this.form.setFieldsValue(pick(this.model, fields))
-    })
+    // this.$watch('model', () => {
+    //   console.log(this.model)
+    // })
   }
 }
 </script>

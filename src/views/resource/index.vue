@@ -104,7 +104,7 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import { page, updateById, create, DeleteById } from '@/api/resource/index'
+import { GetPage, UpdateById, Create, DeleteById } from '@/api/resource/index'
 import { listToTree } from '@/utils/util'
 
 import CreateForm from './modules/CreateForm'
@@ -120,7 +120,7 @@ export default {
       // create model
       visible: false,
       confirmLoading: false,
-      mdl: null,
+      mdl: {},
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
@@ -153,7 +153,7 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         console.log('loadData.parameter', parameter)
-        return page(Object.assign(parameter, this.queryParam))
+        return GetPage(Object.assign(parameter, this.queryParam))
           .then(res => {
             // 处理 records
             const resultData = res.data
@@ -161,6 +161,8 @@ export default {
             listToTree(res.data.records, treeData, '-1')
             resultData.records = treeData
             return resultData
+          }).catch((e) => {
+            this.$message.error('加载失败')
           })
       }
     }
@@ -170,7 +172,7 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.mdl = null
+      this.mdl = {}
       this.visible = true
     },
     handleEdit (record) {
@@ -178,22 +180,21 @@ export default {
       this.mdl = { ...record }
     },
     handleOk () {
-      const form = this.$refs.createModal.form
+      const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
-      form.validateFields((errors, values) => {
-        values.icon = this.$refs.createModal.selectedIcon
-        if (!errors) {
-          console.log('values', values)
-          if (values.id) {
+      form.validate(valid => {
+        console.log(valid)
+        if (valid) {
+          console.log('formData', this.mdl)
+          if (this.mdl.id) {
             // 修改 e.g.
-            updateById(values).then(res => {
+            UpdateById(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('修改成功')
             }).catch((err) => {
               console.log(`form update error:->${err}`)
@@ -201,7 +202,7 @@ export default {
             })
           } else {
             // 新增
-            create(values).then(res => {
+            Create(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
@@ -215,9 +216,9 @@ export default {
               this.confirmLoading = false
             })
           }
-          this.$refs.createModal.loadTreeData()
         } else {
           this.confirmLoading = false
+          return false
         }
       })
     },
@@ -227,9 +228,8 @@ export default {
     handleCancel () {
       this.visible = false
       // 重置
-      this.$refs.createModal.resetTree()
-      const form = this.$refs.createModal.form
-      form.resetFields() // 清理表单数据（可不做）
+      const form = this.$refs.createModal.$refs.form
+      form.resetFields()
     },
     handleDelete (row) {
       DeleteById(row.id).then(res => {

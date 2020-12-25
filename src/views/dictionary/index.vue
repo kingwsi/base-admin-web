@@ -120,7 +120,7 @@ export default {
       visible: false,
       warningVisible: false,
       confirmLoading: false,
-      mdl: null,
+      mdl: {},
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
@@ -136,7 +136,7 @@ export default {
           dataIndex: 'code'
         },
         {
-          title: '秒速',
+          title: '描述',
           dataIndex: 'description'
         },
         {
@@ -148,7 +148,6 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        console.log('loadData.parameter', parameter)
         return page(Object.assign(parameter, this.queryParam))
           .then(res => {
             return res.data
@@ -162,7 +161,7 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.mdl = null
+      this.mdl = {}
       this.visible = true
     },
     handleEdit (record) {
@@ -170,21 +169,19 @@ export default {
       this.mdl = { ...record }
     },
     handleOk () {
-      const form = this.$refs.createModal.form
+      const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
-      form.validateFields((errors, values) => {
-        if (!errors) {
-          console.log('values', values)
-          if (values.id > 0) {
+      form.validate(valid => {
+        if (valid) {
+          if (this.mdl.id) {
             // 修改 e.g.
-            updateById(values).then(res => {
+            updateById(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('修改成功')
             }).catch((err) => {
               console.log(`form update error:->${err}`)
@@ -192,7 +189,7 @@ export default {
             })
           } else {
             // 新增
-            create(values).then(res => {
+            create(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
@@ -208,6 +205,7 @@ export default {
           }
         } else {
           this.confirmLoading = false
+          return false
         }
       })
     },
@@ -217,7 +215,7 @@ export default {
     handleCancel () {
       this.visible = false
 
-      const form = this.$refs.createModal.form
+      const form = this.$refs.createModal.$refs.form
       form.resetFields() // 清理表单数据（可不做）
     },
     handleDelete (row) {

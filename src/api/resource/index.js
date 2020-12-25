@@ -9,7 +9,7 @@ const resourceApi = {
   Delete: 'resource'
 }
 
-export function page (parameter) {
+export function GetPage (parameter) {
   return request({
     url: resourceApi.PageInfo,
     method: 'get',
@@ -31,7 +31,7 @@ export function GetAllResources () {
   })
 }
 
-export function create (parameter) {
+export function Create (parameter) {
   return request({
     url: resourceApi.Update,
     method: 'post',
@@ -39,7 +39,7 @@ export function create (parameter) {
   })
 }
 
-export function updateById (parameter) {
+export function UpdateById (parameter) {
   return request({
     url: resourceApi.Update,
     method: 'put',
