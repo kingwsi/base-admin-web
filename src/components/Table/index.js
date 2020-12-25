@@ -181,6 +181,10 @@ export default {
             this.localPagination = false
           }
           this.localDataSource = r.records // 返回结果中的数组数据
+        }).catch((err) => {
+          console.error(err)
+          this.$message.error('数据加载错误')
+        }).finally(() => {
           this.localLoading = false
         })
       }

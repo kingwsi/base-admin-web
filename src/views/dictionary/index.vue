@@ -102,9 +102,8 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { STable } from '@/components'
-import { page, updateById, create, deleteById } from '@/api/dictionary'
+import { GetPage, UpdateById, Create, DeleteById } from '@/api/dictionary'
 
 import CreateForm from './modules/CreateForm'
 
@@ -148,7 +147,8 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return page(Object.assign(parameter, this.queryParam))
+        console.log('loadData.parameter', parameter)
+        return GetPage(Object.assign(parameter, this.queryParam))
           .then(res => {
             return res.data
           })
@@ -157,7 +157,7 @@ export default {
     }
   },
   created () {
-    this.loadData({ t: new Date() })
+    this.loadData()
   },
   methods: {
     handleAdd () {
@@ -175,7 +175,7 @@ export default {
         if (valid) {
           if (this.mdl.id) {
             // 修改 e.g.
-            updateById(this.mdl).then(res => {
+            UpdateById(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
@@ -189,7 +189,7 @@ export default {
             })
           } else {
             // 新增
-            create(this.mdl).then(res => {
+            Create(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
@@ -219,20 +219,14 @@ export default {
       form.resetFields() // 清理表单数据（可不做）
     },
     handleDelete (row) {
-        deleteById(row.id).then(res => {
+        DeleteById(row.id).then(res => {
                 if (res.code === 200) {
                     this.$message.info('删除成功！')
-                    // 刷新表格
                     this.$refs.table.refresh()
                 } else {
                     this.$message.err('删除失败！')
                 }
-            }).catch((err) => console.log(err))
-    },
-    resetSearchForm () {
-      this.queryParam = {
-        date: moment(new Date())
-      }
+            })
     }
   }
 }

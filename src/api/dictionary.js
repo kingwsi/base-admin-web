@@ -8,7 +8,7 @@ const Api = {
   Delete: '/dictionary'
 }
 
-export function page (parameter) {
+export function GetPage (parameter) {
   return request({
     url: Api.Page,
     method: 'get',
@@ -16,7 +16,7 @@ export function page (parameter) {
   })
 }
 
-export function create (data) {
+export function Create (data) {
   return request({
     url: Api.Add,
     method: 'post',
@@ -24,7 +24,7 @@ export function create (data) {
   })
 }
 
-export function updateById (data) {
+export function UpdateById (data) {
   return request({
     url: Api.Update,
     method: 'put',
@@ -32,7 +32,7 @@ export function updateById (data) {
   })
 }
 
-export function deleteById (id) {
+export function DeleteById (id) {
   return request({
     url: `${Api.Delete}/${id}`,
     method: 'delete'

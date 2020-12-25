@@ -70,13 +70,6 @@ export default {
   },
   created () {
     console.log('custom modal created')
-    // 防止表单未注册
-    // fields.forEach(v => this.form.getFieldDecorator(v))
-
-    // 当 model 发生改变时，为表单设置值
-    // this.$watch('model', () => {
-    //   console.log(this.model)
-    // })
   }
 }
 </script>
