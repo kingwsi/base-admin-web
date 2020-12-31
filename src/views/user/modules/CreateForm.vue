@@ -55,7 +55,7 @@
             style="width: 100%"
             placeholder="请选择角色"
           >
-            <a-select-option v-for="role in roleList" :key="role.id">{{ role.name }}</a-select-option>
+            <a-select-option v-for="role in roleList" :key="role.id">{{ role.description }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="介绍" prop="introduction">

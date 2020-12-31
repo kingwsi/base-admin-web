@@ -158,7 +158,7 @@ export default {
             // 处理 records
             const resultData = res.data
             const treeData = []
-            listToTree(res.data.records, treeData, '-1')
+            listToTree(res.data.records, treeData, -1)
             resultData.records = treeData
             return resultData
           }).catch((e) => {
@@ -172,7 +172,9 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.mdl = {}
+      this.mdl = {
+        type: 'API'
+      }
       this.visible = true
     },
     handleEdit (record) {
@@ -183,9 +185,7 @@ export default {
       const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
       form.validate(valid => {
-        console.log(valid)
         if (valid) {
-          console.log('formData', this.mdl)
           if (this.mdl.id) {
             // 修改 e.g.
             UpdateById(this.mdl).then(res => {
