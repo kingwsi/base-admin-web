@@ -76,7 +76,7 @@ request.interceptors.response.use((response) => {
         message: '错误',
         description: data.message || 'Error'
       })
-      console.error('request success, custom response error->', data.message)
+      // console.warn('customize response error->', data.message)
     }
     return data
 }, errorHandler)

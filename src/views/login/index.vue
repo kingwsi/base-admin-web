@@ -1,10 +1,10 @@
 <template>
   <div class="main">
-    <a-form
-      id="formLogin"
+    <a-form-model
       class="user-layout-login"
       ref="formLogin"
-      :form="form"
+      :model="form"
+      :rules="rules"
       @submit="handleSubmit"
     >
       <a-tabs
@@ -13,48 +13,56 @@
         @change="handleTabClick"
       >
         <a-tab-pane key="tab1" tab="账号密码登录">
-          <a-alert v-if="isLoginError" type="error" showIcon style="margin-bottom: 24px;" message="账户或密码错误（admin/ant.design )" />
-          <a-form-item>
+          <a-form-model-item prop="username">
             <a-input
               size="large"
               type="text"
               placeholder="账户"
-              v-decorator="[
-                'username',
-                {rules: [{ required: true, message: '请输入帐户名' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
-              ]"
+              v-model="form.username"
             >
               <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input>
-          </a-form-item>
+          </a-form-model-item>
 
-          <a-form-item>
+          <a-form-model-item prop="password">
             <a-input-password
+              v-model="form.password"
               size="large"
               placeholder="密码"
-              v-decorator="[
-                'password',
-                {rules: [{ required: true, message: '请输入密码' }], validateTrigger: 'blur'}
-              ]"
             >
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input-password>
-          </a-form-item>
-        </a-tab-pane>
-        <a-tab-pane key="tab2" tab="手机号登录">
-          <a-form-item>
-            <a-input size="large" type="text" placeholder="手机号" v-decorator="['mobile', {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号' }], validateTrigger: 'change'}]">
-              <a-icon slot="prefix" type="mobile" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-            </a-input>
-          </a-form-item>
+          </a-form-model-item>
 
           <a-row :gutter="16">
             <a-col class="gutter-row" :span="16">
-              <a-form-item>
-                <a-input size="large" type="text" placeholder="验证码" v-decorator="['captcha', {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}]">
+              <a-form-model-item prop="captcha">
+                <a-input size="large" type="text" placeholder="验证码" v-model="form.captcha">
                   <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
                 </a-input>
-              </a-form-item>
+              </a-form-model-item>
+            </a-col>
+            <a-col class="gutter-row" :span="8">
+              <a-spin :spinning="captchaImgLoading">
+                <img :src="captcha.image" @click="reloadCaptcha" class="getCaptcha"/>
+              </a-spin>
+            </a-col>
+          </a-row>
+        </a-tab-pane>
+        <a-tab-pane key="tab2" tab="手机号登录">
+          <a-form-model-item>
+            <a-input size="large" type="text" placeholder="手机号" v-model="form.mobile">
+              <a-icon slot="prefix" type="mobile" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            </a-input>
+          </a-form-model-item>
+
+          <a-row :gutter="16">
+            <a-col class="gutter-row" :span="16">
+              <a-form-model-item>
+                <a-input v-if="loginType==2" size="large" type="text" placeholder="验证码" v-model="form.captcha">
+                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,225)' }"/>
+                </a-input>
+              </a-form-model-item>
             </a-col>
             <a-col class="gutter-row" :span="8">
               <a-button
@@ -69,16 +77,15 @@
         </a-tab-pane>
       </a-tabs>
 
-      <a-form-item>
-        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">自动登录</a-checkbox>
+      <a-form-model-item>
         <router-link
           :to="{ name: 'recover', params: { user: 'aaa'} }"
           class="forge-password"
           style="float: right;"
         >忘记密码</router-link>
-      </a-form-item>
+      </a-form-model-item>
 
-      <a-form-item style="margin-top:24px">
+      <a-form-model-item style="margin-top:24px">
         <a-button
           size="large"
           type="primary"
@@ -87,7 +94,7 @@
           :loading="state.loginBtn"
           :disabled="state.loginBtn"
         >确定</a-button>
-      </a-form-item>
+      </a-form-model-item>
 
       <div class="user-login-other">
         <span>其他登录方式</span>
@@ -102,7 +109,7 @@
         </a>
         <router-link class="register" :to="{ name: 'register' }">注册账户</router-link>
       </div>
-    </a-form>
+    </a-form-model>
 
     <two-step-captcha
       v-if="requiredTwoStepCaptcha"
@@ -114,15 +121,12 @@
 </template>
 
 <script>
-import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
+import { GetCaptcha } from '@/api/common/captcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
 import { getSmsCaptcha } from '@/api/login'
 
 export default {
-  components: {
-    TwoStepCaptcha
-  },
   data () {
     return {
       customActiveKey: 'tab1',
@@ -131,26 +135,35 @@ export default {
       loginType: 0,
       isLoginError: false,
       requiredTwoStepCaptcha: false,
+      captchaImgLoading: false,
       stepCaptchaVisible: false,
-      form: this.$form.createForm(this),
+      form: {
+        username: 'admin',
+        password: 'admin',
+        captcha: '',
+        key: ''
+      },
       state: {
         time: 60,
         loginBtn: false,
         // login type: 0 email, 1 username, 2 telephone
         loginType: 0,
         smsSendBtn: false
+      },
+      captcha: {
+        image: ''
+      },
+      rules: {
+        username: [{ required: true, message: '请输入登录名', trigger: 'change' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'change' }],
+        // mobile: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号' }],
+        captcha: [{ required: true, message: '请选择验证码', trigger: 'change' }]
+
       }
     }
   },
   created () {
-    // get2step({ })
-    //   .then(res => {
-    //     this.requiredTwoStepCaptcha = res.result.stepCode
-    //   })
-    //   .catch(() => {
-    //     this.requiredTwoStepCaptcha = false
-    //   })
-    this.requiredTwoStepCaptcha = true
+    this.reloadCaptcha()
   },
   methods: {
     ...mapActions(['Login', 'Logout']),
@@ -169,33 +182,39 @@ export default {
       this.customActiveKey = key
       // this.form.resetFields()
     },
+    reloadCaptcha () {
+      this.captchaImgLoading = true
+      GetCaptcha().then(response => {
+        this.captcha = response.data
+        this.form.captcha = ''
+        this.captchaImgLoading = false
+      })
+    },
     handleSubmit (e) {
       e.preventDefault()
       const {
-        form: { validateFields },
         state,
-        customActiveKey,
-        Login
+        Login,
+        form
       } = this
 
-      state.loginBtn = true
-
-      const validateFieldsKey = customActiveKey === 'tab1' ? ['username', 'password'] : ['mobile', 'captcha']
-
-      validateFields(validateFieldsKey, { force: true }, (err, values) => {
-        if (!err) {
-          console.log('login form', values)
-          const loginParams = { ...values }
-          delete loginParams.username
-          loginParams[!state.loginType ? 'email' : 'username'] = values.username
-          loginParams.password = values.password
-          Login(loginParams)
-            .then((res) => this.loginSuccess(res))
+      this.$refs.formLogin.validate(valid => {
+        if (valid) {
+          console.log('login form', form)
+          form.key = this.captcha.key
+          Login(form)
+            .then((res) => {
+              this.loginSuccess(res)
+            })
+            .catch((e) => {
+              this.reloadCaptcha()
+            })
             .finally(() => {
               state.loginBtn = false
             })
         } else {
           state.loginBtn = false
+          return false
         }
       })
     },
@@ -243,18 +262,6 @@ export default {
       })
     },
     loginSuccess (res) {
-      console.log(res)
-      // check res.homePage define, set $router.push name res.homePage
-      // Why not enter onComplete
-      /*
-      this.$router.push({ name: 'analysis' }, () => {
-        console.log('onComplete')
-        this.$notification.success({
-          message: '欢迎',
-          description: `${timeFix()}，欢迎回来`
-        })
-      })
-      */
       this.$router.push({ path: '/' })
       // 延迟 1 秒显示欢迎信息
       setTimeout(() => {
