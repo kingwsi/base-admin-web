@@ -10,10 +10,9 @@
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item label="状态">
-              <a-select placeholder="请选择" default-value="0" v-model="queryParam.status">
-                <a-select-option value="0">全部</a-select-option>
+              <a-select placeholder="请选择" default-value="0" v-model="queryParam.status" allowClear>
                 <a-select-option value="1">正常</a-select-option>
-                <a-select-option value="2">禁用</a-select-option>
+                <a-select-option value="0">禁用</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -27,6 +26,10 @@
       </a-form>
     </div>
 
+    <div class="table-operator">
+      <a-button type="primary" icon="plus" @click="handleAdd()">新建</a-button>
+    </div>
+
     <s-table
       ref="table"
       size="default"
@@ -37,6 +40,8 @@
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleEditPermission(record)">权限</a>
           <a-divider type="vertical" />
           <a-popconfirm
             title="确认删除这条数据？"
@@ -54,7 +59,7 @@
     </s-table>
 
     <form-modal
-      ref="createModal"
+      ref="formModal"
       :visible="visible"
       :loading="confirmLoading"
       :model="mdl"
@@ -66,10 +71,9 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { STable } from '@/components'
 import FormModal from './modules/FormModal'
-import { Page } from '@/api/role'
+import { Page, UpdateById, CreateRole } from '@/api/role'
 
 export default {
   name: 'TableList',
@@ -110,9 +114,10 @@ export default {
           title: '创建时间',
           dataIndex: 'createdDate',
           sorter: true
-        }, {
+        },
+        {
           title: '操作',
-          width: '150px',
+          width: '190px',
           dataIndex: 'action',
           scopedSlots: { customRender: 'action' }
         }
@@ -131,21 +136,44 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.mdl = null
+      this.mdl = {}
       this.visible = true
     },
     handleEdit (record) {
-      this.$router.push({
-          path: `/system/role/permission/${record.id}`
-        })
+      this.visible = true
+      this.mdl = { ...record }
     },
-    handleOk (row) {
-      console.log('deleted..')
-      // DeleteById(row.id).then(res => {
-      //   this.$message.info('删除成功')
-      //   // 刷新表格
-      //   this.$refs.table.refresh()
-      // })
+    handleOk () {
+      this.confirmLoading = true
+      const form = this.$refs.formModal.$refs.form
+      form.validate(valid => {
+        if (valid) {
+          if (this.mdl.id) {
+            UpdateById(this.mdl).then(res => {
+              this.confirmLoading = false
+              this.visible = false
+              this.$message.info('修改成功')
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+            })
+          } else {
+            // 新增
+            CreateRole(this.mdl).then(res => {
+              this.confirmLoading = false
+              this.visible = false
+              this.$message.info('新增成功')
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+            })
+          }
+        } else {
+          this.visible = false
+        }
+      })
     },
     onChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
@@ -156,30 +184,17 @@ export default {
     },
     handleCancel () {
       this.visible = false
-
-      const form = this.$refs.createModal.form
+      const form = this.$refs.formModal.$refs.form
       form.resetFields() // 清理表单数据（可不做）
     },
-
     resetSearchForm () {
-      this.queryParam = {
-        date: moment(new Date())
-      }
+      this.queryParam = {}
+    },
+    handleEditPermission (record) {
+      this.$router.push({ path: `/system/role/permission/${record.id}` })
     }
   },
   watch: {
-    /*
-      'selectedRows': function (selectedRows) {
-        this.needTotalList = this.needTotalList.map(item => {
-          return {
-            ...item,
-            total: selectedRows.reduce( (sum, val) => {
-              return sum + val[item.dataIndex]
-            }, 0)
-          }
-        })
-      }
-      */
   }
 }
 </script>

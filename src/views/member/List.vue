@@ -45,13 +45,18 @@
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
+              <a-form-item label="密码">
+                <a-input v-model="queryParam.password" placeholder="密码"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
               <a-form-item label="最后登录ip">
                 <a-input v-model="queryParam.lastLoginIp" placeholder="最后登录ip"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="">
-                <a-input v-model="queryParam.password" placeholder=""/>
+              <a-form-item label="账户状态 1 正常 0 停用">
+                <a-input v-model="queryParam.accountStatus" placeholder="账户状态 1 正常 0 停用"/>
               </a-form-item>
             </a-col>
           </template>
@@ -98,8 +103,8 @@
         </template>
       </span>
     </s-table>
-    <create-form
-      ref="createModal"
+    <form-modal
+      ref="formModal"
       :visible="visible"
       :loading="confirmLoading"
       :model="mdl"
@@ -111,15 +116,15 @@
 
 <script>
 import { STable } from '@/components'
-import { GetPage, UpdateById, Create, DeleteById } from '@/api/customer'
+import { GetPage, UpdateById, Create, DeleteById } from '@/api/member'
 
-import CreateForm from './modules/CreateForm'
+import FormModal from './modules/FormModal'
 
 export default {
-  name: 'Customer',
+  name: 'Member',
   components: {
     STable,
-    CreateForm
+    FormModal
   },
   data () {
     return {
@@ -127,7 +132,7 @@ export default {
       visible: false,
       warningVisible: false,
       confirmLoading: false,
-      mdl: null,
+      mdl: {},
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
@@ -135,12 +140,12 @@ export default {
       // 表头
       columns: [
         {
-          title: '真实姓名',
-          dataIndex: 'realName'
-        },
-        {
           title: '昵称',
           dataIndex: 'nickName'
+        },
+        {
+          title: '真实姓名',
+          dataIndex: 'realName'
         },
         {
           title: '性别',
@@ -151,28 +156,11 @@ export default {
           dataIndex: 'mobile'
         },
         {
-          title: '邮箱',
-          dataIndex: 'email'
-        },
-        {
-          title: '头像',
-          dataIndex: 'avatar'
-        },
-        {
-          title: '介绍',
-          dataIndex: 'introduce'
-        },
-        {
-          title: '最后登录时间',
-          dataIndex: 'lastLoginTime'
-        },
-        {
-          title: '最后登录ip',
-          dataIndex: 'lastLoginIp'
-        },
-        {
-          title: '',
-          dataIndex: 'password'
+          title: '账户状态',
+          dataIndex: 'accountStatus',
+          customRender: (val) => {
+            return val === 0 ? '停用' : '正常'
+          }
         },
         {
           title: '操作',
@@ -192,7 +180,6 @@ export default {
     }
   },
   created () {
-    this.loadData()
   },
   methods: {
     handleAdd () {
@@ -204,7 +191,7 @@ export default {
       this.mdl = { ...record }
     },
     handleOk () {
-      const form = this.$refs.createModal.$refs.form
+      const form = this.$refs.formModal.$refs.form
       this.confirmLoading = true
       form.validate(valid => {
         if (valid) {

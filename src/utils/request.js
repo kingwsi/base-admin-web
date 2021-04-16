@@ -74,11 +74,13 @@ request.interceptors.response.use((response) => {
     if (data.code && data.code !== 200) {
       notification.error({
         message: '错误',
-        description: data.message || 'Error'
+        description: data.message || 'Error',
+        duration: 1
       })
-      // console.warn('customize response error->', data.message)
+      return Promise.reject(new Error(data.message || 'Error'))
+    } else {
+      return data
     }
-    return data
 }, errorHandler)
 
 const installer = {

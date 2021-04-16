@@ -13,24 +13,26 @@
         :model="model"
         :rules="rules"
         v-bind="formLayout">
-        <a-form-model-item v-show="false" label="ID">
+        <a-form-model-item v-if="model.id" label="ID">
           <a-input v-model="model.id" disabled />
         </a-form-model-item>
-        <a-form-model-item label="资源类型">
-          <a-select
-            v-model="model.type">
-            <a-select-option value="MENU">
+        <a-form-model-item label="资源类型" prop="type">
+          <a-radio-group v-model="model.type">
+            <a-radio value="MENU">
               菜单
-            </a-select-option>
-            <a-select-option value="API">
+            </a-radio>
+            <a-radio value="API">
               API
-            </a-select-option>
-            <a-select-option value="BUTTON">
+            </a-radio>
+            <a-radio value="BUTTON">
               按钮
-            </a-select-option>
-          </a-select>
+            </a-radio>
+          </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label="父级id" v-if="model.type==='MENU'">
+        <a-form-model-item label="请求类型" v-if="model.type==='API'" prop="methodList">
+          <a-checkbox-group v-model="model.methodList" :options="methodOptions" />
+        </a-form-model-item>
+        <a-form-model-item label="父级id" v-if="model.type==='MENU'" prop="parentId">
           <a-tree-select
             show-search
             style="width: 100%"
@@ -44,16 +46,16 @@
           >
           </a-tree-select>
         </a-form-model-item>
-        <a-form-model-item label="图标" v-if="model.type!=='API'">
+        <a-form-model-item label="图标" v-if="model.type!=='API'" prop="icon">
           <icon-selector v-model="model.icon" @change="handleIconChange"/>
         </a-form-model-item>
-        <a-form-model-item :label="model.type==='MENU'?'菜单名称':model.type==='API'?'接口名称':'按钮名称'">
+        <a-form-model-item :label="model.type==='MENU'?'菜单名称':model.type==='API'?'接口名称':'按钮名称'" prop="name">
           <a-input v-model="model.name" />
         </a-form-model-item>
-        <a-form-model-item label="地址" v-if="model.type!=='BUTTON'">
+        <a-form-model-item label="地址" v-if="model.type!=='BUTTON'" prop="uri">
           <a-input :placeholder="model.type==='API'?'接口地址':'页面访问地址'" v-model="model.uri"/>
         </a-form-model-item>
-        <a-form-model-item label="组件" v-if="model.type==='MENU'">
+        <a-form-model-item label="组件" v-if="model.type==='MENU'" prop="component">
           <a-input placeholder="组件路径" v-model="model.component"/>
         </a-form-model-item>
         <a-form-model-item label="排序">
@@ -68,6 +70,8 @@
 import { TreeSelect } from 'ant-design-vue'
 import { GetAllResources } from '@/api/resource/index'
 import IconSelector from '@/components/IconSelector'
+
+const methodOptions = ['GET', 'POST', 'PUT', 'DELETE']
 
 export default {
   components: {
@@ -116,8 +120,13 @@ export default {
       rules: {
         name: [{ required: true, message: '请输入至少2个字符的名称！', trigger: 'change' }],
         uri: [{ required: true, min: 2, message: '请输入至少2个字符的名称！', trigger: 'change' }],
-        component: [{ required: true, message: '请输入资源地址！' }]
-      }
+        component: [{ required: true, message: '请输入资源地址！' }],
+        type: [{ required: true, message: '请选择类型！' }],
+        methodList: [{ required: true, message: '请选择请求方式！' }],
+        parentId: [{ required: true, message: '请选择上级！' }],
+        icon: [{ required: true, message: '请选择ICON！' }]
+      },
+      methodOptions
     }
   },
   created () {
@@ -172,6 +181,12 @@ export default {
     handleIconChange (icon) {
       this.$message.info(<span>选中图标 <code>{icon}</code></span>)
     }
+  },
+  watch: {
+    'model.type' (newVal, oldVal) {
+				this.$refs.form.clearValidate()
+			},
+			deep: true
   }
 }
 </script>

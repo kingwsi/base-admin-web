@@ -173,19 +173,25 @@ export default {
   methods: {
     handleAdd () {
       this.mdl = {
-        type: 'API'
+        type: 'API',
+        methodList: []
       }
       this.visible = true
     },
     handleEdit (record) {
       this.visible = true
+      record.methodList = record.methods.split(';')
       this.mdl = { ...record }
     },
     handleOk () {
       const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
+      console.log(this.mdl.methodList)
       form.validate(valid => {
         if (valid) {
+          if (this.mdl.methodList) {
+            this.mdl.methods = this.mdl.methodList.join(';')
+          }
           if (this.mdl.id) {
             // 修改 e.g.
             UpdateById(this.mdl).then(res => {
