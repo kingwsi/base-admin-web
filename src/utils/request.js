@@ -21,26 +21,23 @@ const errorHandler = (error) => {
         message: '服务器错误',
         description: data.message
       })
-    }
-    if (error.response.status === 404) {
+    } else if (error.response.status === 404) {
       notification.error({
         message: '404',
         description: data.message
       })
-    }
-    // 从 localstorage 获取 token
-    const token = storage.get(ACCESS_TOKEN)
-    if (error.response.status === 403) {
+    } else if ((error.response.status === 403)) {
       notification.error({
         message: 'Forbidden',
         description: data.message
       })
-    }
-    if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
+    } else if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
       notification.error({
         message: 'Unauthorized',
         description: 'Authorization verification failed'
       })
+      // 从 localstorage 获取 token
+      const token = storage.get(ACCESS_TOKEN)
       if (token) {
         store.dispatch('Logout').then(() => {
           setTimeout(() => {
@@ -48,6 +45,11 @@ const errorHandler = (error) => {
           }, 1500)
         })
       }
+    } else {
+      notification.error({
+        message: '请求错误',
+        description: error.response.status
+      })
     }
   }
   return Promise.reject(error)
@@ -66,17 +68,18 @@ request.interceptors.request.use(config => {
 
 // response interceptor
 request.interceptors.response.use((response) => {
-  const res = response.data
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.code && res.code !== 200) {
+  const data = response.data
+    // 解析自定义返回参数
+    // {'code':200,'data':Object}
+    if (data.code && data.code !== 200) {
       notification.error({
         message: '错误',
-        description: res.message || 'Error'
+        description: data.message || 'Error',
+        duration: 1
       })
-      console.log(res)
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(new Error(data.message || 'Error'))
     } else {
-      return res
+      return data
     }
 }, errorHandler)
 

@@ -1,5 +1,5 @@
 import storage from 'store'
-import { login, logout } from '@/api/login'
+import { login } from '@/api/login'
 import { GetUserInfo } from '@/api/user'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
@@ -38,6 +38,9 @@ const user = {
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
+          if (response.code !== 200) {
+            reject(response.msg)
+          }
           storage.set(ACCESS_TOKEN, response.data, 7 * 24 * 60 * 60 * 1000)
           commit('SET_TOKEN', response.data)
           resolve()
@@ -52,13 +55,15 @@ const user = {
       return new Promise((resolve, reject) => {
         GetUserInfo().then(response => {
           const { data } = response
-          if (!data) {
+          if (!data || !data.roles || data.roles < 1) {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
-          const { roles, username, avatar } = data
-          console.log(data)
+          const { roles, nickname, avatar } = data
           commit('SET_ROLES', roles)
           commit('SET_INFO', data)
+          commit('SET_NAME', { name: nickname, welcome: welcome() })
+          commit('SET_AVATAR', avatar)
+          resolve(response)
           // if (result.role && result.role.permissions.length > 0) {
           //   const role = result.role
           //   role.permissions = result.role.permissions
@@ -74,11 +79,6 @@ const user = {
           // } else {
           //   reject(new Error('getInfo: roles must be a non-null array !'))
           // }
-
-          commit('SET_NAME', { name: username, welcome: welcome() })
-          commit('SET_AVATAR', avatar)
-
-          resolve(response)
         }).catch(error => {
           reject(error)
         })
@@ -88,15 +88,10 @@ const user = {
     // 登出
     Logout ({ commit, state }) {
       return new Promise((resolve) => {
-        logout(state.token).then(() => {
-          resolve()
-        }).catch(() => {
-          resolve()
-        }).finally(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          storage.remove(ACCESS_TOKEN)
-        })
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        storage.remove(ACCESS_TOKEN)
+        resolve()
       })
     }
 

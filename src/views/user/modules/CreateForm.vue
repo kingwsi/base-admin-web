@@ -42,17 +42,20 @@
         <a-form-model-item v-if="!model || !model.id" label="密码" placeholder="请输入密码，6-20位" prop="password">
           <a-input v-model="model.password"/>
         </a-form-model-item>
+        <a-form-model-item label="昵称" prop="nickname">
+          <a-input v-model="model.nickname"/>
+        </a-form-model-item>
         <a-form-model-item label="全称" prop="fullName">
           <a-input v-model="model.fullName"/>
         </a-form-model-item>
-        <a-form-model-item label="角色" prop="roles">
+        <a-form-model-item label="角色" prop="roleIds">
           <a-select
             mode="multiple"
-            v-model="model.roles"
+            v-model="model.roleIds"
             style="width: 100%"
             placeholder="请选择角色"
           >
-            <a-select-option v-for="role in roleList" :key="role.id">{{ role.name }}</a-select-option>
+            <a-select-option v-for="role in roleList" :key="role.id">{{ role.description }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="介绍" prop="introduction">
@@ -101,7 +104,7 @@ export default {
         fullName: [{ required: true, message: '请输入全称', trigger: 'change' }],
         username: [{ required: true, message: '请输入用户名', trigger: 'change' }],
         password: [{ required: true, message: '请输入密码', trigger: 'change' }],
-        roles: [{ required: true, message: '请选择角色', trigger: 'change' }]
+        roleIds: [{ required: true, message: '请选择角色', trigger: 'change' }]
       }
     }
   },

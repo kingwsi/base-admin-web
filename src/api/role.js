@@ -23,6 +23,14 @@ export function GetRoleById (id) {
   })
 }
 
+export function UpdatePermissions (data) {
+  return request({
+    url: Api.Permission,
+    method: 'put',
+    data: data
+  })
+}
+
 export function CreateRole (data) {
   return request({
     url: Api.Role,

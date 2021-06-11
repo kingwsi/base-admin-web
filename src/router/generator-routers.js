@@ -38,12 +38,11 @@ const rootRouter = {
 export const generatorDynamicRouter = () => {
   return new Promise((resolve, reject) => {
     loginService.getCurrentUserNav().then(res => {
-      console.log('res', res)
       const { data } = res
       const menuNav = []
       const childrenNav = []
       // 后端数据, 根级树数组,  根级 PID
-      listToTree(data, childrenNav, '-1')
+      listToTree(data, childrenNav, -1)
       rootRouter.children = childrenNav
       menuNav.push(rootRouter)
       const routers = generator(menuNav)

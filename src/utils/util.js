@@ -69,7 +69,7 @@ export function removeLoadingAnimate (id = '', timeout = 1500) {
 export function listToTree (list, tree, parentId) {
   list.forEach(item => {
     // 判断是否为父级
-    if (item.parentId === parentId) {
+    if (item.parentId === parentId || item.parentId.toString() === parentId) {
       const child = {
         ...item,
         children: []

@@ -3,7 +3,6 @@ import store from './store'
 import storage from 'store'
 import NProgress from 'nprogress' // progress bar
 import '@/components/NProgress/nprogress.less' // progress bar custom style
-import notification from 'ant-design-vue/es/notification'
 import { setDocumentTitle, domTitle } from '@/utils/domUtil'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { i18nRender } from '@/locales'
@@ -23,8 +22,9 @@ router.beforeEach((to, from, next) => {
       next({ path: defaultRoutePath })
       NProgress.done()
     } else {
-      // check login user.roles is null
-      if (store.getters.roles.length === 0) {
+      if (store.getters.roles && store.getters.roles.length > 0) {
+        next()
+      } else {
         // request login userInfo
         store
           .dispatch('GetInfo')
@@ -45,19 +45,12 @@ router.beforeEach((to, from, next) => {
               }
             })
           })
-          .catch((err) => {
-            console.log(err)
-            notification.error({
-              message: '错误',
-              description: '请求用户信息失败，请重试'
-            })
+          .catch(() => {
             // 失败时，获取用户信息失败时，调用登出，来清空历史保留信息
             store.dispatch('Logout').then(() => {
               next({ path: loginRoutePath, query: { redirect: to.fullPath } })
             })
           })
-      } else {
-        next()
       }
     }
   } else {

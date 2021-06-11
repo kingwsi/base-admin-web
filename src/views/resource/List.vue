@@ -102,13 +102,15 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { STable } from '@/components'
-import { GetPage, UpdateById, Create, DeleteById } from '@/api/dictionary'
+import { GetPage, UpdateById, Create, DeleteById } from '@/api/resource/index'
+import { listToTree } from '@/utils/util'
 
 import CreateForm from './modules/CreateForm'
 
 export default {
-  name: 'Dictionary',
+  name: 'UserInfo',
   components: {
     STable,
     CreateForm
@@ -117,7 +119,6 @@ export default {
     return {
       // create model
       visible: false,
-      warningVisible: false,
       confirmLoading: false,
       mdl: {},
       // 高级搜索 展开/关闭
@@ -131,12 +132,16 @@ export default {
           dataIndex: 'name'
         },
         {
-          title: '编码',
-          dataIndex: 'code'
+          title: '地址',
+          dataIndex: 'uri'
         },
         {
-          title: '描述',
-          dataIndex: 'description'
+          title: '组件',
+          dataIndex: 'component'
+        },
+        {
+          title: '资源类型',
+          dataIndex: 'type'
         },
         {
           title: '操作',
@@ -150,29 +155,43 @@ export default {
         console.log('loadData.parameter', parameter)
         return GetPage(Object.assign(parameter, this.queryParam))
           .then(res => {
-            return res.data
+            // 处理 records
+            const resultData = res.data
+            const treeData = []
+            listToTree(res.data.records, treeData, -1)
+            resultData.records = treeData
+            return resultData
+          }).catch((e) => {
+            this.$message.error('加载失败')
           })
       }
-
     }
   },
   created () {
-    this.loadData()
+    this.loadData({ t: new Date() })
   },
   methods: {
     handleAdd () {
-      this.mdl = {}
+      this.mdl = {
+        type: 'API',
+        methodList: []
+      }
       this.visible = true
     },
     handleEdit (record) {
       this.visible = true
+      record.methodList = record.methods.split(';')
       this.mdl = { ...record }
     },
     handleOk () {
       const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
+      console.log(this.mdl.methodList)
       form.validate(valid => {
         if (valid) {
+          if (this.mdl.methodList) {
+            this.mdl.methods = this.mdl.methodList.join(';')
+          }
           if (this.mdl.id) {
             // 修改 e.g.
             UpdateById(this.mdl).then(res => {
@@ -214,19 +233,21 @@ export default {
     },
     handleCancel () {
       this.visible = false
-
+      // 重置
       const form = this.$refs.createModal.$refs.form
-      form.resetFields() // 清理表单数据（可不做）
+      form.resetFields()
     },
     handleDelete (row) {
-        DeleteById(row.id).then(res => {
-                if (res.code === 200) {
-                    this.$message.info('删除成功！')
-                    this.$refs.table.refresh()
-                } else {
-                    this.$message.err('删除失败！')
-                }
-            })
+      DeleteById(row.id).then(res => {
+        this.$message.info('删除成功')
+        // 刷新表格
+        this.$refs.table.refresh()
+      })
+    },
+    resetSearchForm () {
+      this.queryParam = {
+        date: moment(new Date())
+      }
     }
   }
 }

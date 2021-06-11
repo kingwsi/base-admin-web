@@ -1,13 +1,8 @@
 <template>
-  <div>dashboard/UserInfo</div>
+  <div>workplace</div>
 </template>
-
 <script>
 export default {
-
+    name: 'Workplace'
 }
 </script>
-
-<style>
-
-</style>

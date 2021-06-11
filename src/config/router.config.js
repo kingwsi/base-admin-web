@@ -346,17 +346,17 @@ export const constantRouterMap = [
       {
         path: 'login',
         name: 'login',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
+        component: () => import(/* webpackChunkName: "user" */ '@/views/login')
       },
       {
         path: 'register',
         name: 'register',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Register')
+        component: () => import(/* webpackChunkName: "user" */ '@/views/login/Register')
       },
       {
         path: 'register-result',
         name: 'registerResult',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/RegisterResult')
+        component: () => import(/* webpackChunkName: "user" */ '@/views/login/RegisterResult')
       },
       {
         path: 'recover',

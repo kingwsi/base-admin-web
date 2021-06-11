@@ -182,7 +182,6 @@ export default {
       this.visible = true
     },
     handleEdit (record) {
-      console.log(record)
       this.visible = true
       this.mdl = { ...record }
     },
@@ -190,7 +189,6 @@ export default {
       const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
       form.validate(valid => {
-        console.log(valid)
         if (valid) {
           console.log('formData', this.mdl)
           if (this.mdl.id) {

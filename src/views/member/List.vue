@@ -4,46 +4,59 @@
       <a-form layout="inline">
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
-            <a-form-item label="资源名称">
-              <a-input v-model="queryParam.name" placeholder="资源名称"/>
+            <a-form-item label="真实姓名">
+              <a-input v-model="queryParam.realName" placeholder="真实姓名"/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
-            <a-form-item label="类型">
-              <a-select v-model="queryParam.type" placeholder="请选择" default-value="ROUTE">
-                <a-select-option value="MENU">菜单</a-select-option>
-                <a-select-option value="API">接口</a-select-option>
-                <a-select-option value="BUTTON">按钮</a-select-option>
-              </a-select>
+            <a-form-item label="昵称">
+              <a-input v-model="queryParam.nickName" placeholder="昵称"/>
             </a-form-item>
           </a-col>
           <template v-if="advanced">
             <a-col :md="8" :sm="24">
-              <a-form-item label="调用次数">
-                <a-input-number v-model="queryParam.callNo" style="width: 100%"/>
+              <a-form-item label="性别">
+                <a-input v-model="queryParam.gender" placeholder="性别"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="更新日期">
-                <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入更新日期"/>
+              <a-form-item label="手机号">
+                <a-input v-model="queryParam.mobile" placeholder="手机号"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="使用状态">
-                <a-select v-model="queryParam.useStatus" placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
+              <a-form-item label="邮箱">
+                <a-input v-model="queryParam.email" placeholder="邮箱"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="使用状态">
-                <a-select placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
+              <a-form-item label="头像">
+                <a-input v-model="queryParam.avatar" placeholder="头像"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="介绍">
+                <a-input v-model="queryParam.introduce" placeholder="介绍"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="最后登录时间">
+                <a-input v-model="queryParam.lastLoginTime" placeholder="最后登录时间"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="密码">
+                <a-input v-model="queryParam.password" placeholder="密码"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="最后登录ip">
+                <a-input v-model="queryParam.lastLoginIp" placeholder="最后登录ip"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="账户状态 1 正常 0 停用">
+                <a-input v-model="queryParam.accountStatus" placeholder="账户状态 1 正常 0 停用"/>
               </a-form-item>
             </a-col>
           </template>
@@ -90,8 +103,8 @@
         </template>
       </span>
     </s-table>
-    <create-form
-      ref="createModal"
+    <form-modal
+      ref="formModal"
       :visible="visible"
       :loading="confirmLoading"
       :model="mdl"
@@ -102,25 +115,24 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { STable } from '@/components'
-import { page, updateById, create, DeleteById } from '@/api/resource/index'
-import { listToTree } from '@/utils/util'
+import { GetPage, UpdateById, Create, DeleteById } from '@/api/member'
 
-import CreateForm from './modules/CreateForm'
+import FormModal from './modules/FormModal'
 
 export default {
-  name: 'UserInfo',
+  name: 'Member',
   components: {
     STable,
-    CreateForm
+    FormModal
   },
   data () {
     return {
       // create model
       visible: false,
+      warningVisible: false,
       confirmLoading: false,
-      mdl: null,
+      mdl: {},
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
@@ -128,20 +140,27 @@ export default {
       // 表头
       columns: [
         {
-          title: '名称',
-          dataIndex: 'name'
+          title: '昵称',
+          dataIndex: 'nickName'
         },
         {
-          title: '地址',
-          dataIndex: 'uri'
+          title: '真实姓名',
+          dataIndex: 'realName'
         },
         {
-          title: '组件',
-          dataIndex: 'component'
+          title: '性别',
+          dataIndex: 'gender'
         },
         {
-          title: '资源类型',
-          dataIndex: 'type'
+          title: '手机号',
+          dataIndex: 'mobile'
+        },
+        {
+          title: '账户状态',
+          dataIndex: 'accountStatus',
+          customRender: (val) => {
+            return val === 0 ? '停用' : '正常'
+          }
         },
         {
           title: '操作',
@@ -153,24 +172,18 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         console.log('loadData.parameter', parameter)
-        return page(Object.assign(parameter, this.queryParam))
+        return GetPage(Object.assign(parameter, this.queryParam))
           .then(res => {
-            // 处理 records
-            const resultData = res.data
-            const treeData = []
-            listToTree(res.data.records, treeData, '-1')
-            resultData.records = treeData
-            return resultData
+            return res.data
           })
       }
     }
   },
   created () {
-    this.loadData({ t: new Date() })
   },
   methods: {
     handleAdd () {
-      this.mdl = null
+      this.mdl = {}
       this.visible = true
     },
     handleEdit (record) {
@@ -178,46 +191,46 @@ export default {
       this.mdl = { ...record }
     },
     handleOk () {
-      const form = this.$refs.createModal.form
+      const form = this.$refs.formModal.$refs.form
       this.confirmLoading = true
-      form.validateFields((errors, values) => {
-        values.icon = this.$refs.createModal.selectedIcon
-        if (!errors) {
-          console.log('values', values)
-          if (values.id) {
+      form.validate(valid => {
+        if (valid) {
+          if (this.mdl.id) {
             // 修改 e.g.
-            updateById(values).then(res => {
+            UpdateById(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('修改成功')
             }).catch((err) => {
-              console.log(`form update error:->${err}`)
+              console.log('form update error:->', err)
+              this.$message.error('修改失败')
+            }).finally(() => {
               this.confirmLoading = false
             })
           } else {
             // 新增
-            create(values).then(res => {
+            Create(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('新增成功')
             }).catch((err) => {
-              console.log(`form update error:->${err}`)
+              console.log('form create error:->', err)
+              this.$message.error('修改失败')
+            }).finally(() => {
               this.confirmLoading = false
             })
           }
-          this.$refs.createModal.loadTreeData()
         } else {
           this.confirmLoading = false
+          return false
         }
       })
     },
@@ -226,22 +239,19 @@ export default {
     },
     handleCancel () {
       this.visible = false
-      // 重置
-      this.$refs.createModal.resetTree()
-      const form = this.$refs.createModal.form
-      form.resetFields() // 清理表单数据（可不做）
+      const form = this.$refs.createModal.$refs.form
+      form.resetFields()
     },
     handleDelete (row) {
-      DeleteById(row.id).then(res => {
-        this.$message.info('删除成功')
-        // 刷新表格
-        this.$refs.table.refresh()
-      })
-    },
-    resetSearchForm () {
-      this.queryParam = {
-        date: moment(new Date())
-      }
+        DeleteById(row.id).then(res => {
+                if (res.code === 200) {
+                    this.$message.info('删除成功！')
+                    // 刷新表格
+                    this.$refs.table.refresh()
+                } else {
+                    this.$message.err('删除失败！')
+                }
+            })
     }
   }
 }

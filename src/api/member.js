@@ -2,10 +2,10 @@ import request from '@/utils/request'
 
 const Api = {
   // get my info
-  Page: '/dictionary/page',
-  Add: '/dictionary',
-  Update: '/dictionary',
-  Delete: '/dictionary'
+  Page: '/member/page',
+  Add: '/member',
+  Update: '/member',
+  Delete: '/member'
 }
 
 export function GetPage (parameter) {
