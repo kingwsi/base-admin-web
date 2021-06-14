@@ -14,19 +14,22 @@
         :rules="rules"
         v-bind="formLayout">
         <a-form-model-item v-show="false" label="ID">
-          <a-input v-model="model.id" disabled />
+          <a-input v-if="model.id" disabled />
         </a-form-model-item>
-        <a-form-model-item label="字典名称">
-          <a-input v-model="model.name" />
+        <a-form-model-item label="值" prop="value">
+          <a-input v-model="model.value" placeholder="请输入值" />
         </a-form-model-item>
-        <a-form-model-item label="字典编码">
-          <a-input v-model="model.code"/>
+        <a-form-model-item label="编码" prop="code">
+          <a-input v-model="model.code" placeholder="请输入编码" />
         </a-form-model-item>
-        <a-form-model-item label="描述">
-          <a-input v-model="model.description"/>
+        <a-form-model-item label="描述" prop="description">
+          <a-input v-model="model.description" placeholder="请输入描述" />
         </a-form-model-item>
-        <a-form-model-item label="排序">
-          <a-input type="number" v-model="model.sort"/>
+        <a-form-model-item label="分组CODE" prop="groupCode">
+          <a-input v-model="model.groupCode" placeholder="请输入分组CODE" />
+        </a-form-model-item>
+        <a-form-model-item label="排序" prop="sort">
+          <a-input v-model="model.sort" placeholder="请输入排序" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -63,8 +66,11 @@ export default {
     return {
       form: {},
       rules: {
+        value: [{ required: true, message: '请输入值', trigger: 'change' }],
         code: [{ required: true, message: '请输入编码', trigger: 'change' }],
-        name: [{ required: true, message: '请输入名称', trigger: 'change' }]
+        description: [{ required: true, message: '请输入描述', trigger: 'change' }],
+        groupCode: [{ required: true, message: '请输入分组CODE', trigger: 'change' }],
+        sort: [{ required: true, message: '请输入排序', trigger: 'change' }]
       }
     }
   },
