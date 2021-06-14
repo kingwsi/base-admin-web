@@ -110,6 +110,10 @@ export default {
       // 表头
       columns: [
         {
+          title: '#',
+          dataIndex: 'id'
+        },
+        {
           title: '值',
           dataIndex: 'value'
         },
