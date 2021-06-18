@@ -2,9 +2,9 @@ import request from '@/utils/request'
 
 const Api = {
   // get my info
-  RoleList: '/role/page',
-  Permission: '/role/resources',
-  Role: '/role'
+  RoleList: '/api/role/page',
+  Permission: '/api/role/resources',
+  Role: '/api/role'
 }
 
 export function Page (parameter) {

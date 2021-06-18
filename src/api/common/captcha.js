@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 const apis = {
-  Captcha: '/verification/captcha'
+  Captcha: '/api/verification/captcha'
 }
 
 export function GetCaptcha () {

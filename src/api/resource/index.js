@@ -2,11 +2,11 @@ import request from '@/utils/request'
 
 const resourceApi = {
   // get my info
-  PageInfo: '/resource/page',
-  Route: '/resource/routes',
-  Update: '/resource',
-  AllList: 'resource/list',
-  Delete: 'resource'
+  PageInfo: '/api/resource/page',
+  Route: '/api/resource/routes',
+  Update: '/api/resource',
+  AllList: '/api/resource/list',
+  Delete: '/api/resource'
 }
 
 export function GetPage (parameter) {

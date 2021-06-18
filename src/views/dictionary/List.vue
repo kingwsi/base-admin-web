@@ -4,46 +4,29 @@
       <a-form layout="inline">
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
-            <a-form-item label="资源名称">
-              <a-input v-model="queryParam.name" placeholder="资源名称"/>
+            <a-form-item label="值">
+              <a-input v-model="queryParam.value" placeholder="值"/>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
-            <a-form-item label="类型">
-              <a-select v-model="queryParam.type" placeholder="请选择" default-value="ROUTE">
-                <a-select-option value="MENU">菜单</a-select-option>
-                <a-select-option value="API">接口</a-select-option>
-                <a-select-option value="BUTTON">按钮</a-select-option>
-              </a-select>
+            <a-form-item label="编码">
+              <a-input v-model="queryParam.code" placeholder="编码"/>
             </a-form-item>
           </a-col>
           <template v-if="advanced">
             <a-col :md="8" :sm="24">
-              <a-form-item label="调用次数">
-                <a-input-number v-model="queryParam.callNo" style="width: 100%"/>
+              <a-form-item label="描述">
+                <a-input v-model="queryParam.description" placeholder="描述"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="更新日期">
-                <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入更新日期"/>
+              <a-form-item label="分组CODE">
+                <a-input v-model="queryParam.groupCode" placeholder="分组CODE"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="使用状态">
-                <a-select v-model="queryParam.useStatus" placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="使用状态">
-                <a-select placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
+              <a-form-item label="排序">
+                <a-input v-model="queryParam.sort" placeholder="排序"/>
               </a-form-item>
             </a-col>
           </template>
@@ -90,8 +73,8 @@
         </template>
       </span>
     </s-table>
-    <create-form
-      ref="createModal"
+    <form-modal
+      ref="formModal"
       :visible="visible"
       :loading="confirmLoading"
       :model="mdl"
@@ -105,13 +88,13 @@
 import { STable } from '@/components'
 import { GetPage, UpdateById, Create, DeleteById } from '@/api/dictionary'
 
-import CreateForm from './modules/CreateForm'
+import FormModal from './modules/FormModal'
 
 export default {
   name: 'Dictionary',
   components: {
     STable,
-    CreateForm
+    FormModal
   },
   data () {
     return {
@@ -127,8 +110,12 @@ export default {
       // 表头
       columns: [
         {
-          title: '名称',
-          dataIndex: 'name'
+          title: '#',
+          dataIndex: 'id'
+        },
+        {
+          title: '值',
+          dataIndex: 'value'
         },
         {
           title: '编码',
@@ -139,6 +126,14 @@ export default {
           dataIndex: 'description'
         },
         {
+          title: '分组CODE',
+          dataIndex: 'groupCode'
+        },
+        {
+          title: '排序',
+          dataIndex: 'sort'
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           width: '150px',
@@ -147,13 +142,11 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        console.log('loadData.parameter', parameter)
-        return GetPage(Object.assign(parameter, this.queryParam))
+        return GetPage(Object.assign(parameter || {}, this.queryParam))
           .then(res => {
             return res.data
           })
       }
-
     }
   },
   created () {
@@ -169,7 +162,7 @@ export default {
       this.mdl = { ...record }
     },
     handleOk () {
-      const form = this.$refs.createModal.$refs.form
+      const form = this.$refs.formModal.$refs.form
       this.confirmLoading = true
       form.validate(valid => {
         if (valid) {
@@ -183,8 +176,7 @@ export default {
               // 刷新表格
               this.$refs.table.refresh()
               this.$message.info('修改成功')
-            }).catch((err) => {
-              console.log(`form update error:->${err}`)
+            }).finally(() => {
               this.confirmLoading = false
             })
           } else {
@@ -196,10 +188,8 @@ export default {
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('新增成功')
-            }).catch((err) => {
-              console.log(`form update error:->${err}`)
+            }).finally(() => {
               this.confirmLoading = false
             })
           }
@@ -214,17 +204,15 @@ export default {
     },
     handleCancel () {
       this.visible = false
-
-      const form = this.$refs.createModal.$refs.form
-      form.resetFields() // 清理表单数据（可不做）
+      const form = this.$refs.formModal.$refs.form
+      form.resetFields()
     },
     handleDelete (row) {
         DeleteById(row.id).then(res => {
                 if (res.code === 200) {
                     this.$message.info('删除成功！')
+                    // 刷新表格
                     this.$refs.table.refresh()
-                } else {
-                    this.$message.err('删除失败！')
                 }
             })
     }

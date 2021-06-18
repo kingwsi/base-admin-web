@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 const Api = {
-  User: '/user',
-  UserInfo: '/user/info'
+  User: '/api/user',
+  UserInfo: '/api/user/info'
 }
 
 export function GetUserInfo () {
