@@ -16,6 +16,7 @@ pipeline {
     }
 
     stage('docker  build') {
+      agent any
       steps {
         dir(path: './shell') {
           sh 'sh build-docker.sh'
