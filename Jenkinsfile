@@ -11,14 +11,16 @@ pipeline {
       steps {
         sh 'yarn install'
         sh 'yarn build'
-        echo '打包完成，准备构建docker'
+        echo 'Bulid Success!'
       }
     }
 
     stage('docker  build') {
       steps {
-        sh 'cd ./shell'
-        sh 'sh build-docker.sh'
+        dir(path: './shell') {
+          sh 'sh build-docker.sh'
+        }
+
       }
     }
 
