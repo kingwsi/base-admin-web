@@ -5,9 +5,9 @@ name: CI
 
 on:
   push:
-    branches: [ cloud ]
+    branches: [ master ]
   pull_request:
-    branches: [ cloud ]
+    branches: [ master ]
 
 jobs:
   build:
