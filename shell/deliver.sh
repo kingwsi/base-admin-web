@@ -13,6 +13,9 @@ then
 fi
 cp -r ../dist ./
 
+# 构建镜像
+docker build -t $SERVER_NAME:latest .
+
 # 构建docker镜像
 #if [ -n "$IID" ]; then
 #        echo "删除$SERVER_NAME镜像，IID=$IID"
@@ -32,6 +35,9 @@ if [ -n "$CID" ]; then
 else
         echo "容器 $SERVER_NAME 未运行，即将启动..."
 fi
+
+# 清理无效镜像<none>
+docker image prune -f
 
 # 运行docker容器
 echo docker run \
