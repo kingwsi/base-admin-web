@@ -44,7 +44,7 @@ echo docker run \
 --rm \
 --name $SERVER_NAME \
 -d \
--p 8103:80 \
+-p 8000:80 \
 $SERVER_NAME
 
 # 是否启动成功
