@@ -4,24 +4,34 @@ pipeline {
     stage('Build') {
       agent {
         docker {
-            image 'node:12-alpine'
-            args '-p 3000:3000'
+          image 'node:12-alpine'
+          args '-p 3000:3000'
         }
+
       }
       steps {
         checkout scm
         sh 'yarn install'
         sh 'yarn build'
-        echo 'Maven Build Success!'
+        echo 'Build Success!'
       }
     }
 
     stage('Deliver') {
-      agent { node { label 'master' } }
+      agent {
+        node {
+          label 'master'
+        }
+
+      }
       steps {
-        sh 'sh ./deliver.sh'
+        dir(path: './shell') {
+          sh 'sh ./deliver.sh'
+        }
+
       }
     }
+
   }
   options {
     skipDefaultCheckout(true)
