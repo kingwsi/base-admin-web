@@ -1,24 +1,29 @@
 pipeline {
-    agent {
+  agent none
+  stages {
+    stage('Build') {
+      agent {
         docker {
-            image 'node:12-alpine' 
-            args '-p 3000:3000' 
+            image 'node:12-alpine'
+            args '-p 3000:3000'
         }
-    }
-    stages {
-        stage('Build') { 
-            steps {
-                sh 'yarn install'
-                sh 'yarn build'
-                echo '打包完成，准备构建docker'
-            }
-        }
-    }
-}
-node{
-    stage('docker镜像构建') { 
-      dir('./shell'){
-        sh 'sh build-docker.sh'
+      }
+      steps {
+        checkout scm
+        sh 'yarn install'
+        sh 'yarn build'
+        echo 'Maven Build Success!'
       }
     }
+
+    stage('Deliver') {
+      agent { node { label 'master' } }
+      steps {
+        sh 'sh ./deliver.sh'
+      }
+    }
+  }
+  options {
+    skipDefaultCheckout(true)
+  }
 }

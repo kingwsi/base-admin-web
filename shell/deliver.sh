@@ -14,16 +14,16 @@ fi
 cp -r ../dist ./
 
 # 构建docker镜像
-if [ -n "$IID" ]; then
-        echo "删除$SERVER_NAME镜像，IID=$IID"
-        docker rmi $IID
-        echo "已删除$SERVER_NAME，重新构建镜像"
-        docker build -t $SERVER_NAME .
-else
-        echo "开始构建$SERVER_NAME"
-        docker build -t $SERVER_NAME .
-        echo "$SERVER_NAME构建完成！准备启动"
-fi
+#if [ -n "$IID" ]; then
+#        echo "删除$SERVER_NAME镜像，IID=$IID"
+#        docker rmi $IID
+#        echo "已删除$SERVER_NAME，重新构建镜像"
+#        docker build -t $SERVER_NAME .
+#else
+#        echo "开始构建$SERVER_NAME"
+#        docker build -t $SERVER_NAME .
+#        echo "$SERVER_NAME构建完成！准备启动"
+#fi
 # 停掉原来的
 if [ -n "$CID" ]; then
         echo "正在停止$SERVER_NAME，CID=$CID"
