@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 const Api = {
-  UploadImage: '/oss/image'
+  UploadImage: '/api/oss/image'
 }
 
 export function UploadAvatar (data) {

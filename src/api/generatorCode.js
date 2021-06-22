@@ -2,8 +2,8 @@ import request from '@/utils/request'
 
 const Api = {
   // get my info
-  Info: '/generator-code/info',
-  Generator: '/dictionary'
+  Info: '/api/generator-code/info',
+  Generator: '/api/dictionary'
 }
 
 export function GetTableInfo (parameter) {
