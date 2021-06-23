@@ -102,24 +102,24 @@ const vueConfig = {
 
   devServer: {
     // development server port 8000
-    port: 8000,
+    port: 8000
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8094',
-        ws: false,
-        changeOrigin: true
-      }
-    }
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:8094',
+    //     ws: false,
+    //     changeOrigin: true
+    //   }
+    // }
   },
 
   // disable source map in production
   productionSourceMap: false,
   lintOnSave: undefined,
   // babel-loader no-ignore node_modules/*
-  transpileDependencies: [],
+  transpileDependencies: []
   // 打包资源路径问题
-  publicPath: './'
+  // publicPath: './'
 }
 
 // preview.pro.loacg.com only do not use in your production;
