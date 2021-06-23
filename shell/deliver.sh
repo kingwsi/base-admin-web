@@ -40,12 +40,7 @@ fi
 docker image prune -f
 
 # 运行docker容器
-echo docker run \
---rm \
---name $SERVER_NAME \
--d \
--p 8000:80 \
-$SERVER_NAME
+docker run --rm --name $SERVER_NAME -d -p 8000:80 $SERVER_NAME
 
 # 是否启动成功
 RES=$(docker ps | grep "$SERVER_NAME" | awk '{print $3}')
