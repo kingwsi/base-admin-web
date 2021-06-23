@@ -9,7 +9,8 @@ const constantRouterComponents = {
   BasicLayout: BasicLayout,
   BlankLayout: BlankLayout,
   RouteView: RouteView,
-  PageView: PageView
+  PageView: PageView,
+  'system/user': PageView
 }
 
 // 前端未找到页面路由（固定不用改）

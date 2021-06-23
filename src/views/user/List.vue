@@ -114,7 +114,7 @@ import moment from 'moment'
 import { STable } from '@/components'
 import { GetUserPage, UpdateUserById, CreateUser, DeleteUserById } from '@/api/user'
 
-import CreateForm from './modules/CreateForm'
+import CreateForm from './modules/FormModal'
 export default {
   name: 'User',
   components: {
