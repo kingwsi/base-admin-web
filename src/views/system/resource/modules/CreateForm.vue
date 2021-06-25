@@ -68,7 +68,7 @@
 
 <script>
 import { TreeSelect } from 'ant-design-vue'
-import { GetAllResources } from '@/api/resource/index'
+import { GetAllResources } from '@/api/resource'
 import IconSelector from '@/components/IconSelector'
 
 const methodOptions = ['GET', 'POST', 'PUT', 'DELETE']

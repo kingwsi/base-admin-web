@@ -1,11 +1,18 @@
-import { UserLayout } from '@/layouts'
+import { UserLayout, RouteView } from '@/layouts'
 
 /**
- * 静态路由映射配置 暂时没用
- * @type {{"/system/user": (function(): *)}}
+ * 静态路由映射配置
  */
 export const asyncRouterMap = {
-  '/system/user': () => import('@/views/form/stepForm/StepForm')
+  '/system': RouteView,
+  '/system/account/info': () => import(`@/views/system/account/Info`),
+  '/system/role': () => import(`@/views/system/role/List`),
+  '/system/role/permission/:id': () => import(`@/views/system/role/Permission`),
+  '/system/resource': () => import(`@/views/system/resource/List`),
+  '/system/dictionary': () => import(`@/views/system/dictionary/List`),
+  '/system/user': () => import(`@/views/system/user/List`),
+  '/member': RouteView,
+  '/member/list': () => import(`@/views/member/List`)
 }
 
 /**

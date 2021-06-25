@@ -60,7 +60,7 @@
   </page-header-wrapper>
 </template>
 <script>
-import { GetAllResources } from '@/api/resource/index'
+import { GetAllResources } from '@/api/resource'
 import { GetRoleById, UpdatePermissions } from '@/api/role'
 import { listToTree } from '@/utils/util'
 import { Tree } from 'ant-design-vue'

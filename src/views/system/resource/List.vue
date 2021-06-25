@@ -104,7 +104,7 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import { GetPage, UpdateById, Create, DeleteById } from '@/api/resource/index'
+import { GetPage, UpdateById, Create, DeleteById } from '@/api/resource'
 import { listToTree } from '@/utils/util'
 
 import CreateForm from './modules/CreateForm'
