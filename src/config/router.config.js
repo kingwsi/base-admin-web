@@ -2,17 +2,20 @@ import { UserLayout, RouteView } from '@/layouts'
 
 /**
  * 静态路由映射配置
+ * 根据接口返回的页面地址组装组件
  */
 export const asyncRouterMap = {
   '/system': RouteView,
-  '/system/account/info': () => import(`@/views/system/account/Info`),
+  '/system/account': () => import(`@/views/system/account/Info`),
   '/system/role': () => import(`@/views/system/role/List`),
   '/system/role/permission/:id': () => import(`@/views/system/role/Permission`),
   '/system/resource': () => import(`@/views/system/resource/List`),
   '/system/dictionary': () => import(`@/views/system/dictionary/List`),
   '/system/user': () => import(`@/views/system/user/List`),
   '/member': RouteView,
-  '/member/list': () => import(`@/views/member/List`)
+  '/member/list': () => import(`@/views/member/List`),
+  '/dashboard': RouteView,
+  '/dashboard/workplace': import(`@/views/dashboard/Workplace`)
 }
 
 /**

@@ -55,9 +55,6 @@
         <a-form-model-item label="地址" v-if="model.type!=='BUTTON'" prop="uri">
           <a-input :placeholder="model.type==='API'?'接口地址':'页面访问地址'" v-model="model.uri"/>
         </a-form-model-item>
-        <a-form-model-item label="组件" v-if="model.type==='MENU'" prop="component">
-          <a-input placeholder="组件路径" v-model="model.component"/>
-        </a-form-model-item>
         <a-form-model-item label="排序">
           <a-input v-model="model.sort"/>
         </a-form-model-item>
@@ -120,7 +117,6 @@ export default {
       rules: {
         name: [{ required: true, message: '请输入至少2个字符的名称！', trigger: 'change' }],
         uri: [{ required: true, min: 2, message: '请输入至少2个字符的名称！', trigger: 'change' }],
-        component: [{ required: true, message: '请输入资源地址！' }],
         type: [{ required: true, message: '请选择类型！' }],
         methodList: [{ required: true, message: '请选择请求方式！' }],
         parentId: [{ required: true, message: '请选择上级！' }],
