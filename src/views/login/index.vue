@@ -38,7 +38,7 @@
             <a-col class="gutter-row" :span="16">
               <a-form-model-item prop="captcha">
                 <a-input size="large" type="text" placeholder="验证码" v-model="form.captcha">
-                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                  <a-icon slot="prefix" type="safety-certificate" :style="{ color: 'rgba(0,0,0,.25)' }"/>
                 </a-input>
               </a-form-model-item>
             </a-col>
@@ -70,7 +70,7 @@
                 tabindex="-1"
                 :disabled="state.smsSendBtn"
                 @click.stop.prevent="getCaptcha"
-                v-text="!state.smsSendBtn && '获取验证码' || (state.time+' s')"
+                v-text="!state.smsSendBtn && '暂不支持' || (state.time+' s')"
               ></a-button>
             </a-col>
           </a-row>
@@ -96,7 +96,7 @@
         >确定</a-button>
       </a-form-model-item>
 
-      <div class="user-login-other">
+      <div class="user-login-other" v-show="false">
         <span>其他登录方式</span>
         <a>
           <a-icon class="item-icon" type="alipay-circle"></a-icon>
@@ -138,8 +138,8 @@ export default {
       captchaImgLoading: false,
       stepCaptchaVisible: false,
       form: {
-        username: 'admin',
-        password: 'admin',
+        username: '',
+        password: '',
         captcha: '',
         key: ''
       },
@@ -200,6 +200,7 @@ export default {
 
       this.$refs.formLogin.validate(valid => {
         if (valid) {
+          state.loginBtn = true
           console.log('login form', form)
           form.key = this.captcha.key
           Login(form)
@@ -213,7 +214,6 @@ export default {
               state.loginBtn = false
             })
         } else {
-          state.loginBtn = false
           return false
         }
       })

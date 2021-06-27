@@ -11,7 +11,10 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['login', 'register', 'registerResult'] // no redirect whitelist
 const loginRoutePath = '/user/login'
-const defaultRoutePath = '/system/user'
+/**
+ * 登陆后默认页面
+ */
+const defaultRoutePath = '/system/account/info'
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar

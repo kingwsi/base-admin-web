@@ -6,7 +6,7 @@ import { UserLayout, RouteView } from '@/layouts'
  */
 export const asyncRouterMap = {
   '/system': RouteView,
-  '/system/account': () => import(`@/views/system/account/Info`),
+  '/system/account/info': () => import(`@/views/system/account/Info`),
   '/system/role': () => import(`@/views/system/role/List`),
   '/system/role/permission/:id': () => import(`@/views/system/role/Permission`),
   '/system/resource': () => import(`@/views/system/resource/List`),

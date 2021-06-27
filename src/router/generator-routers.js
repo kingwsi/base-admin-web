@@ -24,7 +24,7 @@ const rootRouter = {
   name: 'index',
   path: '/',
   component: BasicLayout,
-  redirect: '/system/user',
+  redirect: '/system/account/info',
   meta: {
     title: '首页'
   },
@@ -99,6 +99,7 @@ const covertToRoute = (resource) => {
   const router = {
     id: resource.id,
     parentId: resource.parentId,
+    sort: resource.sort,
     // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
     path: resource.uri,
     // 路由名称，建议唯一
