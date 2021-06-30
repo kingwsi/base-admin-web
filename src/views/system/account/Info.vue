@@ -4,18 +4,15 @@
       <a-col :md="24" :lg="24">
         <a-card :bordered="false">
           <div class="account-center-avatarHolder">
-            <div class="avatar">
+            <div class="avatar" @click="edit">
               <img :src="user.avatar">
             </div>
             <div class="username">{{ user.nickname }}</div>
-            <div class="bio">{{ user.introduction || '很懒，什么介绍都没有' }}</div>
+            <div class="bio">{{ user.introduction || '什么介绍都没有' }}</div>
           </div>
           <div class="account-center-detail">
             <p>
               <i class="title"></i>登录名: {{ user.username }}
-            </p>
-            <p>
-              <i class="group"></i>全称: {{ user.fullname }}
             </p>
             <p>
               <i class="group"></i>全称: {{ user.fullname }}
@@ -46,6 +43,14 @@
         </a-card>
       </a-col>
     </a-row>
+    <edit
+      ref="editModal"
+      :visible="editVisible"
+      :loading="confirmLoading"
+      :model="mdl"
+      @cancel="editVisible=false"
+      @ok="handleOk"
+    />
   </div>
 </template>
 
@@ -53,20 +58,23 @@
 import { PageView, RouteView } from '@/layouts'
 
 import { mapGetters } from 'vuex'
+import Edit from './modules/Edit'
+import { UpdateUserInfo } from '@/api/user'
 
 export default {
   components: {
     RouteView,
-    PageView
+    PageView,
+    Edit
   },
   data () {
     return {
-      tagInputVisible: false,
+      editVisible: false,
       tagInputValue: '',
       user: {},
       teams: [],
-      teamSpinning: true,
-      noTitleKey: 'info'
+      confirmLoading: false,
+      mdl: {}
     }
   },
   computed: {
@@ -85,6 +93,35 @@ export default {
     getCurrentUser () {
       this.user = this.$store.getters.info
       this.teamSpinning = false
+    },
+    edit () {
+      Object.assign(this.mdl, this.user)
+      this.mdl.password = ''
+      this.editVisible = true
+    },
+    handleOk () {
+      const form = this.$refs.editModal.$refs.form
+      this.confirmLoading = true
+      form.validate(valid => {
+        if (valid) {
+          if (this.mdl.id) {
+            UpdateUserInfo(this.mdl).then(res => {
+              this.visible = false
+              this.confirmLoading = false
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+              this.$message.info('修改成功')
+            }).finally(() => {
+              this.confirmLoading = false
+            })
+          }
+        } else {
+          this.confirmLoading = false
+          return false
+        }
+      })
     }
   }
 }

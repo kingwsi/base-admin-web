@@ -1,7 +1,8 @@
 import request from '@/utils/request'
 const Api = {
   User: '/api/user',
-  UserInfo: '/api/user/info'
+  UserInfo: '/api/user/info',
+  UpdatePassword: '/api/auth/user-info'
 }
 
 export function GetUserInfo () {
@@ -48,5 +49,13 @@ export function UpdateStatusById (id) {
     url: Api.User,
     method: 'get',
     params: { 'id': id }
+  })
+}
+
+export function UpdateUserInfo (data) {
+  return request({
+    url: Api.UpdateUserInfo,
+    method: 'post',
+    data
   })
 }
