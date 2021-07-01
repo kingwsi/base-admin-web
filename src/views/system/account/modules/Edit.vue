@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :title="model && model.id?'修改':'新增'"
+    title="修改"
     :width="640"
     :visible="visible"
     :confirmLoading="loading"
@@ -39,15 +39,6 @@
         <a-form-model-item label="用户名" prop="username">
           <a-input v-model="model.username" :disabled="true"/>
         </a-form-model-item>
-        <a-form-model-item label="新密码" prop="password">
-          <a-input v-model="model.password"/>
-        </a-form-model-item>
-        <a-form-model-item label="重复密码" prop="repeatPassword">
-          <a-input v-model="model.repeatPassword"/>
-        </a-form-model-item>
-        <a-form-model-item label="旧密码" prop="oldPassword">
-          <a-input v-model="model.oldPassword"/>
-        </a-form-model-item>
         <a-form-model-item v-if="!model || !model.id" label="密码" placeholder="请输入密码，8-16位,字母数字混合" prop="password">
           <a-input v-model="model.password"/>
         </a-form-model-item>
@@ -59,6 +50,15 @@
         </a-form-model-item>
         <a-form-model-item label="介绍" prop="introduction">
           <a-input v-model="model.introduction" type="textarea"/>
+        </a-form-model-item>
+        <a-form-model-item label="旧密码" prop="oldPassword">
+          <a-input v-model="model.oldPassword"/>
+        </a-form-model-item>
+        <a-form-model-item label="新密码" prop="password">
+          <a-input v-model="model.password"/>
+        </a-form-model-item>
+        <a-form-model-item label="重复密码" prop="repeatPassword">
+          <a-input v-model="model.repeatPassword"/>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -101,6 +101,7 @@ export default {
       rules: {
         fullName: [{ required: true, message: '请输入全称', trigger: 'change' }],
         username: [{ required: true, message: '请输入用户名', trigger: 'change' }],
+        nickname: [{ required: true, message: '请输入昵称', trigger: 'change' }],
         oldPassword: [{ required: true, message: '请输入密码，8-16位,字母数字混合', trigger: 'change' }]
       }
     }

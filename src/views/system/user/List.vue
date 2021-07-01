@@ -85,6 +85,18 @@
           <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
           <a-popconfirm
+            title="确认重置密码？"
+            ok-text="确认"
+            okType="danger"
+            cancel-text="取消"
+            @confirm="handleResetPassword(record)"
+            placement="left"
+          >
+            <a-icon slot="icon" type="question-circle-o" style="color: red" />
+            <a style="color:#1890ff">重置密码</a>
+          </a-popconfirm>
+          <a-divider type="vertical" />
+          <a-popconfirm
             title="确认删除这条数据？"
             ok-text="确认"
             okType="danger"
@@ -106,26 +118,32 @@
       @cancel="handleCancel"
       @ok="handleOk"
     />
+    <reset-result
+      :visible="resetResultVisible"
+      @cancel="resetResultVisible=false"
+      :text="resultPwd"/>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import { GetUserPage, UpdateUserById, CreateUser, DeleteUserById } from '@/api/user'
+// eslint-disable-next-line
+import { GetUserPage, UpdateUserById, CreateUser, DeleteUserById, ResetPwdById } from '@/api/user'
 
 import CreateForm from './modules/FormModal'
+import ResetResult from './modules/ResetResult'
 export default {
   name: 'User',
   components: {
     STable,
-    CreateForm
+    CreateForm,
+    ResetResult
   },
   data () {
     return {
       // create model
       visible: false,
-      warningVisible: false,
       confirmLoading: false,
       mdl: {},
       // 高级搜索 展开/关闭
@@ -159,7 +177,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          width: '150px',
+          width: '220px',
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -170,7 +188,9 @@ export default {
           .then(res => {
             return res.data
           })
-      }
+      },
+      resetResultVisible: false,
+      resultPwd: ''
     }
   },
   created () {
@@ -184,6 +204,14 @@ export default {
     handleEdit (record) {
       this.visible = true
       this.mdl = { ...record }
+    },
+    handleResetPassword (record) {
+      ResetPwdById(record.id).then(response => {
+        if (response.code === 200) {
+          this.resetResultVisible = true
+          this.resultPwd = response.data
+        }
+      })
     },
     handleOk () {
       const form = this.$refs.createModal.$refs.form

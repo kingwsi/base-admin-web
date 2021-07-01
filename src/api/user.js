@@ -2,7 +2,8 @@ import request from '@/utils/request'
 const Api = {
   User: '/api/user',
   UserInfo: '/api/user/info',
-  UpdatePassword: '/api/auth/user-info'
+  AuthUser: '/api/auth/user',
+  ResetPwd: '/api/user/password'
 }
 
 export function GetUserInfo () {
@@ -54,8 +55,15 @@ export function UpdateStatusById (id) {
 
 export function UpdateUserInfo (data) {
   return request({
-    url: Api.UpdateUserInfo,
-    method: 'post',
+    url: Api.AuthUser,
+    method: 'put',
     data
+  })
+}
+
+export function ResetPwdById (id) {
+  return request({
+    url: `${Api.ResetPwd}/${id}`,
+    method: 'post'
   })
 }

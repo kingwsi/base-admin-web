@@ -4,8 +4,11 @@
       <a-col :md="24" :lg="24">
         <a-card :bordered="false">
           <div class="account-center-avatarHolder">
-            <div class="avatar" @click="edit">
+            <div class="avatar">
               <img :src="user.avatar">
+              <span class="edit-btn" @click="edit">
+                <a-icon type="edit" />
+              </span>
             </div>
             <div class="username">{{ user.nickname }}</div>
             <div class="bio">{{ user.introduction || '什么介绍都没有' }}</div>
@@ -72,7 +75,6 @@ export default {
       editVisible: false,
       tagInputValue: '',
       user: {},
-      teams: [],
       confirmLoading: false,
       mdl: {}
     }
@@ -95,24 +97,25 @@ export default {
       this.teamSpinning = false
     },
     edit () {
-      Object.assign(this.mdl, this.user)
+      this.mdl = { ...this.user }
       this.mdl.password = ''
       this.editVisible = true
     },
     handleOk () {
       const form = this.$refs.editModal.$refs.form
       this.confirmLoading = true
+      if (this.mdl.password && this.mdl.password !== this.mdl.repeatPassword) {
+        this.$message.error('两次输入的密码不相同!')
+        return
+      }
       form.validate(valid => {
         if (valid) {
           if (this.mdl.id) {
             UpdateUserInfo(this.mdl).then(res => {
-              this.visible = false
+              this.editVisible = false
               this.confirmLoading = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
               this.$message.info('修改成功')
+              location.reload()
             }).finally(() => {
               this.confirmLoading = false
             })
@@ -148,6 +151,21 @@ export default {
       img {
         height: 100%;
         width: 100%;
+      }
+      .edit-btn {
+        position: relative;
+        bottom: 24px;
+        width: 100%;
+        height: 25px;
+        display: block;
+        background-color: #000;
+        opacity: .4;
+        color: #fff;
+        transition: all .3s;
+        font-size: 1.1em;
+      }
+      .edit-btn:hover {
+        opacity: .6;
       }
     }
 
