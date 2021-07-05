@@ -12,6 +12,7 @@ export const asyncRouterMap = {
   '/system/resource': () => import(`@/views/system/resource/List`),
   '/system/dictionary': () => import(`@/views/system/dictionary/List`),
   '/system/user': () => import(`@/views/system/user/List`),
+  '/system/api-whitelist': () => import(`@/views/system/api-whitelist/List`),
   '/member': RouteView,
   '/member/list': () => import(`@/views/member/List`),
   '/dashboard': RouteView,
