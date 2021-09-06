@@ -1,0 +1,10 @@
+kind: pipeline
+name: default
+
+steps:
+- name: test
+  image: node:12-alpine
+  commands:
+  - yarn install
+  - yarn build
+  - cd ./shell && sh ./deliver.sh
