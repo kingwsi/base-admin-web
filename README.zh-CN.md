@@ -11,6 +11,10 @@ An out-of-box UI solution for enterprise applications as a Vue boilerplate. base
 - 更新日志: https://pro.antdv.com/docs/changelog
 - 常见问题: https://pro.antdv.com/docs/faq
 
+## 简介
+只是对接了自定义的后端框架，实现了用户管理，权限控制，简单 快速，没有多余功能
+后台服务使用springCloud开发 https://github.com/kingwsi/base-cloud
+
 项目下载和运行
 ----
 - 安装依赖
