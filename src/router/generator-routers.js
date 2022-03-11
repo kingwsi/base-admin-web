@@ -10,6 +10,7 @@ const constantRouterComponents = {
   BlankLayout: BlankLayout,
   RouteView: RouteView,
   PageView: PageView,
+  404: () => import(`@/views/404`),
   ...asyncRouterMap
 }
 
@@ -24,7 +25,7 @@ const rootRouter = {
   name: 'index',
   path: '/',
   component: BasicLayout,
-  redirect: '/system/account/info',
+  redirect: '/dashboard/user',
   meta: {
     title: '首页'
   },
@@ -63,14 +64,13 @@ export const generatorDynamicRouter = () => {
 const listToTree = (list, tree, parentId) => {
   list.forEach(item => {
     // 判断是否为父级菜单
-    const router = covertToRoute(item)
-    if (router.parentId === parentId) {
+    if (item.parentId === parentId) {
       const child = {
-        ...router,
+        ...covertToRoute(item),
         children: []
       }
       // 迭代 list， 找到当前菜单相符合的所有子菜单
-      listToTree(list, child.children, router.id)
+      listToTree(list, child.children, item.id)
       // 删掉不存在 children 值的属性
       if (child.children.length <= 0) {
         delete child.children
@@ -105,7 +105,7 @@ const covertToRoute = (resource) => {
     // 路由名称，建议唯一
     name: resource.name || '',
     // 该路由对应页面的 组件 :方案1
-    component: constantRouterComponents[resource.uri],
+    component: resource.parentId === -1 ? constantRouterComponents['RouteView'] : constantRouterComponents[resource.uri] || constantRouterComponents[404],
     // 该路由对应页面的 组件 :方案2 (动态加载)
     // component: () => import(`@/views/${item.component}`),
     meta: {
@@ -122,6 +122,7 @@ const covertToRoute = (resource) => {
   if (resource.remark && resource.remark === 'hidden_children') {
     router.hideChildrenInMenu = true
   }
+  console.log(router)
   // 重定向
   resource.redirect && (router.redirect = resource.redirect)
   return router

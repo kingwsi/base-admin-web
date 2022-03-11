@@ -203,7 +203,10 @@ export default {
     },
     handleEdit (record) {
       this.visible = true
-      this.mdl = { ...record }
+      console.log(record)
+      this.$nextTick(() => {
+          this.mdl = Object.assign({}, record)
+      })
     },
     handleResetPassword (record) {
       ResetPwdById(record.id).then(response => {
@@ -225,28 +228,18 @@ export default {
               this.visible = false
               this.confirmLoading = false
               // 重置表单数据
-              form.resetFields()
+              this.resetForm()
               // 刷新表格
               this.$refs.table.refresh()
               this.$message.info('修改成功')
-            }).catch((err) => {
-              console.log(`form update error:->${err}`)
-              this.confirmLoading = false
             })
           } else {
             // 新增
             CreateUser(this.mdl).then(res => {
               this.visible = false
               this.confirmLoading = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-
+              this.resetForm()
               this.$message.info('新增成功')
-            }).catch((err) => {
-              console.log(`form update error:->${err}`)
-              this.confirmLoading = false
             })
           }
         } else {
@@ -260,7 +253,9 @@ export default {
     },
     handleCancel () {
       this.visible = false
-      this.resetCreateForm()
+      this.$nextTick(() => {
+        this.resetForm()
+      })
     },
     handleDelete (row) {
         DeleteUserById(row.id).then(res => {
@@ -278,9 +273,11 @@ export default {
         date: moment(new Date())
       }
     },
-    resetCreateForm () {
+    resetForm () {
       const form = this.$refs.createModal.$refs.form
-      form.resetFields()
+      console.log(form)
+      form.clearValidate()
+      this.mdl = {}
     }
   }
 }

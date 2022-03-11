@@ -138,9 +138,9 @@ export default {
     loadData (pagination, filters, sorter) {
       this.localLoading = true
       const parameter = Object.assign({
-        pageNo: (pagination && pagination.current) ||
+        current: (pagination && pagination.current) ||
           this.showPagination && this.localPagination.current || this.pageNum,
-        pageSize: (pagination && pagination.pageSize) ||
+        size: (pagination && pagination.pageSize) ||
           this.showPagination && this.localPagination.pageSize || this.pageSize
       },
       (sorter && sorter.field && {
@@ -183,7 +183,6 @@ export default {
           this.localDataSource = r.records // 返回结果中的数组数据
         }).catch((err) => {
           console.error(err)
-          this.$message.error('数据加载错误')
         }).finally(() => {
           this.localLoading = false
         })

@@ -17,39 +17,9 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <template v-if="advanced">
-            <a-col :md="8" :sm="24">
-              <a-form-item label="调用次数">
-                <a-input-number v-model="queryParam.callNo" style="width: 100%"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="更新日期">
-                <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入更新日期"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="使用状态">
-                <a-select v-model="queryParam.useStatus" placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="使用状态">
-                <a-select placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </template>
           <a-col :md="!advanced && 8 || 24" :sm="24">
             <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
-              <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
+              <a-button type="primary" @click="loadData">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
               <a @click="toggleAdvanced" style="margin-left: 8px">
                 {{ advanced ? '收起' : '展开' }}
@@ -65,12 +35,11 @@
       <a-button type="primary" icon="plus" @click="handleAdd()">新建</a-button>
     </div>
 
-    <s-table
-      ref="table"
-      size="default"
-      rowKey="id"
+    <a-table
       :columns="columns"
-      :data="loadData"
+      :data-source="treeData"
+      :loading="treeDataLoading"
+      rowKey="id"
     >
       <span slot="action" slot-scope="text, record">
         <template>
@@ -89,11 +58,12 @@
           </a-popconfirm>
         </template>
       </span>
-    </s-table>
+    </a-table>
     <create-form
       ref="createModal"
       :visible="visible"
       :loading="confirmLoading"
+      :resources="resources"
       :model="mdl"
       @cancel="handleCancel"
       @ok="handleOk"
@@ -104,13 +74,13 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import { GetPage, UpdateById, Create, DeleteById } from '@/api/resource'
+import { GetAllResources, UpdateById, Create, DeleteById } from '@/api/resource'
 import { listToTree } from '@/utils/util'
 
 import CreateForm from './modules/CreateForm'
 
 export default {
-  name: 'UserInfo',
+  name: 'ResourceList',
   components: {
     STable,
     CreateForm
@@ -136,10 +106,6 @@ export default {
           dataIndex: 'uri'
         },
         {
-          title: '组件',
-          dataIndex: 'component'
-        },
-        {
           title: '资源类型',
           dataIndex: 'type'
         },
@@ -150,27 +116,29 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
+      treeData: null,
+      treeDataLoading: false,
+      menuList: [],
+      resources: []
       // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
-        console.log('loadData.parameter', parameter)
-        return GetPage(Object.assign(parameter, this.queryParam))
-          .then(res => {
-            // 处理 records
-            const resultData = res.data
-            const treeData = []
-            listToTree(res.data.records, treeData, -1)
-            resultData.records = treeData
-            return resultData
-          }).catch((e) => {
-            this.$message.error('加载失败')
-          })
-      }
     }
   },
   created () {
-    this.loadData({ t: new Date() })
+    this.loadData()
   },
   methods: {
+    loadData () {
+      this.treeDataLoading = true
+      GetAllResources(Object.assign({}, this.queryParam))
+        .then(res => {
+          this.menuList = res.data.filter(item => item.type === 'MENU')
+          this.resources = this.menuList
+          const tree = []
+          listToTree(res.data, tree, -1)
+          this.treeData = tree
+          this.treeDataLoading = false
+        })
+    },
     handleAdd () {
       this.mdl = {
         type: 'API',
@@ -180,13 +148,13 @@ export default {
     },
     handleEdit (record) {
       this.visible = true
+      this.resources = this.menuList.filter(item => item.id !== record.id)
       record.methodList = record.methods.split(';')
       this.mdl = { ...record }
     },
     handleOk () {
       const form = this.$refs.createModal.$refs.form
       this.confirmLoading = true
-      console.log(this.mdl.methodList)
       form.validate(valid => {
         if (valid) {
           if (this.mdl.methodList) {
@@ -200,7 +168,7 @@ export default {
               // 重置表单数据
               form.resetFields()
               // 刷新表格
-              this.$refs.table.refresh()
+              this.loadData()
               this.$message.info('修改成功')
             }).catch((err) => {
               console.log(`form update error:->${err}`)
@@ -214,7 +182,7 @@ export default {
               // 重置表单数据
               form.resetFields()
               // 刷新表格
-              this.$refs.table.refresh()
+              this.loadData()
 
               this.$message.info('新增成功')
             }).catch((err) => {
@@ -241,7 +209,7 @@ export default {
       DeleteById(row.id).then(res => {
         this.$message.info('删除成功')
         // 刷新表格
-        this.$refs.table.refresh()
+        this.loadData()
       })
     },
     resetSearchForm () {

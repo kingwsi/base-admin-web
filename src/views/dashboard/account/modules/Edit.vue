@@ -18,23 +18,10 @@
           <a-input v-model="model.id" disabled />
         </a-form-model-item>
         <a-form-model-item label="头像">
-          <a-upload
-            name="avatar"
-            list-type="picture-card"
-            class="avatar-uploader"
-            :show-upload-list="false"
-            :custom-request="customUpload"
-            :before-upload="beforeUpload"
-            @change="handleChange"
-          >
-            <img v-if="model.avatar" :src="model.avatar" alt="avatar" style="height:150px" />
-            <div v-else>
-              <a-icon :type="uploadLoading ? 'loading' : 'plus'" />
-              <div class="ant-upload-text">
-                上传
-              </div>
-            </div>
-          </a-upload>
+          <c-upload
+            :files.sync="model.avatar"
+            :max="1"
+          />
         </a-form-model-item>
         <a-form-model-item label="用户名" prop="username">
           <a-input v-model="model.username" :disabled="true"/>
@@ -66,7 +53,7 @@
 </template>
 
 <script>
-import { UploadAvatar } from '@/api/fileResource'
+import CUpload from '@/components/upload/CUpload'
 
 export default {
   props: {
@@ -82,6 +69,9 @@ export default {
       type: Object,
       default: () => null
     }
+  },
+  components: {
+    CUpload
   },
   data () {
     this.formLayout = {
@@ -125,21 +115,6 @@ export default {
         this.$message.error('Image must smaller than 2MB!')
       }
       return isJpgOrPng && isLt2M
-    },
-    customUpload (data) {
-      this.uploadLoading = true
-      const formData = new FormData()
-      formData.append('file', data.file)
-      UploadAvatar(formData).then(response => {
-        if (response.code === 200) {
-          this.model.avatar = response.data
-          this.uploadLoading = false
-        }
-      }).catch((err) => {
-        console.log(err)
-        this.$message.error('上传失败!')
-        this.uploadLoading = false
-      })
     }
   }
 }

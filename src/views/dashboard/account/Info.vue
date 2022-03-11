@@ -76,7 +76,8 @@ export default {
       tagInputValue: '',
       user: {},
       confirmLoading: false,
-      mdl: {}
+      mdl: {},
+      images: []
     }
   },
   computed: {
@@ -97,9 +98,11 @@ export default {
       this.teamSpinning = false
     },
     edit () {
-      this.mdl = { ...this.user }
-      this.mdl.password = ''
       this.editVisible = true
+      this.$nextTick(() => {
+        this.mdl = Object.assign({}, this.user)
+        this.mdl.password = ''
+      })
     },
     handleOk () {
       const form = this.$refs.editModal.$refs.form

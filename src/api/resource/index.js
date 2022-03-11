@@ -24,10 +24,11 @@ export function GetRouteList () {
   })
 }
 
-export function GetAllResources () {
+export function GetAllResources (param) {
   return request({
     url: resourceApi.AllList,
-    method: 'get'
+    method: 'get',
+    params: param
   })
 }
 

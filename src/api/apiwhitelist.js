@@ -2,10 +2,10 @@ import request from '@/utils/request'
 
 const Api = {
   // get my info
-  Page: '/api/apiwhitelist/page',
-  Add: '/api/apiwhitelist',
-  Update: '/api/apiwhitelist',
-  Delete: '/api/apiwhitelist'
+  Page: '/api/api-whitelist/page',
+  Add: '/api/api-whitelist',
+  Update: '/api/api-whitelist',
+  Delete: '/api/api-whitelist'
 }
 
 export function GetPage (parameter) {

@@ -33,6 +33,7 @@
       rowKey="id"
       :columns="columns"
       :data="loadData"
+      :scroll="{ x: 800 }"
     >
       <span slot="action" slot-scope="text, record">
         <template>
@@ -97,16 +98,20 @@ export default {
           dataIndex: 'path'
         },
         {
+          title: '请求方式',
+          dataIndex: 'methods'
+        },
+        {
           title: '操作',
           dataIndex: 'action',
-          width: '150px',
+          width: '110px',
+          fixed: 'right',
           scopedSlots: { customRender: 'action' }
         }
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        console.log('loadData.parameter', parameter)
-        return GetPage(Object.assign(parameter, this.queryParam))
+        return GetPage(Object.assign(parameter || {}, this.queryParam))
           .then(res => {
             return res.data
           })
@@ -126,7 +131,7 @@ export default {
       this.mdl = { ...record }
     },
     handleOk () {
-      const form = this.$refs.createModal.$refs.form
+      const form = this.$refs.formModal.$refs.form
       this.confirmLoading = true
       form.validate(valid => {
         if (valid) {

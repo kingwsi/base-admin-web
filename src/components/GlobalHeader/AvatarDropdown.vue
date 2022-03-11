@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     handleToCenter () {
-      this.$router.push({ path: '/system/account/info' })
+      this.$router.push({ path: '/dashboard/user' })
     },
     handleLogout (e) {
       Modal.confirm({

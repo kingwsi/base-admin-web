@@ -22,6 +22,9 @@
         <a-form-model-item label="地址" prop="path">
           <a-input v-model="model.path" placeholder="请输入地址" />
         </a-form-model-item>
+        <a-form-model-item label="请求方式" prop="methods">
+          <a-input v-model="model.methods" placeholder="请求方式，分号隔开" />
+        </a-form-model-item>
       </a-form-model>
     </a-spin>
   </a-modal>
@@ -58,6 +61,7 @@ export default {
       form: {},
       rules: {
         description: [{ required: true, message: '请输入描述', trigger: 'change' }],
+        methods: [{ required: true, message: '请输入请求方式', trigger: 'change' }],
         path: [{ required: true, message: '请输入地址', trigger: 'change' }]
       }
     }

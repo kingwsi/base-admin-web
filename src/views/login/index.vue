@@ -209,8 +209,6 @@ export default {
             })
             .catch((e) => {
               this.reloadCaptcha()
-            })
-            .finally(() => {
               state.loginBtn = false
             })
         } else {
